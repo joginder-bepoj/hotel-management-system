@@ -1,0 +1,87 @@
+<nav class="navbar">
+  <div class="container-fluid">
+
+    <!-- LEFT -->
+    <div class="navbar-header">
+      <a class="bars" (click)="onToggleSidebar()"></a>
+      <button mat-icon-button (click)="onToggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <a class="navbar-brand" routerLink="/dashboard/main">
+        <img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/logo.png" alt="Logo" />
+        <span class="logo-name">HMS</span>
+      </a>
+    </div>
+
+    <!-- RIGHT -->
+   
+      <ul class="nav-icons navbar-right nav navbar-nav navbar-right">
+
+        <!-- Fullscreen -->
+        <li>
+          <button mat-icon-button (click)="toggleFullscreen()">
+            <mat-icon>fullscreen</mat-icon>
+          </button>
+        </li>
+
+        <!-- Notifications -->
+        <li>
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="notificationMenu"
+          >
+            <mat-icon>notifications_active</mat-icon>
+          </button>
+        </li>
+
+        <!-- User -->
+        <li class="user_profile">
+          <button
+            mat-button
+            [matMenuTriggerFor]="profileMenu"
+            class="user-btn"
+          >
+            <span class="user-name">{{user.username}}</span>
+            <img
+              src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user.jpg"
+              alt="User"
+              class="user_img"
+            />
+          </button>
+        </li>
+
+      </ul>
+   
+  </div>
+</nav>
+
+<!-- NOTIFICATION MENU -->
+<mat-menu #notificationMenu="matMenu">
+  <button mat-menu-item>
+    <mat-icon>mail</mat-icon>
+    <span>New message</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>event</mat-icon>
+    <span>New booking</span>
+  </button>
+</mat-menu>
+
+<!-- PROFILE MENU -->
+<mat-menu #profileMenu="matMenu" class="profile-menu">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon>
+    <span>Account</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</mat-menu>

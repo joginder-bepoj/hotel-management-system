@@ -1,0 +1,65 @@
+<div>
+  <aside id="leftsidebar" class="sidebar">
+    <div class="menu">
+    <div class="sidebar">
+  <ng-scrollbar visibility="hover">
+    <ul class="list">
+
+      <!-- User Panel -->
+      <li class="sidebar-user-panel">
+        <div class="user-panel">
+          <div class="image">
+            <img
+              src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/usrbig.jpg"
+              alt="User"
+              class="user-img"
+            />
+          </div>
+          <div class="profile">
+            <div class="name ms-2">{{user.username}}</div>
+            <!-- <div class="role">Manager</div> -->
+          </div>
+        </div>
+      </li>
+
+      <!-- Main -->
+      <li class="header">Main</li>
+
+      <li class="active">
+        <a routerLink="/dashboard/main">
+          <i class="material-icons">home</i>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="menu-toggle">
+          <i class="material-icons">person</i>
+          <span>Booking</span>
+        </a>
+        <ul class="submenu">
+          <li><a routerLink="/booking/all-booking">All Booking</a></li>
+          <li><a routerLink="/booking/add-booking">Add Booking</a></li>
+          <li><a routerLink="/booking/edit-booking">Edit Booking</a></li>
+        </ul>
+      </li>
+
+      <!-- Rooms -->
+      <li>
+        <a class="menu-toggle">
+          <i class="material-icons">people_alt</i>
+          <span>Rooms</span>
+        </a>
+        <ul class="submenu">
+          <li><a routerLink="/rooms/all-rooms">All Rooms</a></li>
+          <li><a routerLink="/rooms/add-room">Add Room</a></li>
+        </ul>
+      </li>
+
+    </ul>
+  </ng-scrollbar>
+</div>
+
+    </div>
+  </aside>
+</div>
