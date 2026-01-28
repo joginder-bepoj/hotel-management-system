@@ -135,7 +135,7 @@ totalIncomeTooltip = {
 
   roomBookingChart: ApexChart = {
     type: 'donut',
-    height: 300
+    height: 270
   };
 
   roomBookingLabels: string[] = [

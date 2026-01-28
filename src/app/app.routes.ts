@@ -22,6 +22,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/dashboard/dashboard').then((c) => c.DashboardComponent),
       },
+      {
+        path: 'booking/add-booking',
+        loadComponent: () =>
+          import('./pages/booking/add-booking/add-booking').then((c) => c.AddBookingComponent),
+      },
     ],
   },
 ];

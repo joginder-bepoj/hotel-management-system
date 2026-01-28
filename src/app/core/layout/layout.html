@@ -9,7 +9,7 @@
     [fixedBottomGap]="options.value.bottom">
     <app-sidebar></app-sidebar>
   </mat-sidenav>
-  <mat-sidenav-content [formGroup]="options">
+  <mat-sidenav-content [formGroup]="options" style="overflow-x: clip; !important">
     <app-header (toggleSidebar)="sidenav.toggle()"></app-header>
     <main class="layout-main-content">
       <router-outlet></router-outlet>

@@ -1,0 +1,161 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Add Booking'" [items]="['Home', 'Booking']" [active_item]="'Add'">
+      </app-breadcrumb>
+    </div>
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Add Booking</h2>
+          </div>
+          <div class="body">
+            <form class="m-4" [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>First name</mat-label>
+                    <input matInput formControlName="first" required>
+                    <mat-error *ngIf="bookingForm.get('first')?.hasError('required')">
+                      First name is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Last name</mat-label>
+                    <input matInput formControlName="last">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" required>
+                    <mat-error *ngIf="bookingForm.get('email')?.hasError('required') || bookingForm.get('email')?.hasError('email')">
+                      Please enter a valid email address
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Gender</mat-label>
+                    <mat-select formControlName="gender" required>
+                      <mat-option [value]="'Male'">
+                        Male
+                      </mat-option>
+                      <mat-option [value]="'Female'">
+                        Female
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="bookingForm.get('gender')?.hasError('required')">
+                      Gender is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Mobile</mat-label>
+                    <input matInput formControlName="mobile" type="number" required>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>City</mat-label>
+                    <input matInput formControlName="city" required>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Arrived Date</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="arriveDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="bookingForm.get('arriveDate')?.hasError('required')">
+                      Arrived Date is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Depart Date</mat-label>
+                    <input matInput [matDatepicker]="picker2" formControlName="departDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                    <mat-error *ngIf="bookingForm.get('departDate')?.hasError('required')">
+                      Depart Date is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Total Person</mat-label>
+                    <input matInput formControlName="totalPerson" type="number" required>
+                    <mat-error *ngIf="bookingForm.get('totalPerson')?.hasError('required')">
+                      Total Person is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Select Room Type</mat-label>
+                    <mat-select formControlName="roomType" required>
+                      <mat-option [value]="'Single'">
+                        Single
+                      </mat-option>
+                      <mat-option [value]="'Double'">
+                        Double
+                      </mat-option>
+                      <mat-option [value]="'Apartment'">
+                        Apartment
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="bookingForm.get('roomType')?.hasError('required')">
+                      Room Type is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Address</mat-label>
+                    <textarea matInput formControlName="address"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-5">
+                  <label>Upload</label>
+                  <app-file-upload formControlName="uploadFile"></app-file-upload>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Note</mat-label>
+                    <textarea matInput formControlName="note"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                  <button class="msr-3" mat-flat-button color="primary" [disabled]="!bookingForm.valid">Submit</button>
+                  <button type="button" mat-flat-button color="warn">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

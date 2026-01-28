@@ -32,14 +32,23 @@ body {
 
   // Reset the user agent margin.
   margin: 0;
+  font-family: "Poppins", sans-serif !important; /* Add this line */
+
 }
 /* You can add global styles to this file, and also import other style files */
 
 $primary-color: #581e96;
 $primary-color-hover: #864dce;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, sans-serif;}
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+body { margin: 0; font-family: Poppins, sans-serif !important;}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Inter", sans-serif !important;
+}
 
 .social-icon li a {
     color: #3c4858;

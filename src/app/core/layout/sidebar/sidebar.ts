@@ -29,6 +29,13 @@ export class Sidebar {
 
     // Click event for menu-toggle
     const menuToggle = document.querySelectorAll('.menu-toggle');
+    const submenus = document.querySelectorAll('.submenu');
+
+    // Hide all submenus by default
+    submenus.forEach(submenu => {
+      (submenu as HTMLElement).style.display = 'none';
+    });
+
     menuToggle.forEach(toggle => {
       toggle.addEventListener('click', (event) => {
         event.preventDefault();
