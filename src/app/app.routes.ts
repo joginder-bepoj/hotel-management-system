@@ -27,6 +27,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/booking/add-booking/add-booking').then((c) => c.AddBookingComponent),
       },
+      {
+        path: 'booking/all-booking',
+        loadComponent: () =>
+          import('./pages/booking/all-booking/all-booking').then((c) => c.AllBooking),
+      },
     ],
   },
 ];

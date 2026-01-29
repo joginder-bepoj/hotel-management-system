@@ -1,0 +1,130 @@
+.materialTableHeader .left {
+    flex: 35%;
+    height: 60px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.materialTableHeader .header-buttons-left {
+    list-style: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.materialTableHeader .header-buttons-left .tbl-title {
+    vertical-align: middle;
+    margin-left: 20px;
+}
+
+.materialTableHeader .header-buttons-left li {
+    display: inline-block;
+}
+
+.materialTableHeader .right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.right {
+    float: right !important;
+}
+.materialTableHeader .header-buttons-left .tbl-title {
+    vertical-align: middle;
+    margin-left: 20px;
+}
+
+.materialTableHeader .header-buttons-left li {
+    display: inline-block;
+}
+
+.materialTableHeader .header-buttons-left .tbl-title h2 {
+    font-weight: 500;
+}
+.materialTableHeader .header-buttons-right h2, .materialTableHeader h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: #5b626b;
+}
+
+.materialTableHeader .header-buttons-left .tbl-search-box {
+    position: relative;
+    margin-left: 10px;
+}
+
+.materialTableHeader .header-buttons-left li {
+    display: inline-block;
+}
+
+label, .form-check {
+    font-size: 13px;
+    line-height: 1.42857;
+    color: #414244;
+    font-weight: 400;
+}
+label {
+    display: inline-block;
+}
+.materialTableHeader .header-buttons-left .search-icon {
+    position: absolute;
+    top: 10px;
+    padding-left: 10px;
+    color: #0000008a;
+}
+
+.materialTableHeader .header-buttons-left input.search-field:hover {
+    background: #fffefe;
+}
+.materialTableHeader .header-buttons-left input.search-field {
+    font-weight: 500;
+    color: #0000008a;
+    border-radius: 5px;
+    border: 0;
+    height: 45px;
+    padding: 8px 8px 8px 50px;
+    width: 250px;
+    background: #fff;
+    transition: background .2s, width .2s;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.mat-mdc-table {
+    box-shadow: none !important;
+}
+
+.mat-mdc-table .mat-mdc-cell, .mat-mdc-table .mat-mdc-header-cell {
+    border-bottom-color: #efefef;
+}
+
+.mat-sort-header-container {
+    display: flex;
+    align-items: center;
+    letter-spacing: normal;
+    outline: 0;
+}
+
+.mat-mdc-header-row {
+    font-family: "Poppins", sans-serif !important;
+}
+
+.table-img {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    background: #fff;
+    position: inherit;
+    margin-right: 10px;
+}
+
+mat-cell>span.truncate-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

@@ -1,10 +1,21 @@
 .file-drop-area {
-  border: 2px dashed #ccc;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
+    border: 1px dashed #7c7db3;
+    border-radius: 3px;
+    position: relative;
+    max-width: 100%;
+    margin-top: 5px;
+    padding: 26px 20px 30px;
+    transition: .2s;
 }
 
 .file-input {
   display: none;
+}
+
+.choose {
+  font-family: "Poppins", sans-serif !important;
+}
+
+.mat-mdc-raised-button{
+    font-family: "Poppins", sans-serif !important;
 }

@@ -5,10 +5,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { FileUploadComponent } from '../../../components/file-upload/file-upload.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-booking',
@@ -25,7 +26,9 @@ import { FileUploadComponent } from '../../../components/file-upload/file-upload
     MatSelectModule,
     MatDatepickerModule,
     BreadcrumbComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    MatNativeDateModule,  
+    MatIconModule,  
   ],
   schemas: []
 })

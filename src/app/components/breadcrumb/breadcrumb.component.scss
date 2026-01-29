@@ -1,1 +1,33 @@
- 
+.breadcrumb {
+  background-color: transparent;
+  font-size: 15px;
+  align-items: center;
+  margin: 1rem 0 3rem 1rem;
+  padding: 0;
+  color: #555;
+}
+
+.breadcrumb .page-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 0;
+}
+
+.breadcrumb .breadcrumb-item+.breadcrumb-item:before {
+    content: "\f105";
+    font-family: "Font Awesome 5 Free";
+    font-size: 14px;
+    display: block;
+    font-weight: 900;
+    padding-right: .5rem;
+    padding-top: 3px;
+}
+
+.breadcrumb .page-title:after {
+    content: "\f105";
+    font-family: "Font Awesome 5 Free";
+    font-size: 18px;
+    font-weight: 900;
+    padding: 0 5px;
+}

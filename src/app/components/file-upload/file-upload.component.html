@@ -1,5 +1,25 @@
-<div class="file-drop-area">
-  <button mat-raised-button color="primary">Choose file</button>
-  <span> or drag and drop file here</span>
-  <input type="file" class="file-input">
+<div
+  class="file-drop-area"
+  (drop)="onDrop($event)"
+  (dragover)="onDragOver($event)"
+>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="fileInput.click()"
+    type="button"
+  >
+    Choose file
+  </button>
+
+  <span *ngIf="!selectedFile"> or drag and drop file here</span>
+  <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+
+  <input
+    #fileInput
+    type="file"
+    class="file-input"
+    (change)="onFileSelected($event)"
+    hidden
+  />
 </div>
