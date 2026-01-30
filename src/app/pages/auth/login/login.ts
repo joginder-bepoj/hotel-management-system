@@ -41,7 +41,11 @@ export class LoginComponent implements OnInit {
       const { username, password } = this.loginForm.value;
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       if (user && user.username === username && user.password === password) {
-        this.router.navigate(['/dashboard']);
+        if (user.isSetupComplete) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/setup']);
+        }
       } else {
         this.error = 'Invalid credentials';
       }

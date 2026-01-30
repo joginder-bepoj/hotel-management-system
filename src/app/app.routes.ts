@@ -12,6 +12,26 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/auth/signup/signup').then((c) => c.SignupComponent),
   },
+  {
+    path: 'setup',
+    loadComponent: () =>
+      import('./pages/setup/setup').then((c) => c.SetupComponent),
+  },
+  {
+    path: 'setup/hotel',
+    loadComponent: () =>
+      import('./pages/setup/hotel/hotel-setup').then((c) => c.HotelSetupComponent),
+  },
+  {
+    path: 'setup/restaurant',
+    loadComponent: () =>
+      import('./pages/setup/restaurant/restaurant-setup').then((c) => c.RestaurantSetupComponent),
+  },
+  {
+    path: 'setup/apartment',
+    loadComponent: () =>
+      import('./pages/setup/apartment/apartment-setup').then((c) => c.ApartmentSetupComponent),
+  },
   { path: '', redirectTo: '/authentication/login', pathMatch: 'full' },
   {
     path: '',

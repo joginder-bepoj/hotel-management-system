@@ -1,0 +1,31 @@
+
+<div class="setup-container">
+  <h1>Welcome! Let's get you set up.</h1>
+  <p class="subtitle">Select the type of property you want to manage:</p>
+
+  <div class="options-grid">
+    <mat-card class="option-card" (click)="selectOption('hotel')">
+      <mat-card-content>
+        <mat-icon class="option-icon">hotel</mat-icon>
+        <h2>Add Hotel</h2>
+        <p>Manage rooms, bookings, and guests for your hotel.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="option-card" (click)="selectOption('restaurant')">
+      <mat-card-content>
+        <mat-icon class="option-icon">restaurant</mat-icon>
+        <h2>Add Restaurant</h2>
+        <p>Manage tables, orders, and menu for your restaurant.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="option-card" (click)="selectOption('apartment')">
+      <mat-card-content>
+        <mat-icon class="option-icon">apartment</mat-icon>
+        <h2>Add Apartment</h2>
+        <p>Manage tenants, leases, and maintenance for your apartments.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
