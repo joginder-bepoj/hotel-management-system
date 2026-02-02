@@ -1,16 +1,19 @@
 
-.setup-container {
+$primary-color: #581e96;
+$primary-color-hover: #864dce;
+
+.setups-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  /* background-color: #f5f5f5; Removed to show particles */
   padding: 2rem;
   text-align: center;
   position: relative;
-  z-index: 1; /* Ensure content is above particles */
+  z-index: 1;
 }
+
 
 h1 {
   font-size: 2.5rem;
@@ -55,7 +58,7 @@ h1 {
     font-size: 64px;
     height: 64px;
     width: 64px;
-    color: #3f51b5; /* Primary color */
+    color: $primary-color !important; 
     margin-bottom: 1rem;
   }
 
