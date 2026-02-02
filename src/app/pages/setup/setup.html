@@ -1,6 +1,11 @@
-
+<app-landing-particles></app-landing-particles>
 <div class="setup-container">
-  <h1>Welcome! Let's get you set up.</h1>
+   <h1 class="landing-main-header">
+     <app-typed-header
+    text="Welcome! Let's get you set up."
+    [typingSpeed]="55">
+  </app-typed-header>
+  </h1>
   <p class="subtitle">Select the type of property you want to manage:</p>
 
   <div class="options-grid">
@@ -14,7 +19,7 @@
 
     <mat-card class="option-card" (click)="selectOption('restaurant')">
       <mat-card-content>
-        <mat-icon class="option-icon">restaurant</mat-icon>
+        <mat-icon class="option-icon">restaurant</mat-icon> 
         <h2>Add Restaurant</h2>
         <p>Manage tables, orders, and menu for your restaurant.</p>
       </mat-card-content>

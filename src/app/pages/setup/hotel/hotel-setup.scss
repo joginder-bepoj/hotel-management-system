@@ -1,0 +1,317 @@
+.setup-container {
+  padding: 3rem;
+  max-width: 900px;
+  margin: 2rem auto;
+  background: rgba(255, 255, 255, 0.95); /* High opacity for readability */
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.6s ease-out;
+  font-family: 'Poppins', sans-serif !important; /* User's body font */
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif !important; /* User's header font */
+    margin-bottom: 2rem;
+    text-align: center;
+    letter-spacing: -0.5px;
+    background: linear-gradient(45deg, #581e96, #864dce);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Animations */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.section-title {
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 24px;
+    background: #581e96; /* Primary Color */
+    border-radius: 2px;
+  }
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  
+  mat-checkbox {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      background: #f3e5f5; /* Light Purple tint */
+      border-color: #d1c4e9;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.file-upload-container {
+  border: 2px dashed #b39ddb; /* Light Deep Purple */
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    color: #9575cd; /* Deep Purple 300 */
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+  }
+
+  p {
+    margin: 0;
+    color: #512da8; /* Deep Purple 700 */
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background-color: #ede7f6; /* Deep Purple 50 */
+    border-color: #581e96; /* Primary Color */
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(88, 30, 150, 0.1);
+
+    mat-icon {
+      transform: scale(1.1) rotate(-5deg);
+      color: #581e96; /* Primary Color */
+    }
+  }
+}
+
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+
+  button {
+    min-width: 120px;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    
+    &.btn-primary {
+      background: linear-gradient(135deg, #581e96, #864dce); /* Primary Gradient */
+      color: white;
+      box-shadow: 0 4px 6px rgba(88, 30, 150, 0.3);
+      transition: box-shadow 0.2s;
+
+      &:hover {
+        box-shadow: 0 6px 12px rgba(88, 30, 150, 0.4);
+      }
+    }
+  }
+}
+
+/* Customize specific Material overrides if needed */
+::ng-deep .mat-step-header {
+  border-radius: 8px;
+  transition: background 0.2s;
+  
+  &:hover {
+    background-color: rgba(88, 30, 150, 0.04);
+  }
+}
+
+/* Animations */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.section-title {
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 24px;
+    background: #3f51b5;
+    border-radius: 2px;
+  }
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  
+  mat-checkbox {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      background: #e8eaf6;
+      border-color: #c5cae9;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.file-upload-container {
+  border: 2px dashed #9fa8da;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    color: #7986cb;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+  }
+
+  p {
+    margin: 0;
+    color: #5c6bc0;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background-color: #e8eaf6;
+    border-color: #3f51b5;
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.1);
+
+    mat-icon {
+      transform: scale(1.1) rotate(-5deg);
+      color: #3f51b5;
+    }
+  }
+}
+
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+
+  button {
+    min-width: 120px;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    
+    &.btn-primary {
+      color: white;
+      box-shadow: 0 4px 6px rgba(63, 81, 181, 0.3);
+      transition: box-shadow 0.2s;
+
+      &:hover {
+        box-shadow: 0 6px 12px rgba(63, 81, 181, 0.4);
+      }
+    }
+  }
+}
+
+/* Customize specific Material overrides if needed */
+::ng-deep .mat-step-header {
+  border-radius: 8px;
+  transition: background 0.2s;
+  
+  &:hover {
+    background-color: rgba(63, 81, 181, 0.04);
+  }
+}
+
+::ng-deep .mat-input-element {
+  font-weight: 500;
+}

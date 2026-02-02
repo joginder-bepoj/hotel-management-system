@@ -1,0 +1,120 @@
+<div class="setup-container">
+  <h1>Apartment Setup</h1>
+
+  <mat-stepper [linear]="true" #stepper>
+    <!-- Step 1: Basic Info -->
+    <mat-step [stepControl]="basicInfoForm">
+      <form [formGroup]="basicInfoForm">
+        <ng-template matStepLabel>Basic Info</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Apartment Name / Title</mat-label>
+            <input matInput formControlName="apartmentName" placeholder="Ex. Sunny Side Apartment 101" required>
+            <mat-error *ngIf="basicInfoForm.get('apartmentName')?.hasError('required')">Name is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <textarea matInput formControlName="address" placeholder="Ex. 123 Main St, City" required></textarea>
+            <mat-error *ngIf="basicInfoForm.get('address')?.hasError('required')">Address is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Owner Details</h3>
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Owner Name</mat-label>
+            <input matInput formControlName="ownerName" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Owner Contact</mat-label>
+             <input matInput formControlName="ownerContact" required>
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Apartment Details -->
+    <mat-step [stepControl]="detailsForm">
+      <form [formGroup]="detailsForm">
+        <ng-template matStepLabel>Apartment Details</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Bedroom Count</mat-label>
+            <input matInput type="number" formControlName="bedroomCount" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Bathroom Count</mat-label>
+            <input matInput type="number" formControlName="bathroomCount" required>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+           <mat-form-field appearance="outline">
+            <mat-label>Floor Area (sq ft)</mat-label>
+            <input matInput type="number" formControlName="areaSize">
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Facilities</h3>
+        <div class="amenities-grid">
+           <mat-checkbox formControlName="facilityWifi">Wi-Fi</mat-checkbox>
+           <mat-checkbox formControlName="facilityParking">Parking</mat-checkbox>
+           <mat-checkbox formControlName="facilityAc">Air Conditioning</mat-checkbox>
+           <mat-checkbox formControlName="facilityKitchen">Kitchen</mat-checkbox>
+           <mat-checkbox formControlName="facilityTv">TV</mat-checkbox>
+           <mat-checkbox formControlName="facilityWashingMachine">Washing Machine</mat-checkbox>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Pricing & Rules -->
+    <mat-step [stepControl]="pricingForm">
+      <form [formGroup]="pricingForm">
+        <ng-template matStepLabel>Pricing & Rules</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Monthly Rent</mat-label>
+            <input matInput type="number" formControlName="rent" required>
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Security Deposit</mat-label>
+            <input matInput type="number" formControlName="deposit">
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>House Rules</mat-label>
+            <textarea matInput formControlName="houseRules" rows="5" placeholder="Ex. No smoking, No pets..."></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button (click)="onSubmit()" color="primary" raised class="btn-primary">Complete Setup</button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>

@@ -1,0 +1,138 @@
+<div class="setup-container">
+  <h1>Restaurant Setup</h1>
+
+  <mat-stepper [linear]="true" #stepper>
+    <!-- Step 1: Basic Info -->
+    <mat-step [stepControl]="basicInfoForm">
+      <form [formGroup]="basicInfoForm">
+        <ng-template matStepLabel>Basic Info</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Restaurant Name</mat-label>
+            <input matInput formControlName="restaurantName" placeholder="Ex. The Tasty Spoon" required>
+            <mat-error *ngIf="basicInfoForm.get('restaurantName')?.hasError('required')">Name is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Location / Address</mat-label>
+            <textarea matInput formControlName="location" placeholder="Ex. 45 Food Street, City" required></textarea>
+            <mat-error *ngIf="basicInfoForm.get('location')?.hasError('required')">Location is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Contact Number</mat-label>
+            <input matInput formControlName="contactNumber" placeholder="Ex. +1 987 654 321" required>
+            <mat-error *ngIf="basicInfoForm.get('contactNumber')?.hasError('required')">Contact is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+             <mat-label>Email</mat-label>
+             <input matInput formControlName="email" placeholder="Ex. contact@tasty.com">
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Menu Setup -->
+    <mat-step [stepControl]="menuForm">
+      <form [formGroup]="menuForm">
+        <ng-template matStepLabel>Menu Setup</ng-template>
+
+        <h3 class="section-title">Menu Items</h3>
+        <p>Add your initial menu items below.</p>
+
+        <div formArrayName="menuItems">
+          <div *ngFor="let item of menuItems.controls; let i=index" [formGroupName]="i" class="menu-item-container">
+            <button mat-icon-button class="remove-btn" (click)="removeMenuItem(i)" *ngIf="menuItems.length > 1">
+              <mat-icon>close</mat-icon>
+            </button>
+            
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Item Name</mat-label>
+                <input matInput formControlName="name" placeholder="Ex. Pasta Carbonara" required>
+              </mat-form-field>
+              
+               <mat-form-field appearance="outline">
+                <mat-label>Category</mat-label>
+                <mat-select formControlName="category" required>
+                  <mat-option value="Starters">Starters</mat-option>
+                  <mat-option value="Main Course">Main Course</mat-option>
+                  <mat-option value="Desserts">Desserts</mat-option>
+                  <mat-option value="Beverages">Beverages</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Price</mat-label>
+                <input matInput type="number" formControlName="price" required>
+                 <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+              
+              <mat-checkbox formControlName="isVeg">Vegetarian</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+        <div class="add-btn-container">
+          <button mat-stroked-button color="primary" type="button" (click)="addMenuItem()">
+            <mat-icon>add</mat-icon> Add Menu Item
+          </button>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Timings & Tables -->
+    <mat-step [stepControl]="timingsForm">
+      <form [formGroup]="timingsForm">
+        <ng-template matStepLabel>Timings & Tables</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Opening Time</mat-label>
+            <input matInput type="time" formControlName="openTime" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Closing Time</mat-label>
+            <input matInput type="time" formControlName="closeTime" required>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Total Tables</mat-label>
+            <input matInput type="number" formControlName="tableCount" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Seating Capacity (Avg per table)</mat-label>
+             <input matInput type="number" formControlName="seatingCapacity">
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button (click)="onSubmit()" color="primary" raised class="btn-primary">Complete Setup</button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>

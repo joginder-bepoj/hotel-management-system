@@ -1,0 +1,205 @@
+<div class="setup-container">
+  <h1>Hotel Setup</h1>
+
+  <mat-stepper [linear]="true" #stepper>
+    <!-- Step 1: Basic Details -->
+    <mat-step [stepControl]="basicDetailsForm">
+      <form [formGroup]="basicDetailsForm">
+        <ng-template matStepLabel>Basic Details</ng-template>
+
+        <div class="row mt-2">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Hotel Name</mat-label>
+            <input matInput formControlName="hotelName" placeholder="Ex. Grand Plaza" required>
+            <mat-error *ngIf="basicDetailsForm.get('hotelName')?.hasError('required')">Hotel name is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <textarea matInput formControlName="address" placeholder="Ex. 123 Main St, City, Country" required></textarea>
+            <mat-error *ngIf="basicDetailsForm.get('address')?.hasError('required')">Address is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Contact Number</mat-label>
+            <input matInput formControlName="contactNumber" placeholder="Ex. +1 234 567 890" required>
+            <mat-error *ngIf="basicDetailsForm.get('contactNumber')?.hasError('required')">Contact number is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Ex. info@grandplaza.com" required>
+            <mat-error *ngIf="basicDetailsForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="basicDetailsForm.get('email')?.hasError('email')">Invalid email address</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Rating</mat-label>
+            <mat-select formControlName="rating">
+              <mat-option value="1">1 Star</mat-option>
+              <mat-option value="2">2 Stars</mat-option>
+              <mat-option value="3">3 Stars</mat-option>
+              <mat-option value="4">4 Stars</mat-option>
+              <mat-option value="5">5 Stars</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Configuration -->
+    <mat-step [stepControl]="configurationForm">
+      <form [formGroup]="configurationForm">
+        <ng-template matStepLabel>Configuration</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Total Floors</mat-label>
+            <input matInput type="number" formControlName="floors" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Total Rooms</mat-label>
+            <input matInput type="number" formControlName="rooms" required>
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Room Types</h3>
+        <div class="row">
+           <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Room Types (Comma separated)</mat-label>
+            <input matInput formControlName="roomTypes" placeholder="Ex. Single, Double, Suite">
+            <mat-hint>Enter types separated by commas</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Amenities</h3>
+        <div class="amenities-grid">
+           <mat-checkbox formControlName="amenityWifi">Free Wi-Fi</mat-checkbox>
+           <mat-checkbox formControlName="amenityParking">Parking</mat-checkbox>
+           <mat-checkbox formControlName="amenityPool">Swimming Pool</mat-checkbox>
+           <mat-checkbox formControlName="amenityGym">Gym</mat-checkbox>
+           <mat-checkbox formControlName="amenityRestaurant">Restaurant</mat-checkbox>
+           <mat-checkbox formControlName="amenityRoomService">Room Service</mat-checkbox>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Pricing Setup -->
+    <mat-step [stepControl]="pricingForm">
+      <form [formGroup]="pricingForm">
+        <ng-template matStepLabel>Pricing Setup</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Base Room Price</mat-label>
+            <input matInput type="number" formControlName="basePrice" required>
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Seasonal Pricing</h3>
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Peak Season Multiplier</mat-label>
+            <input matInput type="number" formControlName="seasonalMultiplier" step="0.1" placeholder="Ex. 1.5">
+          </mat-form-field>
+        </div>
+
+         <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Default Discount (%)</mat-label>
+            <input matInput type="number" formControlName="discount" min="0" max="100">
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 4: Policies -->
+    <mat-step [stepControl]="policiesForm">
+      <form [formGroup]="policiesForm">
+        <ng-template matStepLabel>Policies</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Check-in Time</mat-label>
+            <input matInput type="time" formControlName="checkInTime" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Check-out Time</mat-label>
+            <input matInput type="time" formControlName="checkOutTime" required>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cancellation Policy</mat-label>
+            <textarea matInput formControlName="cancellationPolicy" rows="4" placeholder="Enter cancellation rules here..."></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 5: Media & Documents -->
+    <mat-step [stepControl]="mediaForm">
+      <form [formGroup]="mediaForm">
+        <ng-template matStepLabel>Media & Documents</ng-template>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>GST / Tax ID</mat-label>
+            <input matInput formControlName="gstId">
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Hotel Images</h3>
+        <div class="file-upload-container" (click)="imageInput.click()">
+          <mat-icon>cloud_upload</mat-icon>
+          <p>Click or drag images here to upload</p>
+          <p *ngIf="selectedImages.length" style="color: green">{{ selectedImages.length }} files selected</p>
+          <input #imageInput type="file" multiple style="display: none;" (change)="onFileSelected($event, 'images')">
+        </div>
+
+        <h3 class="section-title">Licenses & Documents</h3>
+        <div class="file-upload-container" (click)="docInput.click()">
+          <mat-icon>description</mat-icon>
+          <p>Click or drag documents here to upload</p>
+           <p *ngIf="selectedDocs.length" style="color: green">{{ selectedDocs.length }} files selected</p>
+          <input #docInput type="file" multiple style="display: none;" (change)="onFileSelected($event, 'docs')">
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button (click)="onSubmit()" color="primary" raised class="btn-primary">Complete Setup</button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>

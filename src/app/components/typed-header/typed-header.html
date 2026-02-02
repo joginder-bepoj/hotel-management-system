@@ -1,0 +1,16 @@
+<span class="typed-container" aria-label="{{ text }}">
+  <span
+    *ngFor="let letter of letters; let i = index"
+    class="typed-letter"
+    [class.visible]="i < visibleCount"
+  >
+    {{ letter === ' ' ? '\u00A0' : letter }}
+  </span>
+
+  <img
+    #cursor
+    src="assets/image/antigravity-cursor.png"
+    alt=""
+    class="typed-cursor"
+  />
+</span>

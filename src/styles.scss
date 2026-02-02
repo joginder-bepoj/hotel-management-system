@@ -170,3 +170,16 @@ mat-form-field .mdc-floating-label {
   .table .fa-trash-alt {
     color: #ff5200;
   }
+
+  .mat-mdc-button{
+    font-family: 'Inter'!important;
+    background-color: $primary-color !important;
+  }
+
+  .mat-step-icon-selected, .mat-step-icon-state-edit {
+    background-color: $primary-color !important;
+  }
+
+  .mdc-text-field__input, .mat-mdc-form-field-error,.mat-step-text-label{
+    font-family: 'Inter'!important;
+  }

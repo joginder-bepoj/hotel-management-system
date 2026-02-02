@@ -1,0 +1,37 @@
+.typed-container {
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.typed-letter {
+  opacity: 0;
+  display: inline-block;
+  transition: opacity 0.25s ease-out;
+}
+
+.typed-letter.visible {
+  opacity: 1;
+}
+
+.typed-cursor {
+  position: absolute;
+  width: 14px;
+  height: 22px;
+  margin-left: 4px;
+  animation: blink 1s infinite;
+  pointer-events: none;
+}
+
+@keyframes blink {
+  0%,
+  45%,
+  100% {
+    opacity: 1;
+  }
+  50%,
+  90% {
+    opacity: 0;
+  }
+}
