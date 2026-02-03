@@ -43,14 +43,44 @@ export const routes: Routes = [
           import('./pages/dashboard/dashboard').then((c) => c.DashboardComponent),
       },
       {
-        path: 'booking/add-booking',
-        loadComponent: () =>
-          import('./pages/booking/add-booking/add-booking').then((c) => c.AddBookingComponent),
+        path: 'booking',
+        children: [
+          {
+            path: 'add-booking',
+            loadComponent: () =>
+              import('./pages/booking/add-booking/add-booking').then((c) => c.AddBookingComponent),
+          },
+          {
+            path: 'all-booking',
+            loadComponent: () =>
+              import('./pages/booking/all-booking/all-booking').then((c) => c.AllBooking),
+          },
+          {
+            path: 'edit-booking/:id',
+            loadComponent: () =>
+              import('./pages/booking/edit-booking/edit-booking').then((c) => c.EditBookingComponent),
+          },
+        ]
       },
       {
-        path: 'booking/all-booking',
-        loadComponent: () =>
-          import('./pages/booking/all-booking/all-booking').then((c) => c.AllBooking),
+        path: 'rooms',
+        children: [
+          {
+            path: 'all-rooms',
+            loadComponent: () =>
+              import('./pages/rooms/all-rooms/all-rooms').then((c) => c.AllRooms),
+          },
+          {
+            path: 'add-room',
+            loadComponent: () =>
+              import('./pages/rooms/add-room/add-room').then((c) => c.AddRoomComponent),
+          },
+          {
+            path: 'edit-room/:id',
+            loadComponent: () =>
+              import('./pages/rooms/edit-room/edit-room').then((c) => c.EditRoomComponent),
+          },
+        ]
       },
     ],
   },

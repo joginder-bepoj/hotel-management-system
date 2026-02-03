@@ -1,0 +1,97 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Add Room'" [items]="['Home', 'Rooms']" [active_item]="'Add'">
+      </app-breadcrumb>
+    </div>
+    <div class="row clearfix">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Add Room</h2>
+          </div>
+          <div class="body">
+            <form class="m-4" [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Room Number</mat-label>
+                    <input matInput formControlName="roomNo" required>
+                    <mat-error *ngIf="roomForm.get('roomNo')?.hasError('required')">
+                      Room Number is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Select Room Type</mat-label>
+                    <mat-select formControlName="roomType" required>
+                      <mat-option [value]="'Single'">Single</mat-option>
+                      <mat-option [value]="'Double'">Double</mat-option>
+                      <mat-option [value]="'Apartment'">Apartment</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="roomForm.get('roomType')?.hasError('required')">
+                      Room Type is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>AC/Non-AC</mat-label>
+                    <mat-select formControlName="acNonAc" required>
+                      <mat-option [value]="'AC'">AC</mat-option>
+                      <mat-option [value]="'Non-AC'">Non-AC</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="roomForm.get('acNonAc')?.hasError('required')">
+                      Condition is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Meal Plan</mat-label>
+                    <mat-select formControlName="meal" required>
+                      <mat-option [value]="'Included'">Included</mat-option>
+                      <mat-option [value]="'Not Included'">Not Included</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="roomForm.get('meal')?.hasError('required')">
+                      Meal plan is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Capacity</mat-label>
+                    <input matInput formControlName="capacity" type="number" required>
+                    <mat-error *ngIf="roomForm.get('capacity')?.hasError('required')">
+                      Capacity is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Rent</mat-label>
+                    <input matInput formControlName="rent" required>
+                    <mat-error *ngIf="roomForm.get('rent')?.hasError('required')">
+                      Rent is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                  <button class="me-3" mat-flat-button color="primary" [disabled]="!roomForm.valid">Submit</button>
+                  <button type="button" mat-flat-button color="warn" (click)="onCancel()">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

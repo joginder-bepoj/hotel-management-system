@@ -13,12 +13,13 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { BookingService, Booking } from '../../../core/service/booking.service';
-import { RouterModule, Router } from '@angular/router';
+import { RoomService, Room } from '../../../core/service/room.service';
+import { RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-all-booking',
+  selector: 'app-all-rooms',
+  standalone: true,
   imports: [
     BreadcrumbComponent,
     MatIcon,
@@ -35,48 +36,34 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatCheckboxModule,
     RouterModule,
   ],
-  templateUrl: './all-booking.html',
-  styleUrl: './all-booking.scss',
+  templateUrl: './all-rooms.html',
+  styleUrl: './all-rooms.scss',
 })
-export class AllBooking implements OnInit {
+export class AllRooms implements OnInit {
   displayedColumns = [
     'select',
-    'name',
-    'email',
-    'arrival',
-    'departure',
-    'gender',
-    'mobile',
+    'roomNo',
     'roomType',
-    'payment',
+    'acNonAc',
+    'meal',
+    'capacity',
+    'rent',
     'actions',
   ];
-  dataSource = new MatTableDataSource<Booking>([]);
-  selection = new SelectionModel<Booking>(true, []);
+  dataSource = new MatTableDataSource<Room>([]);
+  selection = new SelectionModel<Room>(true, []);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(
-    private bookingService: BookingService,
-    private snackBar: MatSnackBar,
-    private router: Router
-  ) {}
+  constructor(private roomService: RoomService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
-    this.loadBookings();
+    this.loadRooms();
   }
 
-  loadBookings() {
-    this.dataSource.data = this.bookingService.getBookings();
-  }
-
-  editCall(id: number) {
-    if (id) {
-      this.router.navigate(['/booking/edit-booking', id]);
-    } else {
-      console.error('Booking ID is missing', id);
-    }
+  loadRooms() {
+    this.dataSource.data = this.roomService.getRooms();
   }
 
   ngAfterViewInit() {
@@ -92,11 +79,11 @@ export class AllBooking implements OnInit {
     this.isAllSelected() ? this.selection.clear() : this.selection.select(...this.dataSource.data);
   }
 
-  deleteBooking(id: number) {
-    if (confirm('Are you sure you want to delete this booking?')) {
-      this.bookingService.deleteBooking(id);
-      this.loadBookings();
-      this.snackBar.open('Booking deleted successfully!', 'Close', {
+  deleteRoom(id: number) {
+    if (confirm('Are you sure you want to delete this room?')) {
+      this.roomService.deleteRoom(id);
+      this.loadRooms();
+      this.snackBar.open('Room deleted successfully!', 'Close', {
         duration: 3000,
         verticalPosition: 'bottom',
         horizontalPosition: 'center'
