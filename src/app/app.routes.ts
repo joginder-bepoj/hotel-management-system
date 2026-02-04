@@ -13,6 +13,11 @@ export const routes: Routes = [
       import('./pages/auth/signup/signup').then((c) => c.SignupComponent),
   },
   {
+    path: 'authentication/forgot-password',
+    loadComponent: () =>
+      import('./pages/auth/forgot-password/forgot-password').then((c) => c.ForgotPasswordComponent),
+  },
+  {
     path: 'setup',
     loadComponent: () =>
       import('./pages/setup/setup').then((c) => c.SetupComponent),
