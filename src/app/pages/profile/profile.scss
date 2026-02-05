@@ -1,0 +1,91 @@
+.author-box {
+  text-align: center;
+  
+  .author-box-center {
+    padding: 20px 0;
+    
+    .author-box-picture {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 15px;
+      border: 3px solid #f1f1f1;
+    }
+    
+    .author-box-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #444;
+    }
+    
+    .author-box-job {
+      color: #888;
+      font-size: 14px;
+    }
+  }
+}
+
+.user-info {
+  text-align: left;
+  padding: 10px;
+  
+  p {
+    margin-bottom: 12px;
+    color: #555;
+  }
+}
+
+.setup-section {
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  p {
+    margin-bottom: 10px;
+    color: #666;
+  }
+}
+
+.price-box {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  
+  .type {
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .val {
+    color: #581e96;
+    font-weight: 600;
+  }
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-solid-green {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.large-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+}
+
+.col-grey { color: #999; }
+.col-blue { color: #2196f3; }
+.col-orange { color: #ff9800; }
+.col-green { color: #4caf50; }

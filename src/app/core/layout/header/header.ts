@@ -1,18 +1,18 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
   standalone: true,
-  imports: [MatToolbarModule, MatIconModule, MatButtonModule, MatMenuModule],
+  imports: [MatToolbarModule, MatIconModule, MatButtonModule, MatMenuModule, RouterModule],
 })
-export class Header {
+export class Header implements OnInit {
   @Output() toggleSidebar = new EventEmitter<void>();
   user: any;
   constructor(private router: Router) {}
@@ -52,6 +52,11 @@ export class Header {
         doc.webkitExitFullscreen();
       }
     }
+  }
+
+  navigateToProfile(): void {
+    console.log('Navigating to profile...');
+    this.router.navigate(['/profile']);
   }
 
   logout(): void {

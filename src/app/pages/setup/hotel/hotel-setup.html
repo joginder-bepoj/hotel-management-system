@@ -40,7 +40,7 @@
 
         <div class="row">
           <mat-form-field appearance="outline">
-            <mat-label>Rating</mat-label>
+            <mat-label>Star Rating</mat-label>
             <mat-select formControlName="rating">
               <mat-option value="1">1 Star</mat-option>
               <mat-option value="2">2 Stars</mat-option>
@@ -105,12 +105,19 @@
       <form [formGroup]="pricingForm">
         <ng-template matStepLabel>Pricing Setup</ng-template>
 
-        <div class="row mt-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Base Room Price</mat-label>
-            <input matInput type="number" formControlName="basePrice" required>
-            <span matPrefix>$&nbsp;</span>
-          </mat-form-field>
+        <div class="row mt-2" formGroupName="roomPrices">
+          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3" *ngFor="let type of roomTypesList">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Price for {{type}}</mat-label>
+              <input matInput type="number" [formControlName]="type" required>
+              <span matPrefix>$&nbsp;</span>
+              <mat-error *ngIf="pricingForm.get('roomPrices')?.get(type)?.hasError('required')">Price is required</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row mt-2" *ngIf="roomTypesList.length === 0">
+           <p class="text-danger">Please enter room types in the previous step to set prices.</p>
         </div>
 
         <h3 class="section-title">Seasonal Pricing</h3>

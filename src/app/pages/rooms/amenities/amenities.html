@@ -1,0 +1,101 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Manage Amenities'" [items]="['Home', 'Rooms']" [active_item]="'Amenities'">
+      </app-breadcrumb>
+    </div>
+    
+    <div class="row">
+      <!-- Add Amenity Form -->
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Add Amenity</h2>
+          </div>
+          <div class="body">
+            <form [formGroup]="amenityForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Amenity Name</mat-label>
+                    <input matInput formControlName="name" placeholder="Ex. Mini Bar" required>
+                    <mat-icon matSuffix>edit</mat-icon>
+                    <mat-error *ngIf="amenityForm.get('name')?.hasError('required')">
+                      Name is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Icon (Material Icon Name)</mat-label>
+                    <input matInput formControlName="icon" placeholder="Ex. restaurant_menu">
+                    <mat-icon matSuffix *ngIf="amenityForm.get('icon')?.value">{{amenityForm.get('icon')?.value}}</mat-icon>
+                    <mat-icon matSuffix *ngIf="!amenityForm.get('icon')?.value">face</mat-icon>
+                  </mat-form-field>
+                  <small class="text-muted">Use <a href="https://fonts.google.com/icons" target="_blank">Material Icons</a> names</small>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-12 text-center">
+                  <button mat-flat-button color="primary">Add Amenity</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Amenities List -->
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="materialTableHeader">
+            <div class="left">
+              <ul class="header-buttons-left ms-0">
+                <li class="tbl-title">
+                  <h2>Amenities List</h2>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="body">
+            <div class="table-scroll">
+              <table mat-table [dataSource]="dataSource" class="advance-table full-width">
+                
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let amenity"> {{amenity.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="icon">
+                  <th mat-header-cell *matHeaderCellDef> Icon </th>
+                  <td mat-cell *matCellDef="let amenity"> 
+                    <mat-icon *ngIf="amenity.icon" class="col-grey">{{amenity.icon}}</mat-icon>
+                    <span *ngIf="!amenity.icon">-</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> Actions </th>
+                  <td mat-cell *matCellDef="let amenity">
+                    <button mat-icon-button class="tbl-action-btn col-red" (click)="deleteAmenity(amenity.id)" matTooltip="Delete">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <div class="no-results mt-3 text-center" *ngIf="dataSource.length === 0">
+                No amenities found.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

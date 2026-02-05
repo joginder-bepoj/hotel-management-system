@@ -212,3 +212,71 @@ mat-form-field .mdc-floating-label {
     -webkit-text-fill-color: transparent;
   }
 }
+
+.materialTableHeader {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #dae1f3;
+  background-color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  
+  .left {
+    display: flex;
+    align-items: center;
+    
+    .tbl-title h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #555;
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.advance-table {
+  width: 100%;
+  background: transparent;
+  
+  .mat-mdc-header-row {
+    background-color: #f8f9fa;
+    height: 50px;
+  }
+  
+  .mat-mdc-header-cell {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    padding: 0 15px;
+  }
+  
+  .mat-mdc-cell {
+    padding: 12px 15px;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 1px solid #efefef;
+  }
+}
+
+.tbl-action-btn {
+  width: 35px !important;
+  height: 35px !important;
+  line-height: 35px !important;
+  
+  .fas, .mat-icon {
+    font-size: 18px;
+  }
+}

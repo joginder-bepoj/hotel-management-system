@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -27,28 +28,45 @@ export class LoginComponent implements OnInit {
   hide = true;
   error = '';
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  isLoading = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if (user && user.username === username && user.password === password) {
-        if (user.isSetupComplete) {
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.router.navigate(['/setup']);
+      this.isLoading = true;
+      this.error = '';
+      
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (res) => {
+          this.isLoading = false;
+          // User data might be in res.data or res
+          const user = res.data || res;
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('token', res.token || res.access_token);
+          
+          if (user.is_setup_complete) {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate(['/setup']);
+          }
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.error = err.error?.message || 'Invalid credentials';
         }
-      } else {
-        this.error = 'Invalid credentials';
-      }
+      });
     }
   }
 }

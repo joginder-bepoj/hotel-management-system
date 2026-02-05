@@ -48,6 +48,11 @@ export const routes: Routes = [
           import('./pages/dashboard/dashboard').then((c) => c.DashboardComponent),
       },
       {
+        path: 'profile',
+        loadComponent: () =>
+          import('./pages/profile/profile').then((c) => c.ProfileComponent),
+      },
+      {
         path: 'booking',
         children: [
           {
@@ -84,6 +89,11 @@ export const routes: Routes = [
             path: 'edit-room/:id',
             loadComponent: () =>
               import('./pages/rooms/edit-room/edit-room').then((c) => c.EditRoomComponent),
+          },
+          {
+            path: 'amenities',
+            loadComponent: () =>
+              import('./pages/rooms/amenities/amenities').then((c) => c.AmenitiesComponent),
           },
         ]
       },

@@ -70,7 +70,7 @@
 
 <!-- PROFILE MENU -->
 <mat-menu #profileMenu="matMenu" class="profile-menu">
-  <button mat-menu-item>
+  <button mat-menu-item (click)="navigateToProfile()">
     <mat-icon>person</mat-icon>
     <span>Account</span>
   </button>

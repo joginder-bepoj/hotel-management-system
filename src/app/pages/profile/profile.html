@@ -1,0 +1,139 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'User Profile'" [items]="['Home']" [active_item]="'Profile'">
+      </app-breadcrumb>
+    </div>
+
+    <div class="row">
+      <!-- User Info Card -->
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+        <div class="card author-box">
+          <div class="header">
+            <h2>Account Information</h2>
+          </div>
+          <div class="body">
+            <div class="author-box-center">
+              <img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user.jpg" alt="User" class="rounded-circle author-box-picture">
+              <div class="author-box-name">
+                {{user.username}}
+              </div>
+              <div class="author-box-job">Hotel Manager</div>
+            </div>
+            <mat-divider class="mb-3"></mat-divider>
+            <div class="user-info">
+              <p><strong>Email:</strong> {{user.email}}</p>
+              <p><strong>Phone:</strong> {{user.phone_number || 'N/A'}}</p>
+              <p><strong>Status:</strong> <span class="badge badge-solid-green">Active</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Setup Details Card -->
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Setup Details</h2>
+          </div>
+          <div class="body">
+            <div *ngIf="!hasProperty" class="text-center p-5">
+              <mat-icon class="large-icon col-grey">info_outline</mat-icon>
+              <p>No property setup found. Please complete the setup process.</p>
+              <a href="/setup" mat-flat-button color="primary">Go to Setup</a>
+            </div>
+
+            <!-- Hotel Details -->
+            <div *ngIf="hotelDetails" class="setup-section mb-4">
+              <div class="d-flex align-items-center mb-3">
+                <mat-icon class="me-2 col-blue">hotel</mat-icon>
+                <h3 class="m-0">Hotel Details</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <p><strong>Hotel Name:</strong> {{hotelDetails.hotelName}}</p>
+                  <p><strong>Address:</strong> {{hotelDetails.address}}</p>
+                  <p><strong>Contact:</strong> {{hotelDetails.contactNumber}}</p>
+                </div>
+                <div class="col-md-6">
+                  <p><strong>Floors:</strong> {{hotelDetails.floors}}</p>
+                  <p><strong>Total Rooms:</strong> {{hotelDetails.rooms}}</p>
+                  <p><strong>Rating:</strong> {{hotelDetails.rating}} Stars</p>
+                </div>
+              </div>
+              <div class="mt-2">
+                <strong>Room Types:</strong> {{hotelDetails.roomTypes}}
+              </div>
+              <div class="mt-3">
+                <strong>Amenities:</strong>
+                <mat-chip-set class="mt-2">
+                  <mat-chip *ngFor="let amenity of amenityList">{{amenity}}</mat-chip>
+                </mat-chip-set>
+              </div>
+              
+              <!-- Dynamic Room Prices -->
+              <div class="mt-3" *ngIf="hotelDetails.roomPrices">
+                <strong>Room Pricing:</strong>
+                <div class="row mt-2">
+                  <div class="col-md-4 mb-2" *ngFor="let price of hotelDetails.roomPrices | keyvalue">
+                    <div class="price-box">
+                      <span class="type">{{price.key}}:</span>
+                      <span class="val">${{price.value}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <mat-divider class="mt-4"></mat-divider>
+            </div>
+
+            <!-- Apartment Details -->
+            <div *ngIf="apartmentDetails" class="setup-section mb-4">
+              <div class="d-flex align-items-center mb-3">
+                <mat-icon class="me-2 col-orange">apartment</mat-icon>
+                <h3 class="m-0">Apartment Details</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <p><strong>Apartment Name:</strong> {{apartmentDetails.apartmentName}}</p>
+                  <p><strong>Owner:</strong> {{apartmentDetails.ownerName}}</p>
+                  <p><strong>Rent:</strong> ${{apartmentDetails.rent}}</p>
+                </div>
+                <div class="col-md-6">
+                  <p><strong>Bedrooms:</strong> {{apartmentDetails.bedroomCount}}</p>
+                  <p><strong>Bathrooms:</strong> {{apartmentDetails.bathroomCount}}</p>
+                  <p><strong>Area:</strong> {{apartmentDetails.areaSize}} sq.ft</p>
+                </div>
+              </div>
+              <div class="mt-3">
+                <strong>Facilities:</strong>
+                <mat-chip-set class="mt-2">
+                  <mat-chip *ngFor="let facility of facilityList">{{facility}}</mat-chip>
+                </mat-chip-set>
+              </div>
+              <mat-divider class="mt-4"></mat-divider>
+            </div>
+
+            <!-- Restaurant Details -->
+            <div *ngIf="restaurantDetails" class="setup-section mb-4">
+              <div class="d-flex align-items-center mb-3">
+                <mat-icon class="me-2 col-green">restaurant</mat-icon>
+                <h3 class="m-0">Restaurant Details</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <p><strong>Restaurant Name:</strong> {{restaurantDetails.restaurantName}}</p>
+                  <p><strong>Cuisine:</strong> {{restaurantDetails.cuisineType}}</p>
+                </div>
+                <div class="col-md-6">
+                  <p><strong>Capacity:</strong> {{restaurantDetails.seatingCapacity}} persons</p>
+                  <p><strong>Opening Hours:</strong> {{restaurantDetails.openingTime}} - {{restaurantDetails.closingTime}}</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

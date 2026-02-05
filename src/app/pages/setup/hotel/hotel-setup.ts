@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,7 +29,7 @@ import { HotelService } from '../../../core/services/hotel.service';
   templateUrl: './hotel-setup.html',
   styleUrls: ['./hotel-setup.scss']
 })
-export class HotelSetupComponent {
+export class HotelSetupComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
   private _hotelService = inject(HotelService);
   private _router = inject(Router);
@@ -55,10 +55,45 @@ export class HotelSetupComponent {
   });
 
   pricingForm: FormGroup = this._formBuilder.group({
-    basePrice: ['', Validators.required],
+    roomPrices: this._formBuilder.group({}),
     seasonalMultiplier: [''],
     discount: ['']
   });
+
+  roomTypesList: string[] = [];
+
+  ngOnInit() {
+    // Initialize with current value
+    this.updateRoomPrices(this.configurationForm.get('roomTypes')!.value);
+    
+    this.configurationForm.get('roomTypes')!.valueChanges.subscribe(value => {
+      this.updateRoomPrices(value);
+    });
+  }
+
+  updateRoomPrices(roomTypesStr: string) {
+    const types = roomTypesStr.split(',').map(t => t.trim()).filter(t => t !== '');
+    this.roomTypesList = [...new Set(types)]; // Unique types
+
+    const roomPricesGroup = this.pricingForm.get('roomPrices') as FormGroup;
+    
+    // Get current controls
+    const currentControls = Object.keys(roomPricesGroup.controls);
+    
+    // Add new controls
+    this.roomTypesList.forEach(type => {
+      if (!roomPricesGroup.contains(type)) {
+        roomPricesGroup.addControl(type, this._formBuilder.control('', Validators.required));
+      }
+    });
+
+    // Remove old controls
+    currentControls.forEach(controlName => {
+      if (!this.roomTypesList.includes(controlName)) {
+        roomPricesGroup.removeControl(controlName);
+      }
+    });
+  }
 
   policiesForm: FormGroup = this._formBuilder.group({
     checkInTime: ['', Validators.required],
