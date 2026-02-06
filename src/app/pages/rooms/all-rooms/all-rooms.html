@@ -145,10 +145,10 @@
                   <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef>Actions</th>
                     <td mat-cell *matCellDef="let row">
-                      <button mat-icon-button class="tbl-action-btn" aria-label="Edit" [routerLink]="['/rooms/edit-room', row.id]">
+                      <button mat-icon-button class="tbl-action-btn btn-tbl-edit" aria-label="Edit" [routerLink]="['/rooms/edit-room', row.id]">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button mat-icon-button class="tbl-action-btn" aria-label="Delete" (click)="deleteRoom(row.id)">
+                      <button mat-icon-button class="tbl-action-btn btn-tbl-delete" aria-label="Delete" (click)="deleteRoom(row.id)">
                         <i class="fas fa-trash-alt"></i>
                       </button>
                     </td>

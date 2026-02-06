@@ -49,6 +49,7 @@ export class AllBooking implements OnInit {
     'mobile',
     'roomType',
     'payment',
+    'uploadFile',
     'actions',
   ];
   dataSource = new MatTableDataSource<Booking>([]);

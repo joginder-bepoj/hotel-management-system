@@ -31,14 +31,6 @@
 .right {
     float: right !important;
 }
-.materialTableHeader .header-buttons-left .tbl-title {
-    vertical-align: middle;
-    margin-left: 20px;
-}
-
-.materialTableHeader .header-buttons-left li {
-    display: inline-block;
-}
 
 .materialTableHeader .header-buttons-left .tbl-title h2 {
     font-weight: 500;
@@ -53,10 +45,6 @@
 .materialTableHeader .header-buttons-left .tbl-search-box {
     position: relative;
     margin-left: 10px;
-}
-
-.materialTableHeader .header-buttons-left li {
-    display: inline-block;
 }
 
 label, .form-check {
@@ -128,3 +116,34 @@ mat-cell>span.truncate-text {
     overflow: hidden;
     white-space: nowrap;
 }
+
+.badge {
+  padding: 5px 8px;
+  line-height: 12px;
+  border: 1px solid;
+  font-weight: 400;
+  font-size: 13px;
+  border-radius: 4px;
+  
+  &.paid {
+    background-color: #4caf50 !important;
+    color: #fff !important;
+  }
+  &.unpaid {
+    background-color: #f44336 !important;
+    color: #fff !important;
+  }
+  &.pending {
+    background-color: #ff9800 !important;
+    color: #fff !important;
+  }
+}
+
+.tbl-pdf {
+  color: #f96332;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.col-red { color: #f44336 !important; }
+.col-green { color: #4caf50 !important; }

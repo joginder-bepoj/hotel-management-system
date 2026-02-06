@@ -107,7 +107,7 @@
                   <ng-container matColumnDef="email">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
                     <td mat-cell *matCellDef="let row">
-                      <mat-icon class="tbl-icon col-red">mail</mat-icon>
+                      <i class="fas fa-envelope tbl-icon col-red me-2"></i>
                       {{ row.email }}
                     </td>
                   </ng-container>
@@ -142,7 +142,7 @@
                   <ng-container matColumnDef="mobile">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</th>
                     <td mat-cell *matCellDef="let row">
-                      <mat-icon class="tbl-icon col-green">call</mat-icon>
+                      <i class="fas fa-phone tbl-icon col-green me-2"></i>
                       {{ row.mobile }}
                     </td>
                   </ng-container>
@@ -159,7 +159,21 @@
                   <ng-container matColumnDef="payment">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment</th>
                     <td mat-cell *matCellDef="let row">
-                      {{ row.payment }}
+                      <span class="badge" [ngClass]="{
+                        'paid': row.payment === 'Paid',
+                        'unpaid': row.payment === 'Unpaid',
+                        'pending': row.payment === 'Pending'
+                      }">
+                        {{ row.payment }}
+                      </span>
+                    </td>
+                  </ng-container>
+
+                  <!-- DOCUMENTS -->
+                  <ng-container matColumnDef="uploadFile">
+                    <th mat-header-cell *matHeaderCellDef>Documents</th>
+                    <td mat-cell *matCellDef="let row">
+                      <i class="far fa-file-pdf tbl-pdf"></i>
                     </td>
                   </ng-container>
 
@@ -173,10 +187,10 @@
                       <button mat-icon-button>
                         <mat-icon>delete</mat-icon>
                       </button> -->
-                      <button mat-icon-button class="tbl-action-btn" aria-label="Edit" (click)="editCall(row.id)">
+                      <button mat-icon-button class="tbl-action-btn btn-tbl-edit" aria-label="Edit" (click)="editCall(row.id)">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button mat-icon-button class="tbl-action-btn" aria-label="Delete" (click)="deleteBooking(row.id)">
+                      <button mat-icon-button class="tbl-action-btn btn-tbl-delete" aria-label="Delete" (click)="deleteBooking(row.id)">
                         <i class="fas fa-trash-alt"></i>
                       </button>
                     </td>

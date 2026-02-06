@@ -12,7 +12,7 @@ html {
       primary: mat.$cyan-palette,
       tertiary: mat.$orange-palette,
     ),
-    typography: Roboto,
+    typography: Inter,
     density: 0,
   ));
 }
@@ -44,10 +44,10 @@ html, body {
   height: 100%;
   overflow-x: hidden;
 }
-body { margin: 0; font-family: "Poppins", sans-serif !important; /* Add this line */}
+body { margin: 0; font-family: 'Inter', sans-serif !important; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Inter", sans-serif !important;
+  font-family: 'Poppins', sans-serif !important;
 }
 
 .social-icon li a {
@@ -197,12 +197,12 @@ mat-form-field .mdc-floating-label {
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   animation: slideUp 0.6s ease-out;
-  font-family: 'Poppins', sans-serif !important; /* User's body font */
+  font-family: 'Inter', sans-serif !important;
 
   h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    font-family: 'Inter', sans-serif !important; /* User's header font */
+    font-family: 'Poppins', sans-serif !important;
     margin-bottom: 2rem;
     text-align: center;
     letter-spacing: -0.5px;
@@ -275,8 +275,49 @@ mat-form-field .mdc-floating-label {
   width: 35px !important;
   height: 35px !important;
   line-height: 35px !important;
+  border-radius: 5px !important;
+  margin: 0 5px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
   
   .fas, .mat-icon {
     font-size: 18px;
   }
+}
+
+.btn-tbl-edit {
+    color: #0d6efd !important;
+    background-color: #0d6efd14 !important;
+    &:hover {
+        background-color: #0d6efd !important;
+        color: #fff !important;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    }
+}
+
+.btn-tbl-delete {
+    color: #dc3545 !important;
+    background-color: #dc354514 !important;
+    &:hover {
+        background-color: #dc3545 !important;
+        color: #fff !important;
+        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+    }
+}
+
+span.badge {
+    min-width: auto;
+    float: none;
+    font-size: 13px;
+    font-family: 'Inter'!important;
+}
+.badge-solid-green {
+    color: #198754 !important;
+    background-color: #19875426 !important;
+    border: none;
+    padding: 5px 12px;
+    font-weight: 500;
+    line-height: 1.2;
 }
