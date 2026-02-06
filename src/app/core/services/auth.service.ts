@@ -38,7 +38,7 @@ export class AuthService {
 
   login(credentials: any): Observable<any> {
     const formData = new FormData();
-    formData.append('username', credentials.username);
+    formData.append('email', credentials.email);
     formData.append('password', credentials.password);
     
     return this.http.post(`${this.baseUrl}/login`, formData);
