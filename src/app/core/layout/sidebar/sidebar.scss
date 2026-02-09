@@ -4,7 +4,7 @@
   transition: all 0.3s ease;
   font-family: 'Roboto', sans-serif;
   background: #fff;
-  width: 260px;
+  width: 270px;
   height: 100%;
   position: fixed;
   // top: 60px;
@@ -66,12 +66,12 @@
 }
 
 /* Active states */
-.menu li.active > a {
+.menu li.active>a {
   font-weight: 700;
   color: #000;
 }
 
-.active-top > a {
+.active-top>a {
   font-weight: 700;
   color: #000;
 }
@@ -82,11 +82,28 @@
   list-style: none;
   padding: 0;
 }
-.submenu{
+
+.submenu {
+  display: none;
   list-style: none;
 }
-li.active > .ml-menu {
+
+li.active>.ml-menu,
+li.active>.submenu {
   display: block;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .ml-menu li a {
@@ -116,7 +133,7 @@ li.active > .ml-menu {
   transform: rotate(90deg);
 }
 
-li.active > .menu-toggle::after {
+li.active>.menu-toggle::after {
   transform: rotate(0deg);
 }
 
@@ -148,7 +165,7 @@ li.active > .menu-toggle::after {
   color: #333;
 }
 
-.name{
+.name {
   font-size: 16px;
   font-weight: 600;
   color: #333;
@@ -190,5 +207,5 @@ li.active > .menu-toggle::after {
 
 
 .sidebar .menu .list li.active-top .menu-top {
-    background-color: #f0f3fb;
+  background-color: #f0f3fb;
 }

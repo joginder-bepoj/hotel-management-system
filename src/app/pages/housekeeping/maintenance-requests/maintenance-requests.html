@@ -1,0 +1,128 @@
+<section class="content">
+    <div class="content-block">
+        <div class="block-header">
+            <app-breadcrumb [title]="'Maintenance Requests'" [items]="['Home', 'Housekeeping']"
+                [active_item]="'Maintenance Requests'">
+            </app-breadcrumb>
+        </div>
+        <div class="row clearfix">
+            <!-- Request Form -->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Report New Issue</h2>
+                    </div>
+                    <div class="body">
+                        <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Room Number / Area</mat-label>
+                                <input matInput formControlName="room" required>
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Issue Description</mat-label>
+                                <textarea matInput formControlName="issue" required rows="3"></textarea>
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Priority</mat-label>
+                                <mat-select formControlName="priority" required>
+                                    <mat-option value="High">High</mat-option>
+                                    <mat-option value="Medium">Medium</mat-option>
+                                    <mat-option value="Low">Low</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Reported By</mat-label>
+                                <mat-select formControlName="reportedBy" required>
+                                    <mat-option value="Guest">Guest</mat-option>
+                                    <mat-option value="Housekeeping">Housekeeping</mat-option>
+                                    <mat-option value="Front Desk">Front Desk</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-raised-button color="primary" class="w-100"
+                                [disabled]="!requestForm.valid">Submit Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Requests Table -->
+            <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Active Maintenance Requests</h2>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="dataSource" class="w-100">
+
+                                <!-- Room Column -->
+                                <ng-container matColumnDef="room">
+                                    <th mat-header-cell *matHeaderCellDef> Room </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.room}} </td>
+                                </ng-container>
+
+                                <!-- Issue Column -->
+                                <ng-container matColumnDef="issue">
+                                    <th mat-header-cell *matHeaderCellDef> Issue </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.issue}} </td>
+                                </ng-container>
+
+                                <!-- Priority Column -->
+                                <ng-container matColumnDef="priority">
+                                    <th mat-header-cell *matHeaderCellDef> Priority </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="badge" [ngClass]="{
+                                            'bg-danger': row.priority === 'High',
+                                            'bg-warning': row.priority === 'Medium',
+                                            'bg-success': row.priority === 'Low'
+                                        }">
+                                            {{row.priority}}
+                                        </span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Status Column -->
+                                <ng-container matColumnDef="status">
+                                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="badge" [ngClass]="{
+                                            'badge-solid-orange': row.status === 'Pending',
+                                            'badge-solid-blue': row.status === 'In Progress',
+                                            'badge-solid-green': row.status === 'Resolved'
+                                        }">
+                                            {{row.status}}
+                                        </span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Reported By Column -->
+                                <ng-container matColumnDef="reportedBy">
+                                    <th mat-header-cell *matHeaderCellDef> Reported By </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.reportedBy}} </td>
+                                </ng-container>
+
+                                <!-- Actions Column -->
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <button mat-icon-button color="primary" matTooltip="Mark Resolved"
+                                            (click)="resolveRequest(row)" *ngIf="row.status !== 'Resolved'">
+                                            <mat-icon>check_circle</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

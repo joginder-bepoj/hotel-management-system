@@ -20,38 +20,26 @@ export class Sidebar {
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     const body = document.querySelector('body');
-    const sidebar = document.querySelector('.sidebar');
-
-    // Add 'ls-closed' class to body
     if (body) {
       body.classList.add('ls-closed');
     }
+  }
 
-    // Click event for menu-toggle
-    const menuToggle = document.querySelectorAll('.menu-toggle');
-    const submenus = document.querySelectorAll('.submenu');
+  toggleMenu(event: Event) {
+    event.preventDefault();
+    const toggle = event.currentTarget as HTMLElement;
+    const parentLi = toggle.parentElement;
 
-    // Hide all submenus by default
-    submenus.forEach(submenu => {
-      (submenu as HTMLElement).style.display = 'none';
-    });
-
-    menuToggle.forEach(toggle => {
-      toggle.addEventListener('click', (event) => {
-        event.preventDefault();
-        const parentLi = toggle.parentElement;
-        if (parentLi) {
-          parentLi.classList.toggle('active');
-          const subMenu = parentLi.querySelector('.submenu');
-          if (subMenu) {
-            if (parentLi.classList.contains('active')) {
-              (subMenu as HTMLElement).style.display = 'block';
-            } else {
-              (subMenu as HTMLElement).style.display = 'none';
-            }
-          }
+    if (parentLi) {
+      parentLi.classList.toggle('active');
+      const subMenu = parentLi.querySelector('.submenu');
+      if (subMenu) {
+        if (parentLi.classList.contains('active')) {
+          (subMenu as HTMLElement).style.display = 'block';
+        } else {
+          (subMenu as HTMLElement).style.display = 'none';
         }
-      });
-    });
+      }
+    }
   }
 }

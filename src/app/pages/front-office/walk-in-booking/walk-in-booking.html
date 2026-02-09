@@ -1,0 +1,90 @@
+<section class="content">
+    <div class="content-block">
+        <div class="block-header">
+            <app-breadcrumb [title]="'Walk-in Booking'" [items]="['Home', 'Front Office']"
+                [active_item]="'Walk-in Booking'">
+            </app-breadcrumb>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Quick Walk-in Booking</h2>
+                    </div>
+                    <div class="body">
+                        <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Guest Name</mat-label>
+                                        <input matInput formControlName="guestName" required>
+                                        <mat-error *ngIf="bookingForm.get('guestName')?.hasError('required')">Guest name
+                                            is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Contact Number</mat-label>
+                                        <input matInput formControlName="contact" required>
+                                        <mat-error *ngIf="bookingForm.get('contact')?.hasError('required')">Contact is
+                                            required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Check-in Date</mat-label>
+                                        <input matInput [matDatepicker]="checkInPicker" formControlName="checkInDate"
+                                            required>
+                                        <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #checkInPicker></mat-datepicker>
+                                        <mat-error *ngIf="bookingForm.get('checkInDate')?.hasError('required')">Check-in
+                                            date is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Check-out Date</mat-label>
+                                        <input matInput [matDatepicker]="checkOutPicker" formControlName="checkOutDate"
+                                            required>
+                                        <mat-datepicker-toggle matSuffix [for]="checkOutPicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #checkOutPicker></mat-datepicker>
+                                        <mat-error
+                                            *ngIf="bookingForm.get('checkOutDate')?.hasError('required')">Check-out date
+                                            is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Number of Guests</mat-label>
+                                        <input matInput type="number" formControlName="guestCount" min="1" required>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width" appearance="outline">
+                                        <mat-label>Room Type</mat-label>
+                                        <mat-select formControlName="roomType" required>
+                                            <mat-option value="Single">Single</mat-option>
+                                            <mat-option value="Double">Double</mat-option>
+                                            <mat-option value="Suite">Suite</mat-option>
+                                            <mat-option value="Deluxe">Deluxe</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="bookingForm.get('roomType')?.hasError('required')">Room type
+                                            is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <button mat-raised-button color="primary" type="submit"
+                                        [disabled]="!bookingForm.valid">
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

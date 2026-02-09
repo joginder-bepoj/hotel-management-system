@@ -16,6 +16,23 @@ export interface Booking {
   uploadFile: string;
   note: string;
   payment: string;
+  roomNo?: string;
+  vehicleNo?: string;
+  nationality?: string;
+  purpose?: string;
+  passportNo?: string;
+  arrivalFrom?: string;
+  departureTo?: string;
+  noOfAdults?: number;
+  noOfChildren?: number;
+  accompanying?: string;
+  ratePerDay?: number;
+  totalRent?: number;
+  advance?: number;
+  balance?: number;
+  idProofNo?: string;
+  dob?: Date;
+  anniversary?: Date;
 }
 
 @Injectable({

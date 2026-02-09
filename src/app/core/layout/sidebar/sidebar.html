@@ -1,72 +1,153 @@
 <div>
   <aside id="leftsidebar" class="sidebar">
     <div class="menu">
-    <div class="sidebar">
-  <ng-scrollbar visibility="hover">
-    <ul class="list">
+      <div class="sidebar">
+        <ng-scrollbar visibility="hover">
+          <ul class="list">
 
-      <!-- User Panel -->
-      <li class="sidebar-user-panel">
-        <div class="user-panel">
-          <div class="image">
-            <img
-              src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/usrbig.jpg"
-              alt="User"
-              class="user-img"
-            />
-          </div>
-          <div class="profile">
-            <div class="name ms-2">{{user.username}}</div>
-            <!-- <div class="role">Manager</div> -->
-          </div>
-        </div>
-      </li>
+            <!-- User Panel -->
+            <li class="sidebar-user-panel">
+              <div class="user-panel">
+                <div class="image">
+                  <img
+                    src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/usrbig.jpg"
+                    alt="User" class="user-img" />
+                </div>
+                <div class="profile">
+                  <div class="name ms-2">{{user.username}}</div>
+                  <!-- <div class="role">Manager</div> -->
+                </div>
+              </div>
+            </li>
 
-      <!-- Main -->
-      <li class="header">Main</li>
+            <!-- Main -->
+            <li class="header">Main</li>
 
-      <li>
-        <a routerLink="/dashboard">
-          <i class="material-icons">home</i>
-          <span>Home</span>
-        </a>
-      </li>
+            <li>
+              <a routerLink="/dashboard">
+                <i class="material-icons">home</i>
+                <span>Home</span>
+              </a>
+            </li>
 
-      <li>
-        <a routerLink="/profile">
-          <i class="material-icons">person</i>
-          <span>Profile</span>
-        </a>
-      </li>
+            <li>
+              <a routerLink="/profile">
+                <i class="material-icons">person</i>
+                <span>Profile</span>
+              </a>
+            </li>
 
-      <li>
-        <a class="menu-toggle">
-          <i class="material-icons">person</i>
-          <span>Booking</span>
-        </a>
-        <ul class="submenu">
-          <li><a routerLink="/booking/all-booking">All Booking</a></li>
-          <li><a routerLink="/booking/add-booking">Add Booking</a></li>
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">business_center</i>
+                <span>Booking / Reservation Management</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/booking/all-booking">Reservation List</a></li>
+                <li><a routerLink="/booking/add-booking">New Booking</a></li>
+                <li><a routerLink="/booking/online-reservation">Online Reservation</a></li>
+                <li><a routerLink="/booking/group-booking">Group Booking</a></li>
+                <li><a routerLink="/booking/booking-calendar">Booking Calendar</a></li>
+                <li><a routerLink="/booking/cancellation-modification">Cancellation & Modification</a></li>
+                <li><a routerLink="/booking/check-in-out">Check-in / Check-out</a></li>
+              </ul>
+            </li>
 
-        </ul>
-      </li>
+            <!-- Rooms -->
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">people_alt</i>
+                <span>Room Management</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/rooms/room-availability">Room Availability Dashboard</a></li>
+                <li><a routerLink="/rooms/room-types">Room Types & Pricing</a></li>
+                <li><a routerLink="/rooms/room-status">Room Status Monitoring</a></li>
+                <li><a routerLink="/rooms/floor-mapping">Floor Mapping</a></li>
+                <li><a routerLink="/rooms/all-rooms">All Rooms</a></li>
+                <li><a routerLink="/rooms/add-room">Add Room</a></li>
+                <li><a routerLink="/rooms/amenities">Amenities</a></li>
+              </ul>
+            </li>
 
-      <!-- Rooms -->
-      <li>
-        <a class="menu-toggle">
-          <i class="material-icons">people_alt</i>
-          <span>Rooms</span>
-        </a>
-        <ul class="submenu">
-          <li><a routerLink="/rooms/all-rooms">All Rooms</a></li>
-          <li><a routerLink="/rooms/add-room">Add Room</a></li>
-          <li><a routerLink="/rooms/amenities">Amenities</a></li>
-        </ul>
-      </li>
+            <!-- Inventory -->
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">store</i>
+                <span>Inventory Management</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/inventory/stock-management">Stock Management</a></li>
+                <li><a routerLink="/inventory/supplier-management">Supplier Management</a></li>
+                <li><a routerLink="/inventory/purchase-orders">Purchase Orders</a></li>
+                <li><a routerLink="/inventory/consumption-tracking">Consumption Tracking</a></li>
+                <li><a routerLink="/inventory/low-stock-alerts">Low Stock Alerts</a></li>
+                <li><a routerLink="/inventory/store-warehouse">Store & Warehouse</a></li>
+              </ul>
+            </li>
 
-    </ul>
-  </ng-scrollbar>
-</div>
+            <!-- Front Office -->
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">desktop_mac</i>
+                <span>Front Office Management</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/front-office/guest-registration">Guest Registration</a></li>
+                <li><a routerLink="/front-office/walk-in-booking">Walk-in Booking</a></li>
+                <li><a routerLink="/front-office/room-allocation">Room Allocation</a></li>
+                <li><a routerLink="/front-office/key-management">Key Management</a></li>
+                <li><a routerLink="/front-office/guest-history">Guest History</a></li>
+              </ul>
+            </li>
+
+            <!-- Housekeeping -->
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">cleaning_services</i>
+                <span>Housekeeping Management</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/housekeeping/cleaning-schedule">Cleaning Schedule</a></li>
+                <li><a routerLink="/housekeeping/room-cleaning-status">Room Cleaning Status</a></li>
+                <li><a routerLink="/housekeeping/staff-assignment">Staff Assignment</a></li>
+                <li><a routerLink="/housekeeping/laundry-management">Laundry Management</a></li>
+                <li><a routerLink="/housekeeping/maintenance-requests">Maintenance Requests</a></li>
+              </ul>
+            </li>
+
+            <!-- Billing -->
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">receipt</i>
+                <span>Billing & Payments</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/billing/invoice-management">Invoice Management</a></li>
+                <li><a routerLink="/billing/payment-collection">Payment Collection</a></li>
+                <li><a routerLink="/billing/refund-management">Refund Management</a></li>
+                <li><a routerLink="/billing/folio-management">Folio Management</a></li>
+                <li><a routerLink="/billing/tax-calculation">Tax Calculation</a></li>
+              </ul>
+            </li>
+
+            <!-- Guest Management -->
+            <li>
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">face</i>
+                <span>Guest Management (CRM)</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/guest-management/guest-profiles">Guest Profiles</a></li>
+                <li><a routerLink="/guest-management/guest-preferences">Guest Preferences</a></li>
+                <li><a routerLink="/guest-management/loyalty-programs">Loyalty Programs</a></li>
+                <li><a routerLink="/guest-management/feedback-reviews">Feedback & Reviews</a></li>
+              </ul>
+            </li>
+
+          </ul>
+        </ng-scrollbar>
+      </div>
 
     </div>
   </aside>

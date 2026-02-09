@@ -1,0 +1,75 @@
+<section class="content">
+    <div class="content-block">
+        <div class="block-header">
+            <app-breadcrumb [title]="'Staff Assignment'" [items]="['Home', 'Housekeeping']"
+                [active_item]="'Staff Assignment'">
+            </app-breadcrumb>
+        </div>
+        <div class="row clearfix">
+            <!-- Assignment Form -->
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Assign Duty</h2>
+                    </div>
+                    <div class="body">
+                        <form [formGroup]="assignmentForm" (ngSubmit)="assign()">
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Select Staff</mat-label>
+                                <mat-select formControlName="staff" required>
+                                    <mat-option *ngFor="let staff of staffList" [value]="staff">{{staff}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Area / Floor</mat-label>
+                                <mat-select formControlName="area" required>
+                                    <mat-option value="Floor 1">Floor 1</mat-option>
+                                    <mat-option value="Floor 2">Floor 2</mat-option>
+                                    <mat-option value="Floor 3">Floor 3</mat-option>
+                                    <mat-option value="Floor 4">Floor 4</mat-option>
+                                    <mat-option value="Public Area">Public Area</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Shift</mat-label>
+                                <mat-select formControlName="shift" required>
+                                    <mat-option value="Morning">Morning</mat-option>
+                                    <mat-option value="Afternoon">Afternoon</mat-option>
+                                    <mat-option value="Night">Night</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-raised-button color="primary" [disabled]="!assignmentForm.valid">Assign</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Assignments List -->
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Current Assignments</h2>
+                    </div>
+                    <div class="body">
+                        <mat-list>
+                            <mat-list-item *ngFor="let assign of assignments; let i = index">
+                                <mat-icon matListItemIcon>person</mat-icon>
+                                <div matListItemTitle>{{assign.staff}}</div>
+                                <div matListItemLine>{{assign.area}} - {{assign.shift}}</div>
+                                <button mat-icon-button matListItemMeta color="warn" (click)="removeAssignment(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-list-item>
+                            <mat-list-item *ngIf="assignments.length === 0">
+                                <div matListItemTitle>No active assignments</div>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

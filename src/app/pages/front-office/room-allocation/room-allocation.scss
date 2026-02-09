@@ -1,0 +1,64 @@
+.room-card {
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+
+        h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+    }
+
+    .room-details {
+        p {
+            margin: 0;
+            font-size: 13px;
+            color: #666;
+        }
+    }
+
+    &.available {
+        border-left: 4px solid #4CAF50;
+    }
+
+    &.occupied {
+        border-left: 4px solid #F44336;
+    }
+
+    &.reserved {
+        border-left: 4px solid #2196F3;
+    }
+
+    &.maintenance {
+        border-left: 4px solid #FF9800;
+    }
+
+    &.dirty {
+        border-left: 4px solid #9E9E9E;
+    }
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 12px;
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+}

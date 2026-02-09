@@ -1,0 +1,56 @@
+<section class="content">
+    <div class="content-block">
+        <div class="block-header">
+            <app-breadcrumb [title]="'Room Allocation'" [items]="['Home', 'Front Office']"
+                [active_item]="'Room Allocation'">
+            </app-breadcrumb>
+        </div>
+
+        <!-- Legend -->
+        <div class="row clearfix mb-3">
+            <div class="col-12">
+                <div class="card p-3">
+                    <div class="d-flex flex-wrap">
+                        <div class="legend-item"><span class="dot" style="background-color: #4CAF50;"></span> Available
+                        </div>
+                        <div class="legend-item"><span class="dot" style="background-color: #F44336;"></span> Occupied
+                        </div>
+                        <div class="legend-item"><span class="dot" style="background-color: #2196F3;"></span> Reserved
+                        </div>
+                        <div class="legend-item"><span class="dot" style="background-color: #FF9800;"></span>
+                            Maintenance</div>
+                        <div class="legend-item"><span class="dot" style="background-color: #9E9E9E;"></span> Dirty
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix" *ngFor="let floor of floors">
+            <div class="col-12">
+                <h4>Floor {{floor}}</h4>
+                <hr>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" *ngFor="let room of getRoomsByFloor(floor)">
+                <mat-card class="room-card" [ngClass]="room.status.toLowerCase()">
+                    <mat-card-content>
+                        <div class="room-header">
+                            <h4>{{room.number}}</h4>
+                            <mat-icon *ngIf="room.status === 'Available'" class="text-success">check_circle</mat-icon>
+                            <mat-icon *ngIf="room.status === 'Occupied'" class="text-danger">person</mat-icon>
+                            <mat-icon *ngIf="room.status === 'Reserved'" class="text-primary">bookmark</mat-icon>
+                            <mat-icon *ngIf="room.status === 'Maintenance'" class="text-warning">build</mat-icon>
+                            <mat-icon *ngIf="room.status === 'Dirty'"
+                                class="text-secondary">cleaning_services</mat-icon>
+                        </div>
+                        <div class="room-details">
+                            <p><strong>Type:</strong> {{room.type}}</p>
+                            <p><strong>Status:</strong> {{room.status}}</p>
+                            <p *ngIf="room.guestName"><strong>Guest:</strong> {{room.guestName}}</p>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</section>
