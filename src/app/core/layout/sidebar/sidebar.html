@@ -23,125 +23,125 @@
             <!-- Main -->
             <li class="header">Main</li>
 
-            <li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
               <a routerLink="/dashboard">
                 <i class="material-icons">home</i>
                 <span>Home</span>
               </a>
             </li>
 
-            <li>
+            <!-- <li routerLinkActive="active">
               <a routerLink="/profile">
                 <i class="material-icons">person</i>
                 <span>Profile</span>
               </a>
-            </li>
+            </li> -->
 
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">business_center</i>
-                <span>Booking / Reservation Management</span>
+                <span>Booking Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/booking/all-booking">Reservation List</a></li>
-                <li><a routerLink="/booking/add-booking">New Booking</a></li>
-                <li><a routerLink="/booking/online-reservation">Online Reservation</a></li>
-                <li><a routerLink="/booking/group-booking">Group Booking</a></li>
-                <li><a routerLink="/booking/booking-calendar">Booking Calendar</a></li>
-                <li><a routerLink="/booking/cancellation-modification">Cancellation & Modification</a></li>
-                <li><a routerLink="/booking/check-in-out">Check-in / Check-out</a></li>
+                <li><a routerLink="/booking/all-booking" routerLinkActive="active">Reservation List</a></li>
+                <li><a routerLink="/booking/add-booking" routerLinkActive="active">New Booking</a></li>
+                <li><a routerLink="/booking/online-reservation" routerLinkActive="active">Online Reservation</a></li>
+                <li><a routerLink="/booking/group-booking" routerLinkActive="active">Group Booking</a></li>
+                <li><a routerLink="/booking/booking-calendar" routerLinkActive="active">Booking Calendar</a></li>
+                <li><a routerLink="/booking/cancellation-modification" routerLinkActive="active">Cancellation & Modification</a></li>
+                <li><a routerLink="/booking/check-in-out" routerLinkActive="active">Check-in / Check-out</a></li>
               </ul>
             </li>
 
             <!-- Rooms -->
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">people_alt</i>
                 <span>Room Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/rooms/room-availability">Room Availability Dashboard</a></li>
-                <li><a routerLink="/rooms/room-types">Room Types & Pricing</a></li>
-                <li><a routerLink="/rooms/room-status">Room Status Monitoring</a></li>
-                <li><a routerLink="/rooms/floor-mapping">Floor Mapping</a></li>
-                <li><a routerLink="/rooms/all-rooms">All Rooms</a></li>
-                <li><a routerLink="/rooms/add-room">Add Room</a></li>
-                <li><a routerLink="/rooms/amenities">Amenities</a></li>
+                <li><a routerLink="/rooms/room-availability" routerLinkActive="active">Room Availability Dashboard</a></li>
+                <li><a routerLink="/rooms/room-types" routerLinkActive="active">Room Types & Pricing</a></li>
+                <li><a routerLink="/rooms/room-status" routerLinkActive="active">Room Status Monitoring</a></li>
+                <li><a routerLink="/rooms/floor-mapping" routerLinkActive="active">Floor Mapping</a></li>
+                <li><a routerLink="/rooms/all-rooms" routerLinkActive="active">All Rooms</a></li>
+                <li><a routerLink="/rooms/add-room" routerLinkActive="active">Add Room</a></li>
+                <li><a routerLink="/rooms/amenities" routerLinkActive="active">Amenities</a></li>
               </ul>
             </li>
 
             <!-- Inventory -->
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">store</i>
                 <span>Inventory Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/inventory/stock-management">Stock Management</a></li>
-                <li><a routerLink="/inventory/supplier-management">Supplier Management</a></li>
-                <li><a routerLink="/inventory/purchase-orders">Purchase Orders</a></li>
-                <li><a routerLink="/inventory/consumption-tracking">Consumption Tracking</a></li>
-                <li><a routerLink="/inventory/low-stock-alerts">Low Stock Alerts</a></li>
-                <li><a routerLink="/inventory/store-warehouse">Store & Warehouse</a></li>
+                <li><a routerLink="/inventory/stock-management" routerLinkActive="active">Stock Management</a></li>
+                <li><a routerLink="/inventory/supplier-management" routerLinkActive="active">Supplier Management</a></li>
+                <li><a routerLink="/inventory/purchase-orders" routerLinkActive="active">Purchase Orders</a></li>
+                <li><a routerLink="/inventory/consumption-tracking" routerLinkActive="active">Consumption Tracking</a></li>
+                <li><a routerLink="/inventory/low-stock-alerts" routerLinkActive="active">Low Stock Alerts</a></li>
+                <li><a routerLink="/inventory/store-warehouse" routerLinkActive="active">Store & Warehouse</a></li>
               </ul>
             </li>
 
             <!-- Front Office -->
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">desktop_mac</i>
                 <span>Front Office Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/front-office/guest-registration">Guest Registration</a></li>
-                <li><a routerLink="/front-office/walk-in-booking">Walk-in Booking</a></li>
-                <li><a routerLink="/front-office/room-allocation">Room Allocation</a></li>
-                <li><a routerLink="/front-office/key-management">Key Management</a></li>
-                <li><a routerLink="/front-office/guest-history">Guest History</a></li>
+                <li><a routerLink="/front-office/guest-registration" routerLinkActive="active">Guest Registration</a></li>
+                <li><a routerLink="/front-office/walk-in-booking" routerLinkActive="active">Walk-in Booking</a></li>
+                <li><a routerLink="/front-office/room-allocation" routerLinkActive="active">Room Allocation</a></li>
+                <li><a routerLink="/front-office/key-management" routerLinkActive="active">Key Management</a></li>
+                <li><a routerLink="/front-office/guest-history" routerLinkActive="active">Guest History</a></li>
               </ul>
             </li>
 
             <!-- Housekeeping -->
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">cleaning_services</i>
                 <span>Housekeeping Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/housekeeping/cleaning-schedule">Cleaning Schedule</a></li>
-                <li><a routerLink="/housekeeping/room-cleaning-status">Room Cleaning Status</a></li>
-                <li><a routerLink="/housekeeping/staff-assignment">Staff Assignment</a></li>
-                <li><a routerLink="/housekeeping/laundry-management">Laundry Management</a></li>
-                <li><a routerLink="/housekeeping/maintenance-requests">Maintenance Requests</a></li>
+                <li><a routerLink="/housekeeping/cleaning-schedule" routerLinkActive="active">Cleaning Schedule</a></li>
+                <li><a routerLink="/housekeeping/room-cleaning-status" routerLinkActive="active">Room Cleaning Status</a></li>
+                <li><a routerLink="/housekeeping/staff-assignment" routerLinkActive="active">Staff Assignment</a></li>
+                <li><a routerLink="/housekeeping/laundry-management" routerLinkActive="active">Laundry Management</a></li>
+                <li><a routerLink="/housekeeping/maintenance-requests" routerLinkActive="active">Maintenance Requests</a></li>
               </ul>
             </li>
 
             <!-- Billing -->
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">receipt</i>
                 <span>Billing & Payments</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/billing/invoice-management">Invoice Management</a></li>
-                <li><a routerLink="/billing/payment-collection">Payment Collection</a></li>
-                <li><a routerLink="/billing/refund-management">Refund Management</a></li>
-                <li><a routerLink="/billing/folio-management">Folio Management</a></li>
-                <li><a routerLink="/billing/tax-calculation">Tax Calculation</a></li>
+                <li><a routerLink="/billing/invoice-management" routerLinkActive="active">Invoice Management</a></li>
+                <li><a routerLink="/billing/payment-collection" routerLinkActive="active">Payment Collection</a></li>
+                <li><a routerLink="/billing/refund-management" routerLinkActive="active">Refund Management</a></li>
+                <li><a routerLink="/billing/folio-management" routerLinkActive="active">Folio Management</a></li>
+                <li><a routerLink="/billing/tax-calculation" routerLinkActive="active">Tax Calculation</a></li>
               </ul>
             </li>
 
             <!-- Guest Management -->
-            <li>
+            <li routerLinkActive="active">
               <a class="menu-toggle" (click)="toggleMenu($event)">
                 <i class="material-icons">face</i>
                 <span>Guest Management (CRM)</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/guest-management/guest-profiles">Guest Profiles</a></li>
-                <li><a routerLink="/guest-management/guest-preferences">Guest Preferences</a></li>
-                <li><a routerLink="/guest-management/loyalty-programs">Loyalty Programs</a></li>
-                <li><a routerLink="/guest-management/feedback-reviews">Feedback & Reviews</a></li>
+                <li><a routerLink="/guest-management/guest-profiles" routerLinkActive="active">Guest Profiles</a></li>
+                <li><a routerLink="/guest-management/guest-preferences" routerLinkActive="active">Guest Preferences</a></li>
+                <li><a routerLink="/guest-management/loyalty-programs" routerLinkActive="active">Loyalty Programs</a></li>
+                <li><a routerLink="/guest-management/feedback-reviews" routerLinkActive="active">Feedback & Reviews</a></li>
               </ul>
             </li>
 
