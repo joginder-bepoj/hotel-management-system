@@ -11,7 +11,36 @@
                         <h2>Supplier Management</h2>
                     </div>
                     <div class="body">
-                        <p>Supplier Management Placeholder</p>
+                        <div class="supplier-management">
+                            <div class="header-actions mb-4">
+                                <button mat-raised-button color="primary"><mat-icon>add</mat-icon> Add Supplier</button>
+                            </div>
+                            <div class="suppliers-grid">
+                                <mat-card *ngFor="let supplier of suppliers" class="supplier-card">
+                                    <mat-card-content>
+                                        <div class="supplier-header">
+                                            <h3>{{ supplier.name }}</h3>
+                                            <div class="rating">
+                                                <mat-icon *ngFor="let star of getStars(supplier.rating)">star</mat-icon>
+                                                <span>{{ supplier.rating }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="supplier-details">
+                                            <div class="detail"><mat-icon>phone</mat-icon> {{ supplier.contact }}</div>
+                                            <div class="detail"><mat-icon>email</mat-icon> {{ supplier.email }}</div>
+                                            <div class="categories">
+                                                <span *ngFor="let cat of supplier.categories" class="category-badge">{{ cat }}</span>
+                                            </div>
+                                            <div class="detail"><mat-icon>shopping_bag</mat-icon> {{ supplier.totalOrders }} orders</div>
+                                        </div>
+                                        <div class="supplier-actions">
+                                            <button mat-button><mat-icon>visibility</mat-icon> View</button>
+                                            <button mat-button><mat-icon>edit</mat-icon> Edit</button>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

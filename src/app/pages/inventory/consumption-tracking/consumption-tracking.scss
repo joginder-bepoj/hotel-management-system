@@ -1,0 +1,81 @@
+.consumption-tracking {
+    padding: 20px;
+
+    .date-range {
+        display: flex;
+        gap: 20px;
+
+        mat-form-field {
+            flex: 1;
+        }
+    }
+
+    .dept-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid #2196f3;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        mat-card-content {
+            padding: 20px !important;
+
+            h3 {
+                margin: 0 0 15px 0;
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            .stats {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                div {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .label {
+                        color: #666;
+                        font-size: 14px;
+                    }
+
+                    .value {
+                        font-weight: 600;
+                        font-size: 14px;
+                    }
+
+                    mat-icon {
+                        &.trend-up { color: #f44336; }
+                        &.trend-down { color: #4caf50; }
+                        &.trend-stable { color: #2196f3; }
+                    }
+                }
+            }
+        }
+    }
+
+    .top-items {
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .name {
+                font-weight: 500;
+            }
+
+            .quantity {
+                color: #666;
+            }
+        }
+    }
+}

@@ -12,7 +12,161 @@
                         <h2>Room Availability Dashboard</h2>
                     </div>
                     <div class="body">
-                        <p>Availability Dashboard Placeholder</p>
+                        <div class="availability-dashboard">
+                            <!-- Date Range Selector -->
+                            <div class="row mb-4">
+                                <div class="col-md-10">
+                                    <div class="date-range">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Start Date</mat-label>
+                                            <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate">
+                                            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                                            <mat-datepicker #startPicker></mat-datepicker>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>End Date</mat-label>
+                                            <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate">
+                                            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                                            <mat-datepicker #endPicker></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button mat-raised-button color="primary" (click)="refreshData()">
+                                        <mat-icon>refresh</mat-icon> Refresh
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Main Statistics -->
+                            <div class="row mb-4">
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card total-rooms">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>meeting_room</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ availabilityStats.totalRooms }}</h2>
+                                                <p>Total Rooms</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card available-rooms">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>check_circle</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ availabilityStats.availableRooms }}</h2>
+                                                <p>Available</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card occupied-rooms">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>person</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ availabilityStats.occupiedRooms }}</h2>
+                                                <p>Occupied</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card occupancy-rate">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>analytics</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ availabilityStats.occupancyRate }}%</h2>
+                                                <p>Occupancy Rate</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+
+                            <!-- Room Type Availability -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <mat-card>
+                                        <mat-card-header>
+                                            <mat-card-title>Room Type Availability</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <div class="room-type-grid">
+                                                <div *ngFor="let roomType of roomTypeAvailability" class="room-type-item">
+                                                    <div class="room-type-header">
+                                                        <h4>{{ roomType.type }}</h4>
+                                                        <span class="availability-badge">{{ getAvailabilityPercentage(roomType) }}% Available</span>
+                                                    </div>
+                                                    <div class="room-type-stats">
+                                                        <div class="stat">
+                                                            <span class="label">Total:</span>
+                                                            <span class="value">{{ roomType.total }}</span>
+                                                        </div>
+                                                        <div class="stat available">
+                                                            <span class="label">Available:</span>
+                                                            <span class="value">{{ roomType.available }}</span>
+                                                        </div>
+                                                        <div class="stat occupied">
+                                                            <span class="label">Occupied:</span>
+                                                            <span class="value">{{ roomType.occupied }}</span>
+                                                        </div>
+                                                        <div class="stat reserved">
+                                                            <span class="label">Reserved:</span>
+                                                            <span class="value">{{ roomType.reserved }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="progress-bar">
+                                                        <div class="progress-fill" [style.width.%]="getAvailabilityPercentage(roomType)"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+
+                            <!-- Upcoming Check-ins/Check-outs -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-card>
+                                        <mat-card-header>
+                                            <mat-card-title>Upcoming Check-ins & Check-outs</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <div class="upcoming-timeline">
+                                                <div *ngFor="let booking of upcomingBookings" class="timeline-item">
+                                                    <div class="timeline-date">
+                                                        <strong>{{ booking.date | date:'EEE' }}</strong>
+                                                        <span>{{ booking.date | date:'MMM d' }}</span>
+                                                    </div>
+                                                    <div class="timeline-details">
+                                                        <div class="check-in">
+                                                            <mat-icon>login</mat-icon>
+                                                            <span>{{ booking.checkIns }} Check-ins</span>
+                                                        </div>
+                                                        <div class="check-out">
+                                                            <mat-icon>logout</mat-icon>
+                                                            <span>{{ booking.checkOuts }} Check-outs</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

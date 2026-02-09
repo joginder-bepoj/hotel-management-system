@@ -11,7 +11,125 @@
                         <h2>Payment Collection</h2>
                     </div>
                     <div class="body">
-                        <p>Payment Collection Placeholder</p>
+                        <div class="payment-collection">
+                            <div class="row">
+                                <!-- Left Panel: Pending Collections -->
+                                <div class="col-md-7">
+                                    <mat-card class="mb-4">
+                                        <mat-card-header>
+                                            <mat-card-title>Pending Collections</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <div class="pending-list">
+                                                <div *ngFor="let item of pendingCollections" class="pending-item d-flex justify-content-between align-items-center">
+                                                    <div class="guest-info">
+                                                        <div class="name"><strong>{{ item.guestName }}</strong></div>
+                                                        <div class="room text-muted">Room: {{ item.roomNo }} | Folio: {{ item.folioId }}</div>
+                                                    </div>
+                                                    <div class="amount-actions d-flex align-items-center">
+                                                        <div class="amount me-3">₹{{ item.pendingAmount | number }}</div>
+                                                        <button mat-flat-button color="primary" (click)="collectPayment(item)">
+                                                            Collect
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="pendingCollections.length === 0" class="text-center p-4">
+                                                    <mat-icon color="disabled" style="font-size: 40px; width: 40px; height: 40px;">check_circle</mat-icon>
+                                                    <p>No pending collections at the moment.</p>
+                                                </div>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+
+                                    <!-- Recent Payments Table -->
+                                    <mat-card>
+                                        <mat-card-header>
+                                            <mat-card-title>Recent Payments</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content class="p-0">
+                                            <table mat-table [dataSource]="recentPayments" class="w-100">
+                                                <ng-container matColumnDef="id">
+                                                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                                                    <td mat-cell *matCellDef="let p"> {{ p.id }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="guestName">
+                                                    <th mat-header-cell *matHeaderCellDef> Guest </th>
+                                                    <td mat-cell *matCellDef="let p"> {{ p.guestName }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="amount">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-end"> Amount </th>
+                                                    <td mat-cell *matCellDef="let p" class="text-end"> ₹{{ p.amount | number }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="method">
+                                                    <th mat-header-cell *matHeaderCellDef> Method </th>
+                                                    <td mat-cell *matCellDef="let p"> 
+                                                        <span class="method-chip">{{ p.method }}</span>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="status">
+                                                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                                                    <td mat-cell *matCellDef="let p">
+                                                        <span class="status-indicator" [ngClass]="p.status.toLowerCase()">{{ p.status }}</span>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="date">
+                                                    <th mat-header-cell *matHeaderCellDef> Time </th>
+                                                    <td mat-cell *matCellDef="let p"> {{ p.date | date:'shortTime' }} </td>
+                                                </ng-container>
+
+                                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+
+                                <!-- Right Panel: Payment Form -->
+                                <div class="col-md-5">
+                                    <mat-card class="payment-form-card" [class.form-active]="selectedGuest">
+                                        <mat-card-header>
+                                            <mat-card-title>{{ selectedGuest ? 'Process Payment' : 'Collect New Payment' }}</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <div *ngIf="selectedGuest" class="selected-guest-alert mb-4">
+                                                <p class="mb-0">Collecting for: <strong>{{ selectedGuest.guestName }}</strong> (Room {{ selectedGuest.roomNo }})</p>
+                                            </div>
+
+                                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                                <mat-label>Amount to Collect</mat-label>
+                                                <input matInput type="number" [(ngModel)]="paymentAmount" placeholder="0.00">
+                                                <span matPrefix>₹&nbsp;</span>
+                                            </mat-form-field>
+
+                                            <mat-form-field appearance="outline" class="w-100 mb-4">
+                                                <mat-label>Payment Method</mat-label>
+                                                <mat-select [(ngModel)]="paymentMethod">
+                                                    <mat-option value="Card">Credit/Debit Card</mat-option>
+                                                    <mat-option value="Cash">Cash</mat-option>
+                                                    <mat-option value="UPI">UPI / QR Code</mat-option>
+                                                    <mat-option value="Wallet">Digital Wallet</mat-option>
+                                                </mat-select>
+                                                <mat-icon matPrefix>payments</mat-icon>
+                                            </mat-form-field>
+
+                                            <div class="d-grid gap-2">
+                                                <button mat-raised-button color="primary" size="large" (click)="processPayment()" [disabled]="paymentAmount <= 0">
+                                                    Confirm Payment
+                                                </button>
+                                                <button mat-button (click)="cancelCollection()" *ngIf="selectedGuest">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

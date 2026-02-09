@@ -1,0 +1,211 @@
+.floor-mapping-container {
+    padding: 20px;
+
+    .floor-selector {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    // Statistics Cards
+    .stat-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-left: 4px solid;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        mat-card-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px !important;
+        }
+
+        .stat-icon {
+            mat-icon {
+                font-size: 48px;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        .stat-info {
+            h3 {
+                margin: 0;
+                font-size: 32px;
+                font-weight: 600;
+            }
+
+            p {
+                margin: 0;
+                color: #666;
+                font-size: 14px;
+            }
+        }
+
+        &.total {
+            border-left-color: #2196f3;
+            .stat-icon mat-icon { color: #2196f3; }
+        }
+
+        &.available {
+            border-left-color: #4caf50;
+            .stat-icon mat-icon { color: #4caf50; }
+        }
+
+        &.occupied {
+            border-left-color: #ff5722;
+            .stat-icon mat-icon { color: #ff5722; }
+        }
+
+        &.maintenance {
+            border-left-color: #ff9800;
+            .stat-icon mat-icon { color: #ff9800; }
+        }
+    }
+
+    // Floor Plan
+    .floor-plan {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+
+        h5 {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+
+            .room-cell {
+                background: white;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                padding: 15px;
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+
+                &:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                }
+
+                .room-number {
+                    font-size: 24px;
+                    font-weight: 700;
+                    margin-bottom: 5px;
+                }
+
+                .room-type {
+                    font-size: 14px;
+                    color: #666;
+                    margin-bottom: 10px;
+                }
+
+                .room-status {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    padding: 5px 10px;
+                    border-radius: 20px;
+
+                    mat-icon {
+                        font-size: 16px;
+                        width: 16px;
+                        height: 16px;
+                    }
+                }
+
+                &.status-available {
+                    border-color: #4caf50;
+                    .room-status {
+                        background: #e8f5e9;
+                        color: #4caf50;
+                    }
+                }
+
+                &.status-occupied {
+                    border-color: #ff5722;
+                    .room-status {
+                        background: #ffebee;
+                        color: #ff5722;
+                    }
+                }
+
+                &.status-reserved {
+                    border-color: #2196f3;
+                    .room-status {
+                        background: #e3f2fd;
+                        color: #2196f3;
+                    }
+                }
+
+                &.status-maintenance {
+                    border-color: #ff9800;
+                    .room-status {
+                        background: #fff3e0;
+                        color: #ff9800;
+                    }
+                }
+            }
+        }
+    }
+
+    // Legend
+    .legend {
+        h6 {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .legend-color {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 4px;
+                    border: 2px solid;
+
+                    &.status-available {
+                        background: #e8f5e9;
+                        border-color: #4caf50;
+                    }
+
+                    &.status-occupied {
+                        background: #ffebee;
+                        border-color: #ff5722;
+                    }
+
+                    &.status-reserved {
+                        background: #e3f2fd;
+                        border-color: #2196f3;
+                    }
+
+                    &.status-maintenance {
+                        background: #fff3e0;
+                        border-color: #ff9800;
+                    }
+                }
+            }
+        }
+    }
+}

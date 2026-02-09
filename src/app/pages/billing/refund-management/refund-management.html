@@ -11,7 +11,123 @@
                         <h2>Refund Management</h2>
                     </div>
                     <div class="body">
-                        <p>Refund Management Placeholder</p>
+                        <div class="refund-management">
+                            <div class="row">
+                                <!-- Left Panel: Refundable Payments -->
+                                <div class="col-md-7">
+                                    <mat-card class="mb-4">
+                                        <mat-card-header>
+                                            <mat-card-title>Refundable Transactions</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <div class="payment-list">
+                                                <div *ngFor="let item of refundablePayments" class="payment-item d-flex justify-content-between align-items-center">
+                                                    <div class="payment-info">
+                                                        <div class="name"><strong>{{ item.guestName }}</strong></div>
+                                                        <div class="id text-muted">ID: {{ item.id }} | Date: {{ item.date | date:'shortDate' }}</div>
+                                                    </div>
+                                                    <div class="amount-actions d-flex align-items-center">
+                                                        <div class="amount me-3">₹{{ item.amount | number }}</div>
+                                                        <button mat-stroked-button color="warn" (click)="initiateRefund(item)">
+                                                            Initiate Refund
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="refundablePayments.length === 0" class="text-center p-4">
+                                                    <p class="text-muted">No refundable transactions found.</p>
+                                                </div>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+
+                                    <!-- Refund History Table -->
+                                    <mat-card>
+                                        <mat-card-header>
+                                            <mat-card-title>Refund History</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content class="p-0">
+                                            <table mat-table [dataSource]="refunds" class="w-100">
+                                                <ng-container matColumnDef="id">
+                                                    <th mat-header-cell *matHeaderCellDef> Refund ID </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.id }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="guestName">
+                                                    <th mat-header-cell *matHeaderCellDef> Guest </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.guestName }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="amount">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-end"> Amount </th>
+                                                    <td mat-cell *matCellDef="let r" class="text-end"> ₹{{ r.amount | number }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="reason">
+                                                    <th mat-header-cell *matHeaderCellDef> Reason </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.reason }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="status">
+                                                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                                                    <td mat-cell *matCellDef="let r">
+                                                        <span class="status-badge" [ngClass]="r.status.toLowerCase()">{{ r.status }}</span>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="date">
+                                                    <th mat-header-cell *matHeaderCellDef> Date </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.date | date:'shortDate' }} </td>
+                                                </ng-container>
+
+                                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+
+                                <!-- Right Panel: Refund Form -->
+                                <div class="col-md-5">
+                                    <mat-card class="refund-form-card" [class.form-active]="selectedPayment">
+                                        <mat-card-header>
+                                            <mat-card-title>Process Refund</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <div *ngIf="selectedPayment" class="selected-payment-alert mb-4">
+                                                <p class="mb-0">Refunding: <strong>{{ selectedPayment.guestName }}</strong></p>
+                                                <p class="mb-0 small">Original Payment: {{ selectedPayment.id }} (₹{{ selectedPayment.amount }})</p>
+                                            </div>
+
+                                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                                <mat-label>Refund Amount</mat-label>
+                                                <input matInput type="number" [(ngModel)]="refundAmount" placeholder="0.00">
+                                                <span matPrefix>₹&nbsp;</span>
+                                            </mat-form-field>
+
+                                            <mat-form-field appearance="outline" class="w-100 mb-4">
+                                                <mat-label>Reason for Refund</mat-label>
+                                                <mat-select [(ngModel)]="refundReason">
+                                                    <mat-option value="Duplicate charge">Duplicate charge</mat-option>
+                                                    <mat-option value="Room cancellation">Room cancellation</mat-option>
+                                                    <mat-option value="Service dissatisfaction">Service dissatisfaction</mat-option>
+                                                    <mat-option value="Other">Other</mat-option>
+                                                </mat-select>
+                                                <mat-icon matPrefix>info</mat-icon>
+                                            </mat-form-field>
+
+                                            <div class="d-grid gap-2">
+                                                <button mat-raised-button color="warn" size="large" (click)="processRefund()" [disabled]="!selectedPayment || refundAmount <= 0">
+                                                    Confirm Refund
+                                                </button>
+                                                <button mat-button (click)="cancelRefund()" *ngIf="selectedPayment">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,32 @@
                         <h2>Booking Calendar</h2>
                     </div>
                     <div class="body">
-                        <p>Calendar View Placeholder</p>
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <button mat-icon-button (click)="prevMonth()">
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <h3>{{ displayMonth | date:'MMMM yyyy' }}</h3>
+                                <button mat-icon-button (click)="nextMonth()">
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-day-head" *ngFor="let day of weekDays">
+                                    {{ day }}
+                                </div>
+                                <div class="calendar-day" *ngFor="let date of daysInMonth" 
+                                    [class.not-current]="!isCurrentMonth(date)"
+                                    [class.today]="isToday(date)">
+                                    <span class="day-number">{{ date | date:'d' }}</span>
+                                    <div class="day-events">
+                                        <div class="event-pill" *ngFor="let event of getBookingsForDate(date)" [ngClass]="event.class">
+                                            {{ event.title }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

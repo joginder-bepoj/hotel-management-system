@@ -12,7 +12,38 @@
                         <h2>Store & Warehouse</h2>
                     </div>
                     <div class="body">
-                        <p>Store & Warehouse Placeholder</p>
+                        <div class="store-warehouse">
+                            <div class="locations-grid">
+                                <mat-card *ngFor="let location of locations" class="location-card">
+                                    <mat-card-content>
+                                        <div class="location-header">
+                                            <mat-icon>warehouse</mat-icon>
+                                            <div>
+                                                <h3>{{ location.name }}</h3>
+                                                <span class="type-badge">{{ location.type }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="capacity-info">
+                                            <div class="capacity-header">
+                                                <span>Capacity</span>
+                                                <span>{{ location.currentStock }} / {{ location.capacity }}</span>
+                                            </div>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" [style.width.%]="getCapacityPercentage(location)"></div>
+                                            </div>
+                                            <div class="capacity-percentage">{{ getCapacityPercentage(location) }}% Full</div>
+                                        </div>
+                                        <div class="location-stats">
+                                            <div class="stat"><mat-icon>inventory_2</mat-icon> {{ location.itemCount }} items</div>
+                                        </div>
+                                        <div class="location-actions">
+                                            <button mat-button><mat-icon>visibility</mat-icon> View Items</button>
+                                            <button mat-button><mat-icon>swap_horiz</mat-icon> Transfer</button>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,146 @@
                         <h2>Stock Management</h2>
                     </div>
                     <div class="body">
-                        <p>Stock Management Placeholder</p>
+                        <div class="stock-management">
+                            <!-- Search and Filters -->
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <mat-form-field appearance="outline" class="search-field">
+                                        <mat-label>Search items...</mat-label>
+                                        <input matInput [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()">
+                                        <mat-icon matPrefix>search</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button mat-raised-button color="primary">
+                                        <mat-icon>add</mat-icon> Add Item
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Category Chips -->
+                            <div class="category-chips mb-4">
+                                <mat-chip-listbox aria-label="Category filter">
+                                    <mat-chip-option *ngFor="let category of categories" 
+                                        [selected]="selectedCategory === category.toLowerCase()"
+                                        (click)="selectCategory(category)">
+                                        {{ category }}
+                                    </mat-chip-option>
+                                </mat-chip-listbox>
+                            </div>
+
+                            <!-- Statistics Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-4 col-sm-6 mb-3">
+                                    <mat-card class="stat-card in-stock-card">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>inventory</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ getStatusCount('in-stock') }}</h2>
+                                                <p>In Stock</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-4 col-sm-6 mb-3">
+                                    <mat-card class="stat-card low-stock-card">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>warning</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ getStatusCount('low-stock') }}</h2>
+                                                <p>Low Stock</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-4 col-sm-6 mb-3">
+                                    <mat-card class="stat-card out-stock-card">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>remove_circle</mat-icon>
+                                            </div>
+                                            <div class="stat-details">
+                                                <h2>{{ getStatusCount('out-of-stock') }}</h2>
+                                                <p>Out of Stock</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+
+                            <!-- Stock Items Grid -->
+                            <div class="stock-items-grid">
+                                <mat-card *ngFor="let item of filteredItems" class="stock-item-card" [ngClass]="'status-' + item.status">
+                                    <mat-card-header>
+                                        <div class="item-header">
+                                            <div>
+                                                <h3>{{ item.name }}</h3>
+                                                <span class="category-badge">{{ item.category }}</span>
+                                            </div>
+                                            <button mat-icon-button [matMenuTriggerFor]="itemMenu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #itemMenu="matMenu">
+                                                <button mat-menu-item (click)="adjustStock(item, 10)">
+                                                    <mat-icon>add</mat-icon>
+                                                    <span>Add Stock (+10)</span>
+                                                </button>
+                                                <button mat-menu-item (click)="adjustStock(item, -10)">
+                                                    <mat-icon>remove</mat-icon>
+                                                    <span>Remove Stock (-10)</span>
+                                                </button>
+                                                <button mat-menu-item>
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span>Edit Item</span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <div class="stock-info">
+                                            <div class="stock-level">
+                                                <div class="level-header">
+                                                    <span class="label">Current Stock</span>
+                                                    <span class="value">{{ item.currentStock }} {{ item.unit }}</span>
+                                                </div>
+                                                <div class="progress-bar">
+                                                    <div class="progress-fill" [style.width.%]="getStockPercentage(item)"></div>
+                                                </div>
+                                                <div class="level-footer">
+                                                    <span>Min: {{ item.minStock }}</span>
+                                                    <span>Max: {{ item.maxStock }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="item-details">
+                                                <div class="detail-row">
+                                                    <mat-icon>place</mat-icon>
+                                                    <span>{{ item.location }}</span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <mat-icon>schedule</mat-icon>
+                                                    <span>Updated: {{ item.lastUpdated | date:'short' }}</span>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <mat-icon>circle</mat-icon>
+                                                    <span class="status-text">{{ item.status | titlecase }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
+                            <!-- No Results -->
+                            <div *ngIf="filteredItems.length === 0" class="no-results">
+                                <mat-icon>inventory_2</mat-icon>
+                                <p>No items found</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

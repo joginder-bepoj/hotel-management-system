@@ -11,7 +11,73 @@
                         <h2>Low Stock Alerts</h2>
                     </div>
                     <div class="body">
-                        <p>Low Stock Alerts Placeholder</p>
+                        <div class="low-stock-alerts">
+                            <!-- Priority Filters -->
+                            <div class="filter-section mb-4">
+                                <mat-chip-listbox aria-label="Priority filter">
+                                    <mat-chip-option [selected]="selectedPriority === 'all'" (click)="applyFilter('all')">
+                                        All Alerts ({{ getAlertCount('all') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedPriority === 'critical'" (click)="applyFilter('critical')">
+                                        Critical ({{ getAlertCount('critical') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedPriority === 'warning'" (click)="applyFilter('warning')">
+                                        Warning ({{ getAlertCount('warning') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedPriority === 'normal'" (click)="applyFilter('normal')">
+                                        Normal ({{ getAlertCount('normal') }})
+                                    </mat-chip-option>
+                                </mat-chip-listbox>
+                            </div>
+
+                            <!-- Alert Cards -->
+                            <div class="alerts-grid">
+                                <mat-card *ngFor="let alert of filteredAlerts" class="alert-card" [ngClass]="'priority-' + alert.priority">
+                                    <mat-card-content>
+                                        <div class="alert-header">
+                                            <div class="alert-icon">
+                                                <mat-icon>warning</mat-icon>
+                                            </div>
+                                            <div class="alert-info">
+                                                <h3>{{ alert.name }}</h3>
+                                                <span class="category">{{ alert.category }}</span>
+                                            </div>
+                                            <span class="priority-badge">{{ alert.priority | titlecase }}</span>
+                                        </div>
+
+                                        <div class="alert-details">
+                                            <div class="detail-row">
+                                                <span class="label">Current Stock:</span>
+                                                <span class="value critical">{{ alert.currentStock }} {{ alert.unit }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Minimum Required:</span>
+                                                <span class="value">{{ alert.minStock }} {{ alert.unit }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Days Until Empty:</span>
+                                                <span class="value">~{{ alert.daysUntilEmpty }} days</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="alert-actions">
+                                            <button mat-raised-button color="primary" (click)="reorderItem(alert)">
+                                                <mat-icon>shopping_cart</mat-icon> Reorder Now
+                                            </button>
+                                            <button mat-button (click)="dismissAlert(alert)">
+                                                <mat-icon>close</mat-icon> Dismiss
+                                            </button>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
+                            <!-- No Alerts -->
+                            <div *ngIf="filteredAlerts.length === 0" class="no-alerts">
+                                <mat-icon>check_circle</mat-icon>
+                                <p>No alerts for this priority level</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

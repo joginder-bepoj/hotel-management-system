@@ -12,7 +12,105 @@
                         <h2>Room Status Monitoring</h2>
                     </div>
                     <div class="body">
-                        <p>Status Monitoring Placeholder</p>
+                        <div class="status-monitoring">
+                            <!-- Filter Chips -->
+                            <div class="filter-section mb-4">
+                                <mat-chip-listbox aria-label="Status filter">
+                                    <mat-chip-option [selected]="selectedFilter === 'all'" (click)="applyFilter('all')">
+                                        All Rooms ({{ getStatusCount('all') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedFilter === 'available'" (click)="applyFilter('available')">
+                                        Available ({{ getStatusCount('available') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedFilter === 'occupied'" (click)="applyFilter('occupied')">
+                                        Occupied ({{ getStatusCount('occupied') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedFilter === 'cleaning'" (click)="applyFilter('cleaning')">
+                                        Cleaning ({{ getStatusCount('cleaning') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedFilter === 'maintenance'" (click)="applyFilter('maintenance')">
+                                        Maintenance ({{ getStatusCount('maintenance') }})
+                                    </mat-chip-option>
+                                    <mat-chip-option [selected]="selectedFilter === 'reserved'" (click)="applyFilter('reserved')">
+                                        Reserved ({{ getStatusCount('reserved') }})
+                                    </mat-chip-option>
+                                </mat-chip-listbox>
+                            </div>
+
+                            <!-- Room Cards Grid -->
+                            <div class="room-grid">
+                                <mat-card *ngFor="let room of filteredRooms" class="room-card" [ngClass]="'status-' + room.status">
+                                    <mat-card-header>
+                                        <div class="room-header">
+                                            <div class="room-number">
+                                                <mat-icon>meeting_room</mat-icon>
+                                                <h3>{{ room.roomNo }}</h3>
+                                            </div>
+                                            <button mat-icon-button [matMenuTriggerFor]="statusMenu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #statusMenu="matMenu">
+                                                <button mat-menu-item (click)="updateRoomStatus(room, 'available')">
+                                                    <mat-icon>check_circle</mat-icon>
+                                                    <span>Mark Available</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateRoomStatus(room, 'occupied')">
+                                                    <mat-icon>person</mat-icon>
+                                                    <span>Mark Occupied</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateRoomStatus(room, 'cleaning')">
+                                                    <mat-icon>cleaning_services</mat-icon>
+                                                    <span>Mark Cleaning</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateRoomStatus(room, 'maintenance')">
+                                                    <mat-icon>build</mat-icon>
+                                                    <span>Mark Maintenance</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateRoomStatus(room, 'reserved')">
+                                                    <mat-icon>event</mat-icon>
+                                                    <span>Mark Reserved</span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <div class="room-details">
+                                            <div class="detail-row">
+                                                <span class="label">Type:</span>
+                                                <span class="value">{{ room.roomType }}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="label">Floor:</span>
+                                                <span class="value">{{ room.floor }}</span>
+                                            </div>
+                                            <div class="detail-row status-row">
+                                                <span class="label">Status:</span>
+                                                <span class="status-badge">
+                                                    <mat-icon>{{ getStatusIcon(room.status) }}</mat-icon>
+                                                    {{ room.status | titlecase }}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="room.guestName" class="detail-row">
+                                                <span class="label">Guest:</span>
+                                                <span class="value">{{ room.guestName }}</span>
+                                            </div>
+                                            <div *ngIf="room.checkIn" class="detail-row">
+                                                <span class="label">Check-in:</span>
+                                                <span class="value">{{ room.checkIn | date:'short' }}</span>
+                                            </div>
+                                            <div *ngIf="room.checkOut" class="detail-row">
+                                                <span class="label">Check-out:</span>
+                                                <span class="value">{{ room.checkOut | date:'short' }}</span>
+                                            </div>
+                                            <div *ngIf="room.lastCleaned" class="detail-row">
+                                                <span class="label">Last Cleaned:</span>
+                                                <span class="value">{{ room.lastCleaned | date:'short' }}</span>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

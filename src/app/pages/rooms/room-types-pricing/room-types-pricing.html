@@ -12,7 +12,97 @@
                         <h2>Room Types & Pricing</h2>
                     </div>
                     <div class="body">
-                        <p>Room Types and Pricing Placeholder</p>
+                        <div class="room-types-pricing">
+                            <!-- Room Type Cards -->
+                            <div class="room-types-grid">
+                                <mat-card *ngFor="let room of roomTypes" class="room-type-card">
+                                    <mat-card-header>
+                                        <div class="card-header-content">
+                                            <mat-card-title>{{ room.type }}</mat-card-title>
+                                            <button mat-icon-button (click)="editRoomType(room)" *ngIf="editingRoom?.id !== room.id">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                        </div>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <p class="description">{{ room.description }}</p>
+                                        
+                                        <!-- View Mode -->
+                                        <div *ngIf="editingRoom?.id !== room.id" class="view-mode">
+                                            <div class="pricing-section">
+                                                <h4>Pricing</h4>
+                                                <div class="price-item">
+                                                    <span class="price-label">Base Price:</span>
+                                                    <span class="price-value">₹{{ room.basePrice }}</span>
+                                                </div>
+                                                <div class="price-item">
+                                                    <span class="price-label">Weekend Price:</span>
+                                                    <span class="price-value">₹{{ room.weekendPrice }}</span>
+                                                </div>
+                                                <div class="price-item">
+                                                    <span class="price-label">Peak Season:</span>
+                                                    <span class="price-value">₹{{ room.peakSeasonPrice }}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="details-section">
+                                                <div class="detail-item">
+                                                    <mat-icon>people</mat-icon>
+                                                    <span>Max Occupancy: {{ room.maxOccupancy }}</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <mat-icon>star</mat-icon>
+                                                    <span>{{ getAmenitiesString(room.amenities) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Edit Mode -->
+                                        <div *ngIf="editingRoom?.id === room.id" class="edit-mode">
+                                            <div class="edit-form">
+                                                <mat-form-field appearance="outline" class="full-width">
+                                                    <mat-label>Description</mat-label>
+                                                    <textarea matInput [(ngModel)]="editingRoom!.description" rows="2"></textarea>
+                                                </mat-form-field>
+
+                                                <h4>Pricing</h4>
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Base Price</mat-label>
+                                                    <input matInput type="number" [(ngModel)]="editingRoom!.basePrice">
+                                                    <span matPrefix>₹&nbsp;</span>
+                                                </mat-form-field>
+
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Weekend Price</mat-label>
+                                                    <input matInput type="number" [(ngModel)]="editingRoom!.weekendPrice">
+                                                    <span matPrefix>₹&nbsp;</span>
+                                                </mat-form-field>
+
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Peak Season Price</mat-label>
+                                                    <input matInput type="number" [(ngModel)]="editingRoom!.peakSeasonPrice">
+                                                    <span matPrefix>₹&nbsp;</span>
+                                                </mat-form-field>
+
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Max Occupancy</mat-label>
+                                                    <input matInput type="number" [(ngModel)]="editingRoom!.maxOccupancy">
+                                                </mat-form-field>
+
+                                                <div class="action-buttons">
+                                                    <button mat-raised-button color="primary" (click)="saveRoomType()">
+                                                        <mat-icon>save</mat-icon> Save
+                                                    </button>
+                                                    <button mat-raised-button (click)="cancelEdit()">
+                                                        <mat-icon>cancel</mat-icon> Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

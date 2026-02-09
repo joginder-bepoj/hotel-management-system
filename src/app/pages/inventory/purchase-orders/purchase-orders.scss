@@ -1,0 +1,80 @@
+.purchase-orders {
+    padding: 20px;
+
+    .filter-section mat-chip-listbox {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+
+        .order-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #2196f3;
+
+            &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            mat-card-content {
+                padding: 20px !important;
+
+                .order-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 15px;
+
+                    h3 {
+                        margin: 0;
+                        font-size: 18px;
+                        font-weight: 600;
+                    }
+
+                    .status-badge {
+                        padding: 4px 12px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: 600;
+
+                        &.status-draft { background: #e0e0e0; color: #666; }
+                        &.status-pending { background: #fff3e0; color: #ff9800; }
+                        &.status-approved { background: #e3f2fd; color: #2196f3; }
+                        &.status-received { background: #e8f5e9; color: #4caf50; }
+                    }
+                }
+
+                .order-details {
+                    margin-bottom: 15px;
+
+                    .detail {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 8px 0;
+                        font-size: 14px;
+                        color: #666;
+
+                        mat-icon {
+                            font-size: 18px;
+                            width: 18px;
+                            height: 18px;
+                        }
+                    }
+                }
+
+                .order-actions {
+                    display: flex;
+                    gap: 10px;
+                    border-top: 1px solid #f0f0f0;
+                    padding-top: 15px;
+                }
+            }
+        }
+    }
+}

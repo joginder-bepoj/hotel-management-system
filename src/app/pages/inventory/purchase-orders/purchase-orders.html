@@ -12,7 +12,40 @@
                         <h2>Purchase Orders</h2>
                     </div>
                     <div class="body">
-                        <p>Purchase Orders Placeholder</p>
+                        <div class="purchase-orders">
+                            <div class="header-actions mb-4">
+                                <button mat-raised-button color="primary"><mat-icon>add</mat-icon> New Purchase Order</button>
+                            </div>
+                            <div class="filter-section mb-4">
+                                <mat-chip-listbox>
+                                    <mat-chip-option [selected]="selectedStatus === 'all'" (click)="applyFilter('all')">All ({{ getStatusCount('all') }})</mat-chip-option>
+                                    <mat-chip-option [selected]="selectedStatus === 'draft'" (click)="applyFilter('draft')">Draft ({{ getStatusCount('draft') }})</mat-chip-option>
+                                    <mat-chip-option [selected]="selectedStatus === 'pending'" (click)="applyFilter('pending')">Pending ({{ getStatusCount('pending') }})</mat-chip-option>
+                                    <mat-chip-option [selected]="selectedStatus === 'approved'" (click)="applyFilter('approved')">Approved ({{ getStatusCount('approved') }})</mat-chip-option>
+                                    <mat-chip-option [selected]="selectedStatus === 'received'" (click)="applyFilter('received')">Received ({{ getStatusCount('received') }})</mat-chip-option>
+                                </mat-chip-listbox>
+                            </div>
+                            <div class="orders-grid">
+                                <mat-card *ngFor="let order of filteredOrders" class="order-card">
+                                    <mat-card-content>
+                                        <div class="order-header">
+                                            <h3>{{ order.id }}</h3>
+                                            <span class="status-badge" [ngClass]="'status-' + order.status">{{ order.status | titlecase }}</span>
+                                        </div>
+                                        <div class="order-details">
+                                            <div class="detail"><mat-icon>business</mat-icon> {{ order.supplier }}</div>
+                                            <div class="detail"><mat-icon>inventory</mat-icon> {{ order.items }} items</div>
+                                            <div class="detail"><mat-icon>currency_rupee</mat-icon> ₹{{ order.totalAmount | number }}</div>
+                                            <div class="detail"><mat-icon>event</mat-icon> Expected: {{ order.expectedDelivery | date:'mediumDate' }}</div>
+                                        </div>
+                                        <div class="order-actions">
+                                            <button mat-button><mat-icon>visibility</mat-icon> View</button>
+                                            <button mat-button><mat-icon>edit</mat-icon> Edit</button>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

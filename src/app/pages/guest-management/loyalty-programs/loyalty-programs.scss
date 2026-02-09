@@ -1,0 +1,15 @@
+.loyalty-programs {
+    .points-card {
+        border-top: 4px solid;
+    }
+
+    .badge {
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 11px;
+        
+        &.bg-success { background-color: #e8f5e9 !important; color: #2e7d32; }
+        &.bg-danger { background-color: #ffebee !important; color: #c62828; }
+    }
+}

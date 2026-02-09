@@ -1,0 +1,111 @@
+.store-warehouse {
+    padding: 20px;
+
+    .locations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+
+        .location-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #2196f3;
+
+            &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            mat-card-content {
+                padding: 20px !important;
+
+                .location-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    margin-bottom: 20px;
+
+                    mat-icon {
+                        font-size: 40px;
+                        width: 40px;
+                        height: 40px;
+                        color: #2196f3;
+                    }
+
+                    h3 {
+                        margin: 0 0 5px 0;
+                        font-size: 18px;
+                        font-weight: 600;
+                    }
+
+                    .type-badge {
+                        display: inline-block;
+                        padding: 4px 12px;
+                        background: #e3f2fd;
+                        color: #2196f3;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+
+                .capacity-info {
+                    margin-bottom: 20px;
+
+                    .capacity-header {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 10px;
+                        font-size: 14px;
+                        color: #666;
+                    }
+
+                    .progress-bar {
+                        height: 10px;
+                        background: #e0e0e0;
+                        border-radius: 5px;
+                        overflow: hidden;
+                        margin-bottom: 8px;
+
+                        .progress-fill {
+                            height: 100%;
+                            background: linear-gradient(90deg, #2196f3, #64b5f6);
+                            transition: width 0.3s ease;
+                        }
+                    }
+
+                    .capacity-percentage {
+                        text-align: center;
+                        font-weight: 600;
+                        color: #2196f3;
+                    }
+                }
+
+                .location-stats {
+                    margin-bottom: 15px;
+
+                    .stat {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 8px 0;
+                        font-size: 14px;
+                        color: #666;
+
+                        mat-icon {
+                            font-size: 18px;
+                            width: 18px;
+                            height: 18px;
+                        }
+                    }
+                }
+
+                .location-actions {
+                    display: flex;
+                    gap: 10px;
+                    border-top: 1px solid #f0f0f0;
+                    padding-top: 15px;
+                }
+            }
+        }
+    }
+}

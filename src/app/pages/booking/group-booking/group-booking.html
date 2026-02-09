@@ -11,7 +11,141 @@
                         <h2>Group Booking</h2>
                     </div>
                     <div class="body">
-                        <p>Group Booking Form Placeholder</p>
+                        <form class="m-4" [formGroup]="groupBookingForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Group Name</mat-label>
+                                        <input matInput formControlName="groupName" required>
+                                        <mat-error *ngIf="groupBookingForm.get('groupName')?.hasError('required')">
+                                            Group name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Contact Person</mat-label>
+                                        <input matInput formControlName="contactPerson" required>
+                                        <mat-error *ngIf="groupBookingForm.get('contactPerson')?.hasError('required')">
+                                            Contact person is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Email</mat-label>
+                                        <input matInput formControlName="email" required>
+                                        <mat-error
+                                            *ngIf="groupBookingForm.get('email')?.hasError('required') || groupBookingForm.get('email')?.hasError('email')">
+                                            Please enter a valid email address
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Mobile</mat-label>
+                                        <input matInput formControlName="mobile" type="number" required>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Arrival Date</mat-label>
+                                        <input matInput [matDatepicker]="picker" formControlName="arriveDate" required>
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <mat-error *ngIf="groupBookingForm.get('arriveDate')?.hasError('required')">
+                                            Arrival Date is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Departure Date</mat-label>
+                                        <input matInput [matDatepicker]="picker2" formControlName="departDate" required>
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2></mat-datepicker>
+                                        <mat-error *ngIf="groupBookingForm.get('departDate')?.hasError('required')">
+                                            Departure Date is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Total Rooms</mat-label>
+                                        <input matInput formControlName="totalRooms" type="number" required>
+                                        <mat-error *ngIf="groupBookingForm.get('totalRooms')?.hasError('required')">
+                                            Total rooms is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Total Guests</mat-label>
+                                        <input matInput formControlName="totalGuests" type="number" required>
+                                        <mat-error *ngIf="groupBookingForm.get('totalGuests')?.hasError('required')">
+                                            Total guests is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Room Type</mat-label>
+                                        <mat-select formControlName="roomType" required>
+                                            <mat-option [value]="'Single'">
+                                                Single
+                                            </mat-option>
+                                            <mat-option [value]="'Double'">
+                                                Double
+                                            </mat-option>
+                                            <mat-option [value]="'Suite'">
+                                                Suite
+                                            </mat-option>
+                                            <mat-option [value]="'Deluxe'">
+                                                Deluxe
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="groupBookingForm.get('roomType')?.hasError('required')">
+                                            Room Type is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Special Requests</mat-label>
+                                        <textarea matInput formControlName="specialRequests" rows="3"></textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Advance Payment</mat-label>
+                                        <input matInput formControlName="advance" type="number">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                                    <mat-form-field class="example-full-width mb-3" appearance="outline">
+                                        <mat-label>Additional Notes</mat-label>
+                                        <textarea matInput formControlName="note"></textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                                    <button class="me-3" mat-flat-button color="primary"
+                                        [disabled]="!groupBookingForm.valid">Submit Group Booking</button>
+                                    <button type="button" mat-flat-button color="warn">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

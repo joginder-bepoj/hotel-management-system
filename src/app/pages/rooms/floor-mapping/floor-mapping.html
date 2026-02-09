@@ -12,7 +12,120 @@
                         <h2>Floor Mapping</h2>
                     </div>
                     <div class="body">
-                        <p>Floor Mapping Placeholder</p>
+                        <div class="floor-mapping-container">
+                            <!-- Floor Selector and Stats -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <mat-form-field appearance="outline" class="floor-selector">
+                                        <mat-label>Select Floor</mat-label>
+                                        <mat-select [(value)]="selectedFloor">
+                                            <mat-option *ngFor="let floor of floors" [value]="floor">
+                                                Floor {{ floor }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <h4>Floor {{ selectedFloor }} Statistics</h4>
+                                </div>
+                            </div>
+
+                            <!-- Statistics Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card total">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>meeting_room</mat-icon>
+                                            </div>
+                                            <div class="stat-info">
+                                                <h3>{{ getRoomStats().total }}</h3>
+                                                <p>Total Rooms</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card available">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>check_circle</mat-icon>
+                                            </div>
+                                            <div class="stat-info">
+                                                <h3>{{ getRoomStats().available }}</h3>
+                                                <p>Available</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card occupied">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>person</mat-icon>
+                                            </div>
+                                            <div class="stat-info">
+                                                <h3>{{ getRoomStats().occupied }}</h3>
+                                                <p>Occupied</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <mat-card class="stat-card maintenance">
+                                        <mat-card-content>
+                                            <div class="stat-icon">
+                                                <mat-icon>build</mat-icon>
+                                            </div>
+                                            <div class="stat-info">
+                                                <h3>{{ getRoomStats().maintenance }}</h3>
+                                                <p>Maintenance</p>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+
+                            <!-- Floor Plan Grid -->
+                            <div class="floor-plan">
+                                <h5 class="mb-3">Floor Layout</h5>
+                                <div class="room-grid">
+                                    <div *ngFor="let room of getFloorRooms()" 
+                                         class="room-cell"
+                                         [ngClass]="'status-' + room.status">
+                                        <div class="room-number">{{ room.roomNo }}</div>
+                                        <div class="room-type">{{ room.roomType }}</div>
+                                        <div class="room-status">
+                                            <mat-icon>{{ getStatusIcon(room.status) }}</mat-icon>
+                                            <span>{{ getStatusLabel(room.status) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Legend -->
+                            <div class="legend mt-4">
+                                <h6>Status Legend:</h6>
+                                <div class="legend-items">
+                                    <div class="legend-item">
+                                        <span class="legend-color status-available"></span>
+                                        <span>Available</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color status-occupied"></span>
+                                        <span>Occupied</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color status-reserved"></span>
+                                        <span>Reserved</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color status-maintenance"></span>
+                                        <span>Maintenance</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

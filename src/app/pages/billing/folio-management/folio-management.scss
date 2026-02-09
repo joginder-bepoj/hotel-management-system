@@ -1,0 +1,82 @@
+.folio-management {
+    .folio-list {
+        max-height: calc(100vh - 300px);
+        overflow-y: auto;
+    }
+
+    .folio-item-card {
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 4px solid transparent;
+
+        &:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: #f8f9fa;
+        }
+
+        &.active {
+            border-left-color: #2196f3;
+            background: #e3f2fd;
+        }
+
+        mat-card-content {
+            padding: 12px !important;
+        }
+    }
+
+    .detail-header-card {
+        h3 {
+            margin: 0 0 10px 0;
+            color: #2196f3;
+        }
+        
+        .summary-item {
+            margin-bottom: 5px;
+            font-size: 16px;
+            
+            .label {
+                color: #666;
+                margin-right: 10px;
+            }
+            .value {
+                font-weight: 600;
+            }
+
+            &.balance {
+                font-size: 20px;
+                border-top: 1px solid #eee;
+                padding-top: 10px;
+                margin-top: 10px;
+            }
+        }
+    }
+
+    .cat-badge {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &.room { background: #e3f2fd; color: #1976d2; }
+        &.f&b { background: #fff3e0; color: #f57c00; }
+        &.laundry { background: #f3e5f5; color: #7b1fa2; }
+        &.spa { background: #e8f5e9; color: #388e3c; }
+        &.others { background: #f5f5f5; color: #616161; }
+    }
+
+    table {
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+
+        th {
+            font-weight: 600;
+            color: #555;
+        }
+
+        td {
+            color: #333;
+        }
+    }
+}

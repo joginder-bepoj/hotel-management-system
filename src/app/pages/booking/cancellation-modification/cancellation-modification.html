@@ -12,7 +12,54 @@
                         <h2>Cancellation & Modification</h2>
                     </div>
                     <div class="body">
-                        <p>Cancellation List/Form Placeholder</p>
+                        <div class="cancellation-container">
+                            <!-- Search Section -->
+                            <div class="search-section mb-4">
+                                <mat-form-field class="search-field" appearance="outline">
+                                    <mat-label>Search Booking</mat-label>
+                                    <input matInput [(ngModel)]="searchQuery" (keyup)="searchBooking()"
+                                        placeholder="Search by name, email, mobile, or room number">
+                                    <mat-icon matSuffix>search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Booking List -->
+                            <div class="booking-list" *ngIf="filteredBookings.length > 0; else noBookings">
+                                <mat-card *ngFor="let booking of filteredBookings" class="booking-card">
+                                    <mat-card-content>
+                                        <div class="booking-info">
+                                            <div class="guest-details">
+                                                <h3>{{ booking.first }} {{ booking.last }}</h3>
+                                                <p><mat-icon class="info-icon">email</mat-icon> {{ booking.email }}</p>
+                                                <p><mat-icon class="info-icon">phone</mat-icon> {{ booking.mobile }}</p>
+                                                <p><mat-icon class="info-icon">room</mat-icon> Room: {{ booking.roomNo || 'Not Assigned' }}</p>
+                                            </div>
+                                            <div class="booking-dates">
+                                                <p><strong>Arrival:</strong> {{ booking.arriveDate | date:'short' }}</p>
+                                                <p><strong>Departure:</strong> {{ booking.departDate | date:'short' }}</p>
+                                                <p><strong>Room Type:</strong> {{ booking.roomType }}</p>
+                                                <p><strong>Payment:</strong> <span class="payment-badge" [ngClass]="booking.payment">{{ booking.payment }}</span></p>
+                                            </div>
+                                            <div class="action-buttons">
+                                                <button mat-raised-button color="primary" (click)="modifyBooking(booking.id)">
+                                                    <mat-icon>edit</mat-icon> Modify
+                                                </button>
+                                                <button mat-raised-button color="warn" (click)="cancelBooking(booking)">
+                                                    <mat-icon>cancel</mat-icon> Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
+                            <ng-template #noBookings>
+                                <div class="no-data">
+                                    <mat-icon>search_off</mat-icon>
+                                    <p>No bookings found</p>
+                                </div>
+                            </ng-template>
+                        </div>
                     </div>
                 </div>
             </div>

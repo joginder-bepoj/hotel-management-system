@@ -11,7 +11,121 @@
                         <h2>Folio Management</h2>
                     </div>
                     <div class="body">
-                        <p>Folio Management Placeholder</p>
+                        <div class="folio-management">
+                            <div class="row">
+                                <!-- Left Panel: Folio List -->
+                                <div class="col-md-4">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Search Folios</mat-label>
+                                        <input matInput [(ngModel)]="searchQuery" (input)="applyFilter()" placeholder="Guest name or Room No">
+                                        <mat-icon matPrefix>search</mat-icon>
+                                    </mat-form-field>
+
+                                    <div class="folio-list">
+                                        <mat-card *ngFor="let folio of filteredFolios" 
+                                                 [class.active]="selectedFolio?.folioId === folio.folioId"
+                                                 (click)="selectFolio(folio)"
+                                                 class="folio-item-card mb-2">
+                                            <mat-card-content>
+                                                <div class="d-flex justify-content-between">
+                                                    <strong>{{ folio.guestName }}</strong>
+                                                    <mat-chip size="small">{{ folio.roomNo }}</mat-chip>
+                                                </div>
+                                                <div class="text-muted small">{{ folio.folioId }}</div>
+                                            </mat-card-content>
+                                        </mat-card>
+                                    </div>
+                                </div>
+
+                                <!-- Right Panel: Folio Details -->
+                                <div class="col-md-8">
+                                    <div *ngIf="selectedFolio" class="folio-details">
+                                        <mat-card class="mb-4 detail-header-card">
+                                            <mat-card-content>
+                                                <div class="row">
+                                                    <div class="col-md-6 border-end">
+                                                        <h3>{{ selectedFolio.guestName }}</h3>
+                                                        <p class="mb-1"><mat-icon inline>hotel</mat-icon> Room: {{ selectedFolio.roomNo }}</p>
+                                                        <p class="mb-0"><mat-icon inline>event</mat-icon> Dates: {{ selectedFolio.checkIn | date }} - {{ selectedFolio.checkOut | date }}</p>
+                                                    </div>
+                                                    <div class="col-md-6 text-end">
+                                                        <div class="summary-item">
+                                                            <span class="label">Total Charges:</span>
+                                                            <span class="value text-danger">₹{{ getTotalDebit() | number }}</span>
+                                                        </div>
+                                                        <div class="summary-item">
+                                                            <span class="label">Total Paid:</span>
+                                                            <span class="value text-success">₹{{ getTotalCredit() | number }}</span>
+                                                        </div>
+                                                        <div class="summary-item balance">
+                                                            <span class="label">Balance:</span>
+                                                            <span class="value" [class.text-danger]="getBalance() > 0">₹{{ getBalance() | number }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </mat-card-content>
+                                        </mat-card>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4>Transactions</h4>
+                                            <button mat-raised-button color="primary" (click)="addCharge()">
+                                                <mat-icon>add</mat-icon> Add Charge
+                                            </button>
+                                        </div>
+
+                                        <table mat-table [dataSource]="selectedFolio.transactions" class="mat-elevation-z2 w-100">
+                                            <ng-container matColumnDef="date">
+                                                <th mat-header-cell *matHeaderCellDef> Date </th>
+                                                <td mat-cell *matCellDef="let t"> {{ t.date | date:'shortDate' }} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="description">
+                                                <th mat-header-cell *matHeaderCellDef> Description </th>
+                                                <td mat-cell *matCellDef="let t"> {{ t.description }} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="category">
+                                                <th mat-header-cell *matHeaderCellDef> Category </th>
+                                                <td mat-cell *matCellDef="let t"> 
+                                                    <span class="cat-badge" [ngClass]="t.category.toLowerCase()">{{ t.category }}</span> 
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="amount">
+                                                <th mat-header-cell *matHeaderCellDef class="text-end"> Amount </th>
+                                                <td mat-cell *matCellDef="let t" class="text-end"> ₹{{ t.amount | number }} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="type">
+                                                <th mat-header-cell *matHeaderCellDef> Type </th>
+                                                <td mat-cell *matCellDef="let t">
+                                                    <span [class.text-danger]="t.type === 'Debit'" [class.text-success]="t.type === 'Credit'">
+                                                        {{ t.type }}
+                                                    </span>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="actions">
+                                                <th mat-header-cell *matHeaderCellDef> </th>
+                                                <td mat-cell *matCellDef="let t">
+                                                    <button mat-icon-button color="warn" (click)="deleteTransaction(t.id)">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                        </table>
+                                    </div>
+
+                                    <div *ngIf="!selectedFolio" class="text-center p-5">
+                                        <mat-icon color="disabled" style="font-size: 48px; width: 48px; height: 48px;">account_balance_wallet</mat-icon>
+                                        <p>Select a folio to view details</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

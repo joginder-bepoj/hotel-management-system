@@ -11,7 +11,66 @@
                         <h2>Feedback & Reviews</h2>
                     </div>
                     <div class="body">
-                        <p>Feedback & Reviews Placeholder</p>
+                        <div class="feedback-reviews">
+                            <!-- Ratings Dashboard -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <mat-card class="rating-card text-center p-4">
+                                        <mat-card-content>
+                                            <h1 class="display-3 fw-bold mb-0 text-warning">{{ stats.averageRating }}</h1>
+                                            <div class="stars mb-2">
+                                                <mat-icon *ngFor="let s of getStarArray(4)" class="text-warning">star</mat-icon>
+                                                <mat-icon class="text-warning">star_half</mat-icon> <!-- Hardcoded for 4.5 visual -->
+                                            </div>
+                                            <p class="text-muted mb-0">Based on {{ stats.totalReviews }} reviews</p>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-8">
+                                    <mat-card class="h-100">
+                                        <mat-card-header>
+                                            <mat-card-title>Rating Distribution</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content class="pt-3">
+                                            <div *ngFor="let dist of stats.ratingDistribution" class="d-flex align-items-center mb-2">
+                                                <span class="distribution-label">{{ dist.stars }} Stars</span>
+                                                <mat-progress-bar mode="determinate" [value]="dist.percentage" class="mx-3"></mat-progress-bar>
+                                                <span class="distribution-count text-muted">{{ dist.count }}</span>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+
+                            <!-- Reviews Grid -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="mb-3">Recent Reviews</h4>
+                                </div>
+                                <div class="col-md-6 mb-4" *ngFor="let review of reviews">
+                                    <mat-card class="review-card h-100">
+                                        <mat-card-header>
+                                            <img mat-card-avatar [src]="review.avatar" class="avatar-small">
+                                            <mat-card-title>{{ review.guestName }}</mat-card-title>
+                                            <mat-card-subtitle>{{ review.date | date:'mediumDate' }} • {{ review.stayType }}</mat-card-subtitle>
+                                        </mat-card-header>
+                                        <mat-card-content class="pt-3">
+                                            <div class="d-flex mb-2">
+                                                <mat-icon *ngFor="let s of getStarArray(review.rating)" class="star-small filled">star</mat-icon>
+                                                <mat-icon *ngFor="let s of getEmptyStarArray(review.rating)" class="star-small empty">star_border</mat-icon>
+                                            </div>
+                                            <p class="review-text">"{{ review.comment }}"</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <mat-chip-set>
+                                                    <mat-chip class="source-chip small-chip">{{ review.source }}</mat-chip>
+                                                </mat-chip-set>
+                                                <button mat-button color="primary" (click)="replyToReview(review)">Reply</button>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,85 @@
                         <h2>Invoice Management</h2>
                     </div>
                     <div class="body">
-                        <p>Invoice Management Placeholder</p>
+                        <div class="invoice-management">
+                            <!-- Filters & Search -->
+                            <div class="row mb-4 align-items-center">
+                                <div class="col-md-6">
+                                    <mat-chip-listbox aria-label="Status filter">
+                                        <mat-chip-option [selected]="selectedStatus === 'All'" (click)="setStatusFilter('All')">
+                                            All ({{ getInvoicesByStatus('All') }})
+                                        </mat-chip-option>
+                                        <mat-chip-option [selected]="selectedStatus === 'Paid'" (click)="setStatusFilter('Paid')">
+                                            Paid ({{ getInvoicesByStatus('Paid') }})
+                                        </mat-chip-option>
+                                        <mat-chip-option [selected]="selectedStatus === 'Unpaid'" (click)="setStatusFilter('Unpaid')">
+                                            Unpaid ({{ getInvoicesByStatus('Unpaid') }})
+                                        </mat-chip-option>
+                                        <mat-chip-option [selected]="selectedStatus === 'Overdue'" (click)="setStatusFilter('Overdue')">
+                                            Overdue ({{ getInvoicesByStatus('Overdue') }})
+                                        </mat-chip-option>
+                                    </mat-chip-listbox>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field appearance="outline" class="w-100 no-padding">
+                                        <mat-label>Search Invoices</mat-label>
+                                        <input matInput [(ngModel)]="searchQuery" (input)="applyFilter()" placeholder="Invoice ID or Guest Name">
+                                        <mat-icon matPrefix>search</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <!-- Invoice Table -->
+                            <mat-card class="p-0 overflow-hidden">
+                                <table mat-table [dataSource]="filteredInvoices" class="w-100">
+                                    <ng-container matColumnDef="id">
+                                        <th mat-header-cell *matHeaderCellDef> Invoice ID </th>
+                                        <td mat-cell *matCellDef="let inv"> <strong>{{ inv.id }}</strong> </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="guestName">
+                                        <th mat-header-cell *matHeaderCellDef> Guest Name </th>
+                                        <td mat-cell *matCellDef="let inv"> {{ inv.guestName }} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="date">
+                                        <th mat-header-cell *matHeaderCellDef> Date </th>
+                                        <td mat-cell *matCellDef="let inv"> {{ inv.date | date:'mediumDate' }} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="amount">
+                                        <th mat-header-cell *matHeaderCellDef class="text-end"> Amount </th>
+                                        <td mat-cell *matCellDef="let inv" class="text-end"> <strong>₹{{ inv.totalAmount | number }}</strong> </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="status">
+                                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                                        <td mat-cell *matCellDef="let inv">
+                                            <span class="status-badge" [ngClass]="inv.status.toLowerCase()">{{ inv.status }}</span>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="actions">
+                                        <th mat-header-cell *matHeaderCellDef class="text-center"> Actions </th>
+                                        <td mat-cell *matCellDef="let inv" class="text-center">
+                                            <button mat-icon-button (click)="viewInvoice(inv.id)" matTooltip="View Details">
+                                                <mat-icon>visibility</mat-icon>
+                                            </button>
+                                            <button mat-icon-button color="primary" (click)="downloadInvoice(inv.id)" matTooltip="Download PDF">
+                                                <mat-icon>download</mat-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                </table>
+
+                                <div *ngIf="filteredInvoices.length === 0" class="text-center p-4">
+                                    <p class="text-muted">No invoices found matching your criteria.</p>
+                                </div>
+                            </mat-card>
+                        </div>
                     </div>
                 </div>
             </div>

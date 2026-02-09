@@ -11,7 +11,135 @@
                         <h2>Tax Calculation</h2>
                     </div>
                     <div class="body">
-                        <p>Tax Calculation Placeholder</p>
+                        <div class="tax-calculation">
+                            <!-- Summary Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <mat-card class="stat-card">
+                                        <mat-card-content>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="label">Total Tax Collected</div>
+                                                    <div class="value">₹{{ getTotalTaxCollected() | number }}</div>
+                                                </div>
+                                                <mat-icon class="icon tax">account_balance</mat-icon>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-4">
+                                    <mat-card class="stat-card">
+                                        <mat-card-content>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="label">Active Tax Rules</div>
+                                                    <div class="value">3</div>
+                                                </div>
+                                                <mat-icon class="icon rules">rule</mat-icon>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button mat-raised-button color="primary" (click)="addTaxRule()">
+                                        <mat-icon>add</mat-icon> New Tax Rule
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Left Panel: Tax Rules -->
+                                <div class="col-md-7">
+                                    <mat-card>
+                                        <mat-card-header>
+                                            <mat-card-title>Tax Rules Configuration</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content class="p-0">
+                                            <table mat-table [dataSource]="taxRules" class="w-100">
+                                                <ng-container matColumnDef="name">
+                                                    <th mat-header-cell *matHeaderCellDef> Rule Name </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.name }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="rate">
+                                                    <th mat-header-cell *matHeaderCellDef> Rate </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.rate }}{{ r.type === 'Percentage' ? '%' : '' }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="type">
+                                                    <th mat-header-cell *matHeaderCellDef> Type </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.type }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="category">
+                                                    <th mat-header-cell *matHeaderCellDef> Category </th>
+                                                    <td mat-cell *matCellDef="let r"> {{ r.category }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="status">
+                                                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                                                    <td mat-cell *matCellDef="let r">
+                                                        <mat-slide-toggle [checked]="r.isActive" (change)="toggleRule(r)"></mat-slide-toggle>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="actions">
+                                                    <th mat-header-cell *matHeaderCellDef> </th>
+                                                    <td mat-cell *matCellDef="let r">
+                                                        <button mat-icon-button (click)="editRule(r)">
+                                                            <mat-icon>edit</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                </ng-container>
+
+                                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+
+                                <!-- Right Panel: History -->
+                                <div class="col-md-5">
+                                    <mat-card>
+                                        <mat-card-header>
+                                            <mat-card-title>Recent Tax Filings</mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content class="p-0">
+                                            <table mat-table [dataSource]="taxHistory" class="w-100 small-table">
+                                                <ng-container matColumnDef="txId">
+                                                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                                                    <td mat-cell *matCellDef="let h"> {{ h.id }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="invId">
+                                                    <th mat-header-cell *matHeaderCellDef> Inv </th>
+                                                    <td mat-cell *matCellDef="let h"> {{ h.invoiceId }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="total">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-end"> Total </th>
+                                                    <td mat-cell *matCellDef="let h" class="text-end"> ₹{{ h.totalAmount | number }} </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="tax">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-end"> Tax </th>
+                                                    <td mat-cell *matCellDef="let h" class="text-end"> <strong>₹{{ h.taxAmount | number }}</strong> </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="date">
+                                                    <th mat-header-cell *matHeaderCellDef> Date </th>
+                                                    <td mat-cell *matCellDef="let h"> {{ h.date | date:'shortDate' }} </td>
+                                                </ng-container>
+
+                                                <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: historyColumns;"></tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

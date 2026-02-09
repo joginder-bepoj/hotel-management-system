@@ -12,7 +12,133 @@
                         <h2>Check-in / Check-out</h2>
                     </div>
                     <div class="body">
-                        <p>Check-in/Check-out Action Board Placeholder</p>
+                        <div class="check-in-out-container">
+                            <!-- Search Section -->
+                            <div class="search-section mb-4">
+                                <mat-form-field class="search-field" appearance="outline">
+                                    <mat-label>Search Booking</mat-label>
+                                    <input matInput [(ngModel)]="searchQuery" (keyup)="searchBooking()"
+                                        placeholder="Search by name, email, mobile, or room number">
+                                    <mat-icon matSuffix>search</mat-icon>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Tabs for Check-in and Check-out -->
+                            <mat-tab-group>
+                                <!-- Today's Check-ins Tab -->
+                                <mat-tab label="Today's Check-ins ({{ todayCheckIns.length }})">
+                                    <div class="tab-content">
+                                        <div class="booking-list" *ngIf="todayCheckIns.length > 0; else noCheckIns">
+                                            <mat-card *ngFor="let booking of todayCheckIns" class="booking-card">
+                                                <mat-card-content>
+                                                    <div class="booking-info">
+                                                        <div class="guest-details">
+                                                            <h3>{{ booking.first }} {{ booking.last }}</h3>
+                                                            <p><mat-icon class="info-icon">email</mat-icon> {{ booking.email }}</p>
+                                                            <p><mat-icon class="info-icon">phone</mat-icon> {{ booking.mobile }}</p>
+                                                            <p><mat-icon class="info-icon">room</mat-icon> Room: {{ booking.roomNo || 'Not Assigned' }}</p>
+                                                        </div>
+                                                        <div class="booking-dates">
+                                                            <p><strong>Arrival:</strong> {{ booking.arriveDate | date:'short' }}</p>
+                                                            <p><strong>Departure:</strong> {{ booking.departDate | date:'short' }}</p>
+                                                            <p><strong>Room Type:</strong> {{ booking.roomType }}</p>
+                                                        </div>
+                                                        <div class="action-buttons">
+                                                            <button mat-raised-button color="primary" (click)="checkIn(booking)">
+                                                                <mat-icon>login</mat-icon> Check In
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        </div>
+                                        <ng-template #noCheckIns>
+                                            <div class="no-data">
+                                                <mat-icon>event_available</mat-icon>
+                                                <p>No check-ins scheduled for today</p>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </mat-tab>
+
+                                <!-- Today's Check-outs Tab -->
+                                <mat-tab label="Today's Check-outs ({{ todayCheckOuts.length }})">
+                                    <div class="tab-content">
+                                        <div class="booking-list" *ngIf="todayCheckOuts.length > 0; else noCheckOuts">
+                                            <mat-card *ngFor="let booking of todayCheckOuts" class="booking-card">
+                                                <mat-card-content>
+                                                    <div class="booking-info">
+                                                        <div class="guest-details">
+                                                            <h3>{{ booking.first }} {{ booking.last }}</h3>
+                                                            <p><mat-icon class="info-icon">email</mat-icon> {{ booking.email }}</p>
+                                                            <p><mat-icon class="info-icon">phone</mat-icon> {{ booking.mobile }}</p>
+                                                            <p><mat-icon class="info-icon">room</mat-icon> Room: {{ booking.roomNo || 'Not Assigned' }}</p>
+                                                        </div>
+                                                        <div class="booking-dates">
+                                                            <p><strong>Arrival:</strong> {{ booking.arriveDate | date:'short' }}</p>
+                                                            <p><strong>Departure:</strong> {{ booking.departDate | date:'short' }}</p>
+                                                            <p><strong>Room Type:</strong> {{ booking.roomType }}</p>
+                                                        </div>
+                                                        <div class="action-buttons">
+                                                            <button mat-raised-button color="warn" (click)="checkOut(booking)">
+                                                                <mat-icon>logout</mat-icon> Check Out
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        </div>
+                                        <ng-template #noCheckOuts>
+                                            <div class="no-data">
+                                                <mat-icon>event_busy</mat-icon>
+                                                <p>No check-outs scheduled for today</p>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </mat-tab>
+
+                                <!-- All Bookings Search Results Tab -->
+                                <mat-tab label="Search Results ({{ filteredBookings.length }})">
+                                    <div class="tab-content">
+                                        <div class="booking-list" *ngIf="filteredBookings.length > 0; else noResults">
+                                            <mat-card *ngFor="let booking of filteredBookings" class="booking-card">
+                                                <mat-card-content>
+                                                    <div class="booking-info">
+                                                        <div class="guest-details">
+                                                            <h3>{{ booking.first }} {{ booking.last }}</h3>
+                                                            <p><mat-icon class="info-icon">email</mat-icon> {{ booking.email }}</p>
+                                                            <p><mat-icon class="info-icon">phone</mat-icon> {{ booking.mobile }}</p>
+                                                            <p><mat-icon class="info-icon">room</mat-icon> Room: {{ booking.roomNo || 'Not Assigned' }}</p>
+                                                        </div>
+                                                        <div class="booking-dates">
+                                                            <p><strong>Arrival:</strong> {{ booking.arriveDate | date:'short' }}</p>
+                                                            <p><strong>Departure:</strong> {{ booking.departDate | date:'short' }}</p>
+                                                            <p><strong>Status:</strong> <span class="status-badge">{{ booking.status || 'Pending' }}</span></p>
+                                                        </div>
+                                                        <div class="action-buttons">
+                                                            <button mat-raised-button color="primary" (click)="checkIn(booking)"
+                                                                *ngIf="booking.status !== 'Checked-In' && booking.status !== 'Checked-Out'">
+                                                                <mat-icon>login</mat-icon> Check In
+                                                            </button>
+                                                            <button mat-raised-button color="warn" (click)="checkOut(booking)"
+                                                                *ngIf="booking.status === 'Checked-In'">
+                                                                <mat-icon>logout</mat-icon> Check Out
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        </div>
+                                        <ng-template #noResults>
+                                            <div class="no-data">
+                                                <mat-icon>search_off</mat-icon>
+                                                <p>No bookings found</p>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </mat-tab>
+                            </mat-tab-group>
+                        </div>
                     </div>
                 </div>
             </div>
