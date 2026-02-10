@@ -120,6 +120,16 @@
            <p class="text-danger">Please enter room types in the previous step to set prices.</p>
         </div>
 
+        <h3 class="section-title">Base Pricing</h3>
+        <div class="row mt-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Base Room Price (Starting From)</mat-label>
+            <input matInput type="number" formControlName="baseRoomPrice" placeholder="Ex. 2500" required>
+            <span matPrefix>$&nbsp;</span>
+            <mat-error *ngIf="pricingForm.get('baseRoomPrice')?.hasError('required')">Base room price is required</mat-error>
+          </mat-form-field>
+        </div>
+
         <h3 class="section-title">Seasonal Pricing</h3>
         <div class="row mt-2">
           <mat-form-field appearance="outline">

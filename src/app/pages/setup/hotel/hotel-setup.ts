@@ -56,6 +56,7 @@ export class HotelSetupComponent implements OnInit {
 
   pricingForm: FormGroup = this._formBuilder.group({
     roomPrices: this._formBuilder.group({}),
+    baseRoomPrice: ['', Validators.required],
     seasonalMultiplier: [''],
     discount: ['']
   });
@@ -121,19 +122,50 @@ export class HotelSetupComponent implements OnInit {
 
   onSubmit() {
     if (this.basicDetailsForm.valid && this.configurationForm.valid && this.pricingForm.valid && this.policiesForm.valid) {
-      const setupData = {
-        ...this.basicDetailsForm.value,
-        ...this.configurationForm.value,
-        ...this.pricingForm.value,
-        ...this.policiesForm.value,
-        ...this.mediaForm.value,
-        // In a real app, we would upload files and save URLs. 
-        // Here we just store the names for demo purposes.
-        images: this.selectedImages.map(f => f.name),
-        documents: this.selectedDocs.map(f => f.name)
-      };
+      const basicDetails = this.basicDetailsForm.value;
+      const configuration = this.configurationForm.value;
+      const pricing = this.pricingForm.value;
+      const policies = this.policiesForm.value;
+      const media = this.mediaForm.value;
+
+      const amenities = [];
+      if (configuration.amenityWifi) amenities.push('WiFi');
+      if (configuration.amenityParking) amenities.push('Parking');
+      if (configuration.amenityPool) amenities.push('Pool');
+      if (configuration.amenityGym) amenities.push('Gym');
+      if (configuration.amenityRestaurant) amenities.push('Restaurant');
+      if (configuration.amenityRoomService) amenities.push('RoomService');
+
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : { id: 1 };
+
+      const formData = new FormData();
+      formData.append('user_id', user.id || 1);
+      formData.append('hotel_name', basicDetails.hotelName);
+      formData.append('address', basicDetails.address);
+      formData.append('contact_number', basicDetails.contactNumber);
+      formData.append('email', basicDetails.email);
+      formData.append('rating', basicDetails.rating);
+      formData.append('total_floor', configuration.floors);
+      formData.append('total_rooms', configuration.rooms);
       
-      this._hotelService.saveHotelDetails(setupData).subscribe(success => {
+      const roomTypes = configuration.roomTypes.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '');
+      roomTypes.forEach((type: string) => formData.append('room_types[]', type));
+
+      amenities.forEach((amenity: string) => formData.append('amenities[]', amenity));
+
+      formData.append('base_room_price', pricing.baseRoomPrice);
+      formData.append('peak_season_multiplier', pricing.seasonalMultiplier);
+      formData.append('discount', pricing.discount);
+      formData.append('check_in_time', policies.checkInTime);
+      formData.append('check_out_time', policies.checkOutTime);
+      formData.append('cancellation_policy', policies.cancellationPolicy);
+      formData.append('gst_tax_id', media.gstId);
+
+      this.selectedImages.forEach(file => formData.append('hotel_images[]', file));
+      this.selectedDocs.forEach(file => formData.append('licence_documents[]', file));
+      
+      this._hotelService.addHotel(formData).subscribe(success => {
         if (success) {
           alert('Hotel Setup Completed!');
           this._router.navigate(['/dashboard']);

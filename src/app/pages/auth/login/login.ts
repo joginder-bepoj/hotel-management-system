@@ -51,10 +51,9 @@ export class LoginComponent implements OnInit {
       this.authService.login(this.loginForm.value).subscribe({
         next: (res) => {
           this.isLoading = false;
-          // User data might be in res.data or res
-          const user = res.data || res;
+          // Server uses cookie-based auth, no token in response
+          const user = res.user || res.data || res;
           localStorage.setItem('user', JSON.stringify(user));
-          localStorage.setItem('token', res.token || res.access_token);
           
           if (user.is_setup_complete) {
             this.router.navigate(['/dashboard']);

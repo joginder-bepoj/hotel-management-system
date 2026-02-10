@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface Booking {
   id: number;
@@ -58,31 +59,39 @@ export class BookingService {
       payment: 'Unpaid',
     },
   ];
+  private bookingsSubject: BehaviorSubject<Booking[]> = new BehaviorSubject<Booking[]>(this.bookings);
+  bookings$: Observable<Booking[]> = this.bookingsSubject.asObservable();
 
   constructor() {}
 
   getBookings(): Booking[] {
-    return this.bookings;
+    return this.bookingsSubject.value;
   }
 
   addBooking(booking: Booking): void {
-    booking.id = this.bookings.length > 0 ? Math.max(...this.bookings.map(b => b.id)) + 1 : 1;
+    const currentBookings = this.bookingsSubject.value;
+    booking.id = currentBookings.length > 0 ? Math.max(...currentBookings.map(b => b.id)) + 1 : 1;
     booking.payment = 'Unpaid'; // Default status
-    this.bookings.push(booking);
+    const updatedBookings = [...currentBookings, booking];
+    this.bookingsSubject.next(updatedBookings);
   }
 
   getBooking(id: number): Booking | undefined {
-    return this.bookings.find((b) => b.id === id);
+    return this.bookingsSubject.value.find((b) => b.id === id);
   }
 
   updateBooking(updatedBooking: Booking): void {
-    const index = this.bookings.findIndex((b) => b.id === updatedBooking.id);
+    const currentBookings = this.bookingsSubject.value;
+    const index = currentBookings.findIndex((b) => b.id === updatedBooking.id);
     if (index !== -1) {
-      this.bookings[index] = updatedBooking;
+      const updatedBookings = [...currentBookings];
+      updatedBookings[index] = updatedBooking;
+      this.bookingsSubject.next(updatedBookings);
     }
   }
 
   deleteBooking(id: number): void {
-    this.bookings = this.bookings.filter((b) => b.id !== id);
+    const updatedBookings = this.bookingsSubject.value.filter((b) => b.id !== id);
+    this.bookingsSubject.next(updatedBookings);
   }
 }

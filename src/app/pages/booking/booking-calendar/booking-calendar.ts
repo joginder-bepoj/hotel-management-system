@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { BookingService, Booking } from '../../../core/service/booking.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-booking-calendar',
@@ -21,18 +23,31 @@ export class BookingCalendarComponent implements OnInit {
     daysInMonth: Date[] = [];
     weekDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     
-    // Mock booking data
-    bookings = [
-        { date: new Date(new Date().getFullYear(), new Date().getMonth(), 10), title: 'John Doe - Deluxe', class: 'bg-info' },
-        { date: new Date(new Date().getFullYear(), new Date().getMonth(), 15), title: 'Jane Smith - Suite', class: 'bg-success' },
-        { date: new Date(new Date().getFullYear(), new Date().getMonth(), 20), title: 'Group Booking - 5 Rooms', class: 'bg-warning' },
-        { date: new Date(new Date().getFullYear(), new Date().getMonth(), 25), title: 'Alice Brown - Single', class: 'bg-danger' },
-    ];
+    bookings: any[] = [];
+    private bookingSubscription: Subscription | undefined;
 
-    constructor() { }
+    constructor(private bookingService: BookingService) { }
 
     ngOnInit(): void {
         this.generateCalendar();
+        this.bookingSubscription = this.bookingService.bookings$.subscribe(bookings => {
+            this.mapBookings(bookings);
+        });
+    }
+
+    ngOnDestroy(): void {
+        if (this.bookingSubscription) {
+            this.bookingSubscription.unsubscribe();
+        }
+    }
+
+    mapBookings(bookings: Booking[]): void {
+        const classes = ['bg-info', 'bg-success', 'bg-warning', 'bg-danger'];
+        this.bookings = bookings.map((b, index) => ({
+            date: new Date(b.arriveDate),
+            title: `${b.first} ${b.last} - ${b.roomType}`,
+            class: classes[index % classes.length]
+        }));
     }
 
     generateCalendar(): void {
