@@ -165,10 +165,6 @@ $sidebar-width: 300px;
         img {
             width: 54px;
             height: 54px;
-            // border-radius: 50%;
-            // border: 2px solid white;
-            // box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            // object-fit: cover;
         }
 
         &::after {
@@ -201,6 +197,63 @@ $sidebar-width: 300px;
         }
       }
     }
+  }
+}
+
+.clickable-panel {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 8px;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between !important;
+  }
+
+  .switch-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-left: 10px;
+  }
+}
+
+.hotel-switch-menu {
+  min-width: 220px !important;
+
+  .menu-header {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 5px;
+  }
+
+  .active-hotel {
+    background-color: rgba(88, 30, 150, 0.05) !important;
+    font-weight: 600;
+    color: #581e96 !important;
+
+    mat-icon {
+      color: #581e96 !important;
+    }
+  }
+
+  button mat-icon {
+    margin-right: 12px;
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
   }
 }
 

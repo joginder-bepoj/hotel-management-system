@@ -209,8 +209,9 @@ mat-form-field .mdc-floating-label {
 }
 
 .setup-container {
+  margin-top: 150px !important;
   padding: 3rem;
-  max-width: 900px;
+  max-width: 1067px;
   margin: 2rem auto;
   background: rgba(255, 255, 255, 0.95);
   /* High opacity for readability */
@@ -346,3 +347,7 @@ span.badge {
   font-weight: 500;
   line-height: 1.2;
 }
+
+// .mat-mdc-form-field-icon-prefix {
+//   padding: 0px 4px 0px 12px !important;
+// }

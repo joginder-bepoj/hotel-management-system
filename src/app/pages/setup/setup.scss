@@ -2,11 +2,12 @@
 $primary-color: #581e96;
 $primary-color-hover: #864dce;
 
+
 .setups-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   min-height: 100vh;
   padding: 2rem;
   text-align: center;
@@ -16,16 +17,17 @@ $primary-color-hover: #864dce;
 
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   margin-bottom: 0.5rem;
   color: #333;
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: #666;
   margin-bottom: 3rem;
 }
+
 
 .options-grid {
   display: flex;
@@ -34,42 +36,60 @@ h1 {
   justify-content: center;
 }
 
-.option-card {
-  width: 300px;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
-  padding: 2rem;
-  border-radius: 12px;
+.setup-option-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.setup-video {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  object-fit: cover;
+  display: block;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -1rem;
+}
+
+.setup-btn-rounded {
+  background-color: $primary-color !important;
+  color: white !important;
+  border-radius: 50px !important;
+  padding: 1.2rem 2.5rem !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  box-shadow: 0 4px 15px rgba(88, 30, 150, 0.3) !important;
+  border: none !important;
+
+  mat-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+    margin: 0;
+  }
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+    background-color: $primary-color-hover !important;
+    box-shadow: 0 8px 25px rgba(88, 30, 150, 0.5) !important;
   }
 
-  mat-card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .option-icon {
-    font-size: 64px;
-    height: 64px;
-    width: 64px;
-    color: $primary-color !important; 
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #333;
-  }
-
-  p {
-    color: #666;
-    line-height: 1.5;
+  &:active {
+    transform: scale(0.98);
   }
 }
+

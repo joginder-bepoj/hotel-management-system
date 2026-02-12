@@ -16,13 +16,20 @@ export class TypedHeader implements AfterViewInit {
 
   @ViewChild('cursor', { static: false }) cursor!: ElementRef;
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.letters = this.text.split('');
-    this.typeNext();
+    this.visibleCount = 0;
+  }
+
+  ngAfterViewInit() {
+    // Defer typing to next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.typeNext();
+    }, 0);
   }
 
   typeNext() {
-    if (this.visibleCount < this.letters.length) {
+    if (this.letters.length > 0 && this.visibleCount < this.letters.length) {
       this.visibleCount++;
 
       // move cursor after rendering

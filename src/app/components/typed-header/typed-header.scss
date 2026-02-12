@@ -17,21 +17,15 @@
 
 .typed-cursor {
   position: absolute;
-  width: 14px;
-  height: 22px;
+  width: 2px;
+  height: 1.2em;
+  background-color: #581e96;
   margin-left: 4px;
-  animation: blink 1s infinite;
+  animation: blink 0.7s infinite;
   pointer-events: none;
 }
 
 @keyframes blink {
-  0%,
-  45%,
-  100% {
-    opacity: 1;
-  }
-  50%,
-  90% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }

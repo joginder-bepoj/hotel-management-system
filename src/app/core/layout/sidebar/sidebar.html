@@ -5,20 +5,33 @@
         <ng-scrollbar visibility="hover">
           <ul class="list">
 
-            <!-- User Panel -->
+            <!-- Active Hotel Panel -->
             <li class="sidebar-user-panel">
-              <div class="user-panel">
+              <div class="user-panel clickable-panel" [matMenuTriggerFor]="hotelMenu">
                 <div class="image">
-                  <img
-                    src="/images/hotel-icon.png"
-                    alt="User" class="user-img" />
+                  <img [src]="activeHotel?.hotel_images?.length ? activeHotel.hotel_images[0] : '/images/hotel-icon.png'"
+                    alt="Hotel" class="user-img" />
                 </div>
                 <div class="profile">
-                  <div class="name ms-2">Royale Retreat</div>
-                  <!-- <div class="role">Manager</div> -->
+                  <div class="name ms-2">{{activeHotel?.hotel_name || 'Select Hotel'}}</div>
+                  <mat-icon class="switch-icon">expand_more</mat-icon>
                 </div>
               </div>
             </li>
+
+            <!-- Hotel Switcher Menu -->
+            <mat-menu #hotelMenu="matMenu" class="hotel-switch-menu">
+              <div class="menu-header">Your Hotels</div>
+              <button mat-menu-item *ngFor="let h of hotels" (click)="onSwitchHotel(h.id)" [class.active-hotel]="h.id === activeHotel?.id">
+                <mat-icon [color]="h.id === activeHotel?.id ? 'primary' : ''">business</mat-icon>
+                <span>{{h.hotel_name}}</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="onAddNewHotel()">
+                <mat-icon color="accent">add_circle</mat-icon>
+                <span>Add New Hotel</span>
+              </button>
+            </mat-menu>
 
             <!-- Main -->
             <li class="header">Main</li>

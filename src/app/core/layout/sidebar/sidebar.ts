@@ -1,28 +1,63 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterModule, Router } from '@angular/router';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { HotelService } from '../../services/hotel.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss'],
   standalone: true,
-  imports: [MatListModule, MatIconModule, RouterModule, NgScrollbarModule],
+  imports: [
+    CommonModule,
+    MatListModule, 
+    MatIconModule, 
+    MatMenuModule,
+    MatButtonModule,
+    RouterModule, 
+    NgScrollbarModule
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class Sidebar {
+export class Sidebar implements OnInit {
   user: any;
+  activeHotel: any;
+  hotels: any[] = [];
+
+  private hotelService = inject(HotelService);
+  private router = inject(Router);
 
   constructor() { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.loadHotels();
+    
     const body = document.querySelector('body');
     if (body) {
       body.classList.add('ls-closed');
     }
+  }
+
+  loadHotels() {
+    this.hotels = this.hotelService.getHotels();
+    this.activeHotel = this.hotelService.getActiveHotel();
+  }
+
+  onSwitchHotel(id: string) {
+    this.hotelService.setActiveHotel(id);
+    this.activeHotel = this.hotelService.getActiveHotel();
+    // Refresh current page or data
+    window.location.reload(); 
+  }
+
+  onAddNewHotel() {
+    this.router.navigate(['/setup']);
   }
 
   toggleMenu(event: Event) {

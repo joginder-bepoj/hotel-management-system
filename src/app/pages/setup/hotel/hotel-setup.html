@@ -110,7 +110,7 @@
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Price for {{type}}</mat-label>
               <input matInput type="number" [formControlName]="type" required>
-              <span matPrefix>$&nbsp;</span>
+              <span matPrefix>Rs.&nbsp;</span>
               <mat-error *ngIf="pricingForm.get('roomPrices')?.get(type)?.hasError('required')">Price is required</mat-error>
             </mat-form-field>
           </div>
@@ -125,7 +125,7 @@
           <mat-form-field appearance="outline">
             <mat-label>Base Room Price (Starting From)</mat-label>
             <input matInput type="number" formControlName="baseRoomPrice" placeholder="Ex. 2500" required>
-            <span matPrefix>$&nbsp;</span>
+            <span matPrefix>Rs.&nbsp;</span>
             <mat-error *ngIf="pricingForm.get('baseRoomPrice')?.hasError('required')">Base room price is required</mat-error>
           </mat-form-field>
         </div>
@@ -203,13 +203,13 @@
           <input #imageInput type="file" multiple style="display: none;" (change)="onFileSelected($event, 'images')">
         </div>
 
-        <h3 class="section-title">Licenses & Documents</h3>
+        <!-- <h3 class="section-title">Licenses & Documents</h3>
         <div class="file-upload-container" (click)="docInput.click()">
           <mat-icon>description</mat-icon>
           <p>Click or drag documents here to upload</p>
            <p *ngIf="selectedDocs.length" style="color: green">{{ selectedDocs.length }} files selected</p>
           <input #docInput type="file" multiple style="display: none;" (change)="onFileSelected($event, 'docs')">
-        </div>
+        </div> -->
 
         <div class="actions-container">
           <button mat-button matStepperPrevious type="button">Back</button>

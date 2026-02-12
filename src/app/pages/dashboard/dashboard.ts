@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { HotelService } from '../../core/services/hotel.service';
 
 import {
   ApexAxisChartSeries,
@@ -30,7 +31,13 @@ import {
     NgApexchartsModule
   ],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  private hotelService = inject(HotelService);
+  activeHotel: any;
+
+  ngOnInit() {
+    this.activeHotel = this.hotelService.getActiveHotel();
+  }
   totalIncomeSeries = [
   {
     name: 'income',

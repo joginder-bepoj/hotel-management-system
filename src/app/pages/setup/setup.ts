@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,8 +15,24 @@ import { ParticleBackgroundComponent } from '../../components/particle-backgroun
   styleUrls: ['./setup.scss']
 })
 export class SetupComponent {
+  @ViewChild('setupVideo') setupVideo!: ElementRef<HTMLVideoElement>;
 
   constructor(private router: Router) {}
+
+  ngAfterViewInit() {
+    if (this.setupVideo) {
+      this.setupVideo.nativeElement.play().catch((err: any) => {
+        console.warn('Video autoplay failed, will try again on interaction:', err);
+      });
+    }
+  }
+
+  onVideoError(event: any) {
+    console.error('Video error details:', event);
+    const video = event.target as HTMLVideoElement;
+    console.error('Video src:', video.currentSrc);
+    console.error('Video error object:', video.error);
+  }
 
   selectOption(option: string) {
     console.log('selectOption called with:', option);

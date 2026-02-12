@@ -139,33 +139,30 @@ export class HotelSetupComponent implements OnInit {
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : { id: 1 };
 
-      const formData = new FormData();
-      formData.append('user_id', user.id || 1);
-      formData.append('hotel_name', basicDetails.hotelName);
-      formData.append('address', basicDetails.address);
-      formData.append('contact_number', basicDetails.contactNumber);
-      formData.append('email', basicDetails.email);
-      formData.append('rating', basicDetails.rating);
-      formData.append('total_floor', configuration.floors);
-      formData.append('total_rooms', configuration.rooms);
-      
-      const roomTypes = configuration.roomTypes.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '');
-      roomTypes.forEach((type: string) => formData.append('room_types[]', type));
+      const hotelData = {
+        user_id: user.id || 1,
+        hotel_name: basicDetails.hotelName,
+        address: basicDetails.address,
+        contact_number: basicDetails.contactNumber,
+        email: basicDetails.email,
+        rating: basicDetails.rating,
+        total_floor: configuration.floors,
+        total_rooms: configuration.rooms,
+        room_types: configuration.roomTypes.split(',').map((t: string) => t.trim()).filter((t: string) => t !== ''),
+        amenities: amenities,
+        base_room_price: pricing.baseRoomPrice,
+        peak_season_multiplier: pricing.seasonalMultiplier,
+        discount: pricing.discount,
+        check_in_time: policies.checkInTime,
+        check_out_time: policies.checkOutTime,
+        cancellation_policy: policies.cancellationPolicy,
+        gst_tax_id: media.gstId,
+        image_count: this.selectedImages.length,
+        doc_count: this.selectedDocs.length
+      };
 
-      amenities.forEach((amenity: string) => formData.append('amenities[]', amenity));
-
-      formData.append('base_room_price', pricing.baseRoomPrice);
-      formData.append('peak_season_multiplier', pricing.seasonalMultiplier);
-      formData.append('discount', pricing.discount);
-      formData.append('check_in_time', policies.checkInTime);
-      formData.append('check_out_time', policies.checkOutTime);
-      formData.append('cancellation_policy', policies.cancellationPolicy);
-      formData.append('gst_tax_id', media.gstId);
-
-      this.selectedImages.forEach(file => formData.append('hotel_images[]', file));
-      this.selectedDocs.forEach(file => formData.append('licence_documents[]', file));
-      
-      this._hotelService.addHotel(formData).subscribe(success => {
+      // Use the refactored HotelService to save to the multi-hotel list
+      this._hotelService.addHotel(hotelData).subscribe(success => {
         if (success) {
           alert('Hotel Setup Completed!');
           this._router.navigate(['/dashboard']);

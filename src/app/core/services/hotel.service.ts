@@ -7,16 +7,46 @@ import { map, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HotelService {
-  private readonly STORAGE_KEY = 'hotel_details';
+  private readonly HOTELS_LIST_KEY = 'hms_hotels_list';
+  private readonly ACTIVE_HOTEL_ID_KEY = 'hms_active_hotel_id';
   private readonly USER_KEY = 'user';
   private readonly API_URL = 'https://sandbox.bepoj.com/HMS/public/api';
 
   constructor(private http: HttpClient) { }
 
+  getHotels(): any[] {
+    const data = localStorage.getItem(this.HOTELS_LIST_KEY);
+    return data ? JSON.parse(data) : [];
+  }
+
+  getActiveHotel(): any {
+    const hotels = this.getHotels();
+    const activeId = localStorage.getItem(this.ACTIVE_HOTEL_ID_KEY);
+    if (!activeId && hotels.length > 0) {
+      return hotels[0];
+    }
+    return hotels.find(h => h.id === activeId) || (hotels.length > 0 ? hotels[0] : null);
+  }
+
+  setActiveHotel(id: string): void {
+    localStorage.setItem(this.ACTIVE_HOTEL_ID_KEY, id);
+  }
+
   saveHotelDetails(details: any): Observable<boolean> {
     try {
-      // Save hotel details
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(details));
+      const hotels = this.getHotels();
+      const id = details.id || 'hotel_' + Date.now();
+      const newHotel = { ...details, id };
+      
+      const index = hotels.findIndex(h => h.id === id);
+      if (index > -1) {
+        hotels[index] = newHotel;
+      } else {
+        hotels.push(newHotel);
+      }
+
+      localStorage.setItem(this.HOTELS_LIST_KEY, JSON.stringify(hotels));
+      this.setActiveHotel(id);
 
       // Update user setup status
       const userStr = localStorage.getItem(this.USER_KEY);
@@ -33,37 +63,26 @@ export class HotelService {
     }
   }
 
+  // Legacy for compatibility if needed elsewhere
   getHotelDetails(): any {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : null;
+    return this.getActiveHotel();
   }
 
   addHotel(payload: any): Observable<boolean> {
-    return this.http.post(`${this.API_URL}/add-hotel`, payload).pipe(
-      map(response => {
-        // Save to local storage as well for immediate UI updates if needed
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(payload));
-        return true;
-      }),
-      catchError(error => {
-        console.error('Error adding hotel', error);
-        return of(false);
-      })
-    );
+    // For now, save to localStorage array instead of API
+    const hotelObj: any = {};
+    if (payload instanceof FormData) {
+      payload.forEach((value, key) => {
+        hotelObj[key] = value;
+      });
+    } else {
+      Object.assign(hotelObj, payload);
+    }
+    
+    return this.saveHotelDetails(hotelObj);
   }
 
   getMyHotel(): Observable<any> {
-    return this.http.get(`${this.API_URL}/my-hotel`).pipe(
-      map(response => {
-        if (response) {
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response));
-        }
-        return response;
-      }),
-      catchError(error => {
-        console.error('Error fetching hotel', error);
-        return of(null);
-      })
-    );
+    return of(this.getActiveHotel());
   }
 }

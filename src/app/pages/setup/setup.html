@@ -1,23 +1,41 @@
 <app-landing-particles></app-landing-particles>
-<div class="setups-container">
-   <h1 class="landing-main-header">
+
+
+<div class="setups-container w-75 m-auto">
+  <div class="w-50">
+   <h1 class="landing-main-header w-75 m-auto">
      <app-typed-header
     text="Welcome! Let's get you set up."
     [typingSpeed]="55">
   </app-typed-header>
-  </h1>
-  <p class="subtitle">Select the type of property you want to manage:</p>
+</h1>
+<p class="subtitle mt-3">Let’s begin by setting up your hotel profile. Provide details about your property, room availability, location, and guest capacity to start managing bookings efficiently.</p>
 
-  <div class="options-grid">
-    <mat-card class="option-card" (click)="selectOption('hotel')">
-      <mat-card-content>
-        <mat-icon class="option-icon">hotel</mat-icon>
-        <h2>Add Hotel</h2>
-        <p>Manage rooms, bookings, and guests for your hotel.</p>
-      </mat-card-content>
-    </mat-card>
+    <div class="button-container">
+      <button mat-flat-button class="setup-btn-rounded" (click)="selectOption('hotel')">
+        <mat-icon>hotel</mat-icon>
+        <span>Get Started</span>
+      </button>
+    </div>
+  </div>
+  <div class="options-grid w-50">
+    <div class="setup-option-wrapper">
+      <video 
+        #setupVideo
+        class="setup-video" 
+        autoplay 
+        [muted]="true"
+        loop 
+        playsinline
+        preload="auto"
+        (canplay)="setupVideo.play()"
+        (loadeddata)="setupVideo.play()"
+        (error)="onVideoError($event)"
+        src="/video/zFaydEaihX6LP01x8TSCl76WHblb01Z01RrFELxyCXoNek.mp4">
+      </video>
+    </div>
 
-    <mat-card class="option-card" (click)="selectOption('restaurant')">
+    <!-- <mat-card class="option-card" (click)="selectOption('restaurant')">
       <mat-card-content>
         <mat-icon class="option-icon">restaurant</mat-icon> 
         <h2>Add Restaurant</h2>
@@ -31,6 +49,6 @@
         <h2>Add Apartment</h2>
         <p>Manage tenants, leases, and maintenance for your apartments.</p>
       </mat-card-content>
-    </mat-card>
+    </mat-card> -->
   </div>
 </div>
