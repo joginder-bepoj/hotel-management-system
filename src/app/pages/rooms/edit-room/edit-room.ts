@@ -39,6 +39,7 @@ export class EditRoomComponent implements OnInit {
   ) {
     this.roomForm = this.fb.group({
       roomNo: ['', [Validators.required]],
+      floor: ['', [Validators.required]],
       roomType: ['', [Validators.required]],
       acNonAc: ['', [Validators.required]],
       meal: ['', [Validators.required]],
@@ -62,6 +63,7 @@ export class EditRoomComponent implements OnInit {
     if (this.existingRoom) {
       this.roomForm.patchValue({
         roomNo: this.existingRoom.roomNo,
+        floor: (this.existingRoom as any).floor || 'Ground Floor',
         roomType: this.existingRoom.roomType,
         acNonAc: this.existingRoom.acNonAc,
         meal: this.existingRoom.meal,

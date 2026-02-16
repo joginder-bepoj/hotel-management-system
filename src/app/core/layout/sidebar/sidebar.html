@@ -9,7 +9,8 @@
             <li class="sidebar-user-panel">
               <div class="user-panel clickable-panel" [matMenuTriggerFor]="hotelMenu">
                 <div class="image">
-                  <img [src]="activeHotel?.hotel_images?.length ? activeHotel.hotel_images[0] : '/images/hotel-icon.png'"
+                  <img
+                    [src]="activeHotel?.hotel_images?.length ? activeHotel.hotel_images[0] : '/images/hotel-icon.png'"
                     alt="Hotel" class="user-img" />
                 </div>
                 <div class="profile">
@@ -22,7 +23,8 @@
             <!-- Hotel Switcher Menu -->
             <mat-menu #hotelMenu="matMenu" class="hotel-switch-menu">
               <div class="menu-header">Your Hotels</div>
-              <button mat-menu-item *ngFor="let h of hotels" (click)="onSwitchHotel(h.id)" [class.active-hotel]="h.id === activeHotel?.id">
+              <button mat-menu-item *ngFor="let h of hotels" (click)="onSwitchHotel(h.id)"
+                [class.active-hotel]="h.id === activeHotel?.id">
                 <mat-icon [color]="h.id === activeHotel?.id ? 'primary' : ''">business</mat-icon>
                 <span>{{h.hotel_name}}</span>
               </button>
@@ -61,7 +63,8 @@
                 <li><a routerLink="/booking/online-reservation" routerLinkActive="active">Online Reservation</a></li>
                 <li><a routerLink="/booking/group-booking" routerLinkActive="active">Group Booking</a></li>
                 <li><a routerLink="/booking/booking-calendar" routerLinkActive="active">Booking Calendar</a></li>
-                <li><a routerLink="/booking/cancellation-modification" routerLinkActive="active">Cancellation & Modification</a></li>
+                <li><a routerLink="/booking/cancellation-modification" routerLinkActive="active">Cancellation &
+                    Modification</a></li>
                 <li><a routerLink="/booking/check-in-out" routerLinkActive="active">Check-in / Check-out</a></li>
               </ul>
             </li>
@@ -73,7 +76,8 @@
                 <span>Room Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/rooms/room-availability" routerLinkActive="active">Room Availability Dashboard</a></li>
+                <li><a routerLink="/rooms/room-availability" routerLinkActive="active">Room Availability Dashboard</a>
+                </li>
                 <li><a routerLink="/rooms/room-types" routerLinkActive="active">Room Types & Pricing</a></li>
                 <li><a routerLink="/rooms/room-status" routerLinkActive="active">Room Status Monitoring</a></li>
                 <li><a routerLink="/rooms/floor-mapping" routerLinkActive="active">Floor Mapping</a></li>
@@ -91,9 +95,11 @@
               </a>
               <ul class="submenu">
                 <li><a routerLink="/inventory/stock-management" routerLinkActive="active">Stock Management</a></li>
-                <li><a routerLink="/inventory/supplier-management" routerLinkActive="active">Supplier Management</a></li>
+                <li><a routerLink="/inventory/supplier-management" routerLinkActive="active">Supplier Management</a>
+                </li>
                 <li><a routerLink="/inventory/purchase-orders" routerLinkActive="active">Purchase Orders</a></li>
-                <li><a routerLink="/inventory/consumption-tracking" routerLinkActive="active">Consumption Tracking</a></li>
+                <li><a routerLink="/inventory/consumption-tracking" routerLinkActive="active">Consumption Tracking</a>
+                </li>
                 <li><a routerLink="/inventory/low-stock-alerts" routerLinkActive="active">Low Stock Alerts</a></li>
                 <li><a routerLink="/inventory/store-warehouse" routerLinkActive="active">Store & Warehouse</a></li>
               </ul>
@@ -106,7 +112,8 @@
                 <span>Front Office Management</span>
               </a>
               <ul class="submenu">
-                <li><a routerLink="/front-office/guest-registration" routerLinkActive="active">Guest Registration</a></li>
+                <li><a routerLink="/front-office/guest-registration" routerLinkActive="active">Guest Registration</a>
+                </li>
                 <li><a routerLink="/front-office/walk-in-booking" routerLinkActive="active">Walk-in Booking</a></li>
                 <li><a routerLink="/front-office/room-allocation" routerLinkActive="active">Room Allocation</a></li>
                 <li><a routerLink="/front-office/key-management" routerLinkActive="active">Key Management</a></li>
@@ -122,10 +129,13 @@
               </a>
               <ul class="submenu">
                 <li><a routerLink="/housekeeping/cleaning-schedule" routerLinkActive="active">Cleaning Schedule</a></li>
-                <li><a routerLink="/housekeeping/room-cleaning-status" routerLinkActive="active">Room Cleaning Status</a></li>
+                <li><a routerLink="/housekeeping/room-cleaning-status" routerLinkActive="active">Room Cleaning
+                    Status</a></li>
                 <li><a routerLink="/housekeeping/staff-assignment" routerLinkActive="active">Staff Assignment</a></li>
-                <li><a routerLink="/housekeeping/laundry-management" routerLinkActive="active">Laundry Management</a></li>
-                <li><a routerLink="/housekeeping/maintenance-requests" routerLinkActive="active">Maintenance Requests</a></li>
+                <li><a routerLink="/housekeeping/laundry-management" routerLinkActive="active">Laundry Management</a>
+                </li>
+                <li><a routerLink="/housekeeping/maintenance-requests" routerLinkActive="active">Maintenance
+                    Requests</a></li>
               </ul>
             </li>
 
@@ -152,10 +162,38 @@
               </a>
               <ul class="submenu">
                 <li><a routerLink="/guest-management/guest-profiles" routerLinkActive="active">Guest Profiles</a></li>
-                <li><a routerLink="/guest-management/guest-preferences" routerLinkActive="active">Guest Preferences</a></li>
-                <li><a routerLink="/guest-management/loyalty-programs" routerLinkActive="active">Loyalty Programs</a></li>
-                <li><a routerLink="/guest-management/feedback-reviews" routerLinkActive="active">Feedback & Reviews</a></li>
+                <li><a routerLink="/guest-management/guest-preferences" routerLinkActive="active">Guest Preferences</a>
+                </li>
+                <li><a routerLink="/guest-management/loyalty-programs" routerLinkActive="active">Loyalty Programs</a>
+                </li>
+                <li><a routerLink="/guest-management/feedback-reviews" routerLinkActive="active">Feedback & Reviews</a>
+                </li>
               </ul>
+            </li>
+
+            <!-- Restaurant -->
+            <li routerLinkActive="active">
+              <a class="menu-toggle" (click)="toggleMenu($event)">
+                <i class="material-icons">restaurant</i>
+                <span>Restaurant</span>
+              </a>
+              <ul class="submenu">
+                <li><a routerLink="/restaurant/dashboard" routerLinkActive="active">Dashboard</a></li>
+                <li><a routerLink="/restaurant/new-order" routerLinkActive="active">New Order</a></li>
+                <li><a routerLink="/restaurant/orders" routerLinkActive="active">Orders</a></li>
+                <li><a routerLink="/restaurant/tables" routerLinkActive="active">Tables</a></li>
+                <li><a routerLink="/restaurant/menu" routerLinkActive="active">Menu</a></li>
+                <li><a routerLink="/restaurant/kitchen" routerLinkActive="active">Kitchen (KOT)</a></li>
+                <li><a routerLink="/restaurant/bills" routerLinkActive="active">Bills</a></li>
+              </ul>
+            </li>
+
+            <!-- Daily Diary -->
+            <li routerLinkActive="active">
+              <a routerLink="/daily-diary">
+                <i class="material-icons">book</i>
+                <span>Daily Diary</span>
+              </a>
             </li>
 
           </ul>

@@ -1,0 +1,368 @@
+<section class="content">
+    <div class="content-block">
+        <div class="block-header">
+            <app-breadcrumb [title]="'Daily Diary'" [items]="['Home']" [active_item]="'Daily Diary'">
+            </app-breadcrumb>
+        </div>
+
+        <!-- Header Section -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <mat-card class="diary-header">
+                    <div class="header-content">
+                        <div class="header-left">
+                            <mat-icon>book</mat-icon>
+                            <h2>Daily Diary</h2>
+                        </div>
+                        <div class="header-controls">
+                            <mat-form-field appearance="outline" class="date-picker">
+                                <mat-label>Date</mat-label>
+                                <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate"
+                                    (dateChange)="onDateChange($event.value)">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="shift-selector">
+                                <mat-label>Shift</mat-label>
+                                <mat-select [(value)]="selectedShift" (selectionChange)="onShiftChange($event.value)">
+                                    <mat-option value="Morning">Morning</mat-option>
+                                    <mat-option value="Evening">Evening</mat-option>
+                                    <mat-option value="Night">Night</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-raised-button color="primary" (click)="closeDay()" [disabled]="isReadOnly()">
+                                Close Day
+                            </button>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                <mat-card class="summary-card income-card">
+                    <mat-icon>account_balance_wallet</mat-icon>
+                    <div class="card-content">
+                        <h3>₹{{totalIncome | number:'1.2-2'}}</h3>
+                        <p>Total Income</p>
+                        <span class="subtitle">Auto from bookings</span>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                <mat-card class="summary-card expense-card">
+                    <mat-icon>money_off</mat-icon>
+                    <div class="card-content">
+                        <h3>₹{{totalExpense | number:'1.2-2'}}</h3>
+                        <p>Total Expense</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                <mat-card class="summary-card result-card">
+                    <mat-icon>trending_up</mat-icon>
+                    <div class="card-content">
+                        <h3>₹{{netResult | number:'1.2-2'}}</h3>
+                        <p>Net Result</p>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Daily Expenses Section -->
+        <div class="row">
+            <div class="col-12">
+                <mat-card>
+                    <div class="section-header">
+                        <h3>Daily Expenses</h3>
+                        <button mat-raised-button color="primary" (click)="addExpense()" [disabled]="isReadOnly()">
+                            <mat-icon>add</mat-icon> Add Expense
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Payment</th>
+                                    <th>Amount</th>
+                                    <th *ngIf="!isReadOnly()">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let expense of (currentDiary?.expenses || [])">
+                                    <td>{{expense.category}}</td>
+                                    <td>{{expense.description}}</td>
+                                    <td>{{expense.payment}}</td>
+                                    <td>₹{{expense.amount | number:'1.2-2'}}</td>
+                                    <td *ngIf="!isReadOnly()">
+                                        <button mat-icon-button (click)="editExpense(expense)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="deleteExpense(expense.id)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!currentDiary?.expenses || (currentDiary?.expenses?.length ?? 0) === 0">
+                                    <td colspan="5" class="no-data">No expenses added yet</td>
+                                </tr>
+                            </tbody>
+                            <tfoot *ngIf="currentDiary?.expenses && (currentDiary?.expenses?.length ?? 0) > 0">
+                                <tr>
+                                    <td colspan="3" class="total-label">Total Expense:</td>
+                                    <td colspan="2" class="total-value">₹{{totalExpense | number:'1.2-2'}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Expense Form -->
+                    <div class="inline-form" *ngIf="showExpenseForm">
+                        <form [formGroup]="expenseForm">
+                            <div class="form-row">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Category</mat-label>
+                                    <mat-select formControlName="category">
+                                        <mat-option value="Kitchen">Kitchen</mat-option>
+                                        <mat-option value="Repair">Repair</mat-option>
+                                        <mat-option value="Utilities">Utilities</mat-option>
+                                        <mat-option value="Supplies">Supplies</mat-option>
+                                        <mat-option value="Other">Other</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Description</mat-label>
+                                    <input matInput formControlName="description">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Payment</mat-label>
+                                    <mat-select formControlName="payment">
+                                        <mat-option value="Cash">Cash</mat-option>
+                                        <mat-option value="Online">Online</mat-option>
+                                        <mat-option value="Card">Card</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Amount</mat-label>
+                                    <input matInput type="number" formControlName="amount">
+                                </mat-form-field>
+
+                                <div class="form-actions">
+                                    <button mat-raised-button color="primary" (click)="saveExpense()"
+                                        [disabled]="!expenseForm.valid">Save</button>
+                                    <button mat-button (click)="showExpenseForm = false">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Issues Today Section -->
+        <div class="row">
+            <div class="col-12">
+                <mat-card>
+                    <div class="section-header">
+                        <h3>Issues Today</h3>
+                        <button mat-raised-button color="primary" (click)="addIssue()" [disabled]="isReadOnly()">
+                            <mat-icon>add</mat-icon> Add Issue
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Area/Room</th>
+                                    <th>Issue</th>
+                                    <th>Status</th>
+                                    <th *ngIf="!isReadOnly()">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let issue of (currentDiary?.issues || [])">
+                                    <td>{{issue.areaRoom}}</td>
+                                    <td>
+                                        {{issue.issue}}
+                                        <span class="carried-badge" *ngIf="issue.carriedFrom">
+                                            <mat-icon>schedule</mat-icon> Carried from {{issue.carriedFrom}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge" [ngClass]="issue.status.toLowerCase()">
+                                            {{issue.status}}
+                                        </span>
+                                    </td>
+                                    <td *ngIf="!isReadOnly()">
+                                        <button mat-icon-button (click)="editIssue(issue)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="deleteIssue(issue.id)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!currentDiary?.issues || (currentDiary?.issues?.length ?? 0) === 0">
+                                    <td colspan="4" class="no-data">No issues reported</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Issue Form -->
+                    <div class="inline-form" *ngIf="showIssueForm">
+                        <form [formGroup]="issueForm">
+                            <div class="form-row">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Area/Room</mat-label>
+                                    <input matInput formControlName="areaRoom">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Issue</mat-label>
+                                    <input matInput formControlName="issue">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Status</mat-label>
+                                    <mat-select formControlName="status">
+                                        <mat-option value="Open">Open</mat-option>
+                                        <mat-option value="Resolved">Resolved</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Carried From (optional)</mat-label>
+                                    <input matInput formControlName="carriedFrom">
+                                </mat-form-field>
+
+                                <div class="form-actions">
+                                    <button mat-raised-button color="primary" (click)="saveIssue()"
+                                        [disabled]="!issueForm.valid">Save</button>
+                                    <button mat-button (click)="showIssueForm = false">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Important Events/Notes Section -->
+        <div class="row">
+            <div class="col-12">
+                <mat-card>
+                    <div class="section-header">
+                        <h3>Important Events / Notes</h3>
+                        <button mat-raised-button color="primary" (click)="addEvent()" [disabled]="isReadOnly()">
+                            <mat-icon>add</mat-icon> Add Note
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Note</th>
+                                    <th>Status</th>
+                                    <th *ngIf="!isReadOnly()">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let event of (currentDiary?.events || [])">
+                                    <td>{{event.time}}</td>
+                                    <td>{{event.note}}</td>
+                                    <td>
+                                        <span class="status-badge" [ngClass]="event.status.toLowerCase()">
+                                            {{event.status}}
+                                        </span>
+                                    </td>
+                                    <td *ngIf="!isReadOnly()">
+                                        <button mat-icon-button (click)="editEvent(event)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="deleteEvent(event.id)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!currentDiary?.events || (currentDiary?.events?.length ?? 0) === 0">
+                                    <td colspan="4" class="no-data">No events/notes added</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Event Form -->
+                    <div class="inline-form" *ngIf="showEventForm">
+                        <form [formGroup]="eventForm">
+                            <div class="form-row">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Time</mat-label>
+                                    <input matInput formControlName="time" placeholder="e.g., 10:30 AM">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Note</mat-label>
+                                    <input matInput formControlName="note">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Status</mat-label>
+                                    <mat-select formControlName="status">
+                                        <mat-option value="Open">Open</mat-option>
+                                        <mat-option value="Resolved">Resolved</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <div class="form-actions">
+                                    <button mat-raised-button color="primary" (click)="saveEvent()"
+                                        [disabled]="!eventForm.valid">Save</button>
+                                    <button mat-button (click)="showEventForm = false">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row" *ngIf="!isReadOnly()">
+            <div class="col-12">
+                <div class="action-buttons">
+                    <button mat-raised-button (click)="saveDraft()">
+                        Save Draft
+                    </button>
+                    <button mat-raised-button color="primary" (click)="markAsCompleted()">
+                        Mark as Completed
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Badge -->
+        <div class="row" *ngIf="isReadOnly()">
+            <div class="col-12">
+                <mat-card class="completed-badge">
+                    <mat-icon>check_circle</mat-icon>
+                    <span>This diary has been marked as completed and is now read-only</span>
+                </mat-card>
+            </div>
+        </div>
+
+    </div>
+</section>

@@ -24,6 +24,24 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Select Floor</mat-label>
+                    <mat-select formControlName="floor" required>
+                      <mat-option [value]="'Ground Floor'">Ground Floor</mat-option>
+                      <mat-option [value]="'1st Floor'">1st Floor</mat-option>
+                      <mat-option [value]="'2nd Floor'">2nd Floor</mat-option>
+                      <mat-option [value]="'3rd Floor'">3rd Floor</mat-option>
+                      <mat-option [value]="'4th Floor'">4th Floor</mat-option>
+                      <mat-option [value]="'5th Floor'">5th Floor</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="roomForm.get('floor')?.hasError('required')">
+                      Floor is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>Select Room Type</mat-label>
                     <mat-select formControlName="roomType" required>
                       <mat-option [value]="'Single'">Single</mat-option>

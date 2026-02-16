@@ -1,0 +1,73 @@
+.stat-card {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+
+    .stat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+
+        &.sales {
+            color: #4caf50;
+        }
+
+        &.orders {
+            color: #2196f3;
+        }
+
+        &.room-service {
+            color: #ff9800;
+        }
+
+        &.dine-in {
+            color: #9c27b0;
+        }
+    }
+
+    .stat-content {
+        h3 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+    }
+}
+
+.alert-card {
+    padding: 15px;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    mat-icon {
+        color: #ff9800;
+    }
+
+    span {
+        font-weight: 500;
+    }
+}
+
+.quick-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    button {
+        mat-icon {
+            margin-right: 8px;
+        }
+    }
+}

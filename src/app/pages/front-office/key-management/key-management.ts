@@ -15,6 +15,7 @@ export interface KeyLog {
     guestName: string;
     issuedAt: Date;
     status: 'Active' | 'Returned' | 'Lost';
+    keyReceived: boolean;
 }
 
 @Component({
@@ -33,7 +34,7 @@ export interface KeyLog {
     ]
 })
 export class KeyManagementComponent implements AfterViewInit {
-    displayedColumns: string[] = ['roomNumber', 'keyId', 'guestName', 'issuedAt', 'status', 'actions'];
+    displayedColumns: string[] = ['roomNumber', 'keyId', 'guestName', 'issuedAt', 'status', 'keyReceived', 'actions'];
     dataSource: MatTableDataSource<KeyLog>;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -41,10 +42,10 @@ export class KeyManagementComponent implements AfterViewInit {
 
     constructor() {
         const data: KeyLog[] = [
-            { id: 1, roomNumber: '101', keyId: 'K-101-A', guestName: 'Alice Johnson', issuedAt: new Date(), status: 'Active' },
-            { id: 2, roomNumber: '102', keyId: 'K-102-B', guestName: 'Bob Smith', issuedAt: new Date('2023-10-25T10:00:00'), status: 'Returned' },
-            { id: 3, roomNumber: '205', keyId: 'K-205-A', guestName: 'Charlie Brown', issuedAt: new Date('2023-10-26T14:30:00'), status: 'Active' },
-            { id: 4, roomNumber: '304', keyId: 'K-304-C', guestName: 'David Lee', issuedAt: new Date('2023-10-24T09:15:00'), status: 'Lost' },
+            { id: 1, roomNumber: '101', keyId: 'K-101-A', guestName: 'Alice Johnson', issuedAt: new Date(), status: 'Active', keyReceived: true },
+            { id: 2, roomNumber: '102', keyId: 'K-102-B', guestName: 'Bob Smith', issuedAt: new Date('2023-10-25T10:00:00'), status: 'Returned', keyReceived: true },
+            { id: 3, roomNumber: '205', keyId: 'K-205-A', guestName: 'Charlie Brown', issuedAt: new Date('2023-10-26T14:30:00'), status: 'Active', keyReceived: false },
+            { id: 4, roomNumber: '304', keyId: 'K-304-C', guestName: 'David Lee', issuedAt: new Date('2023-10-24T09:15:00'), status: 'Lost', keyReceived: true },
         ];
         this.dataSource = new MatTableDataSource(data);
     }

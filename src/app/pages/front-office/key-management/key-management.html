@@ -81,6 +81,19 @@
                                     </td>
                                 </ng-container>
 
+                                <!-- Key Received Column -->
+                                <ng-container matColumnDef="keyReceived">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Key Received </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="badge" [ngClass]="{
+                                            'badge-solid-green': row.keyReceived,
+                                            'badge-solid-red': !row.keyReceived
+                                        }">
+                                            {{row.keyReceived ? 'Yes' : 'No'}}
+                                        </span>
+                                    </td>
+                                </ng-container>
+
                                 <!-- Actions Column -->
                                 <ng-container matColumnDef="actions">
                                     <th mat-header-cell *matHeaderCellDef> Actions </th>

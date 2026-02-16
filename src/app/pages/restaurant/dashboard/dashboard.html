@@ -1,0 +1,86 @@
+<section class="content">
+    <div class="content-block">
+        <div class="block-header">
+            <app-breadcrumb [title]="'Restaurant Dashboard'" [items]="['Home', 'Restaurant']"
+                [active_item]="'Dashboard'">
+            </app-breadcrumb>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <mat-card class="stat-card">
+                    <mat-icon class="stat-icon sales">attach_money</mat-icon>
+                    <div class="stat-content">
+                        <h3>₹{{todaysSales | number:'1.2-2'}}</h3>
+                        <p>Today's Sales</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <mat-card class="stat-card">
+                    <mat-icon class="stat-icon orders">receipt_long</mat-icon>
+                    <div class="stat-content">
+                        <h3>{{totalOrders}}</h3>
+                        <p>Total Orders</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <mat-card class="stat-card">
+                    <mat-icon class="stat-icon room-service">room_service</mat-icon>
+                    <div class="stat-content">
+                        <h3>{{roomServiceOrders}}</h3>
+                        <p>Room Service</p>
+                    </div>
+                </mat-card>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <mat-card class="stat-card">
+                    <mat-icon class="stat-icon dine-in">restaurant</mat-icon>
+                    <div class="stat-content">
+                        <h3>{{dineInOrders}}</h3>
+                        <p>Dine-in Orders</p>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Pending Orders Alert -->
+        <div class="row" *ngIf="pendingOrders > 0">
+            <div class="col-12">
+                <mat-card class="alert-card">
+                    <mat-icon>warning</mat-icon>
+                    <span>{{pendingOrders}} orders pending in kitchen</span>
+                </mat-card>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12">
+                <mat-card>
+                    <div class="header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="body">
+                        <div class="quick-actions">
+                            <button mat-raised-button color="primary" (click)="navigateToNewOrder()">
+                                <mat-icon>add</mat-icon>
+                                New Order
+                            </button>
+                            <button mat-raised-button color="accent" (click)="navigateToKitchen()">
+                                <mat-icon>kitchen</mat-icon>
+                                View Kitchen
+                            </button>
+                            <button mat-raised-button (click)="navigateToTables()">
+                                <mat-icon>table_restaurant</mat-icon>
+                                View Tables
+                            </button>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</section>

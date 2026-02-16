@@ -292,6 +292,51 @@ export const routes: Routes = [
           },
         ]
       },
+      {
+        path: 'restaurant',
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./pages/restaurant/dashboard/dashboard').then((c) => c.RestaurantDashboardComponent),
+          },
+          {
+            path: 'new-order',
+            loadComponent: () =>
+              import('./pages/restaurant/new-order/new-order').then((c) => c.NewOrderComponent),
+          },
+          {
+            path: 'orders',
+            loadComponent: () =>
+              import('./pages/restaurant/orders/orders').then((c) => c.OrdersComponent),
+          },
+          {
+            path: 'tables',
+            loadComponent: () =>
+              import('./pages/restaurant/tables/tables').then((c) => c.TablesComponent),
+          },
+          {
+            path: 'menu',
+            loadComponent: () =>
+              import('./pages/restaurant/menu/menu').then((c) => c.MenuComponent),
+          },
+          {
+            path: 'kitchen',
+            loadComponent: () =>
+              import('./pages/restaurant/kitchen/kitchen').then((c) => c.KitchenComponent),
+          },
+          {
+            path: 'bills',
+            loadComponent: () =>
+              import('./pages/restaurant/bills/bills').then((c) => c.BillsComponent),
+          },
+        ]
+      },
+      {
+        path: 'daily-diary',
+        loadComponent: () =>
+          import('./pages/daily-diary/daily-diary').then((c) => c.DailyDiaryComponent),
+      },
     ],
   },
 ];
