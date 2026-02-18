@@ -1,0 +1,21 @@
+.badge {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  
+  &.bg-orange { background-color: #ff9800; }
+  &.bg-blue { background-color: #2196f3; }
+  &.bg-cyan { background-color: #00bcd4; }
+  &.bg-green { background-color: #4caf50; }
+  &.bg-red { background-color: #f44336; }
+}
+
+table {
+  width: 100%;
+  
+  th {
+    font-weight: 600;
+    color: #555;
+  }
+}

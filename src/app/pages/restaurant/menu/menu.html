@@ -1,14 +1,64 @@
 <section class="content">
   <div class="content-block">
     <div class="block-header">
-      <app-breadcrumb [title]="'Restaurant'" [items]="['Home', 'Restaurant']" [active_item]="'Page'"></app-breadcrumb>
+      <app-breadcrumb [title]="'Menu'" [items]="['Home', 'Restaurant']" [active_item]="'Menu'"></app-breadcrumb>
     </div>
-    <div class="row">
-      <div class="col-12">
+
+    <!-- Category Filter -->
+    <div class="row clearfix">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="card">
-          <div class="header"><h2>Restaurant Page</h2></div>
-          <div class="body"><p>Page content coming soon</p></div>
+          <div class="body">
+            <div class="category-filters">
+              <button mat-stroked-button 
+                      [class.active-filter]="selectedCategory === 'All'"
+                      (click)="filterCategory('All')">All</button>
+              <button mat-stroked-button 
+                      *ngFor="let cat of categories"
+                      [class.active-filter]="selectedCategory === cat"
+                      (click)="filterCategory(cat)">
+                {{cat}}
+              </button>
+              <button mat-raised-button color="primary" class="ms-auto">
+                <mat-icon>add</mat-icon> Add Item
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Menu Items Grid -->
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" *ngFor="let item of filteredItems">
+        <div class="menu-card">
+          <div class="card-image">
+            <div class="placeholder-img">
+              <mat-icon>restaurant_menu</mat-icon> <!-- Placeholder for food image -->
+            </div>
+            <span class="price-tag">₹{{item.price}}</span>
+          </div>
+          <div class="card-content">
+            <h4>{{item.name}}</h4>
+            <p class="category">{{item.category}}</p>
+            <div class="actions">
+              <mat-slide-toggle [checked]="item.isActive" color="primary">Available</mat-slide-toggle>
+              <button mat-icon-button color="accent">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty State -->
+      <div class="col-12" *ngIf="filteredItems.length === 0">
+         <div class="card empty-state">
+           <div class="body text-center">
+             <mat-icon class="large-icon">no_meals</mat-icon>
+             <p>No items found in this category.</p>
+           </div>
+         </div>
       </div>
     </div>
   </div>

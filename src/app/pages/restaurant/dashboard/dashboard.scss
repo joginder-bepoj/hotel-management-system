@@ -1,73 +1,155 @@
-.stat-card {
+.metric-card {
+  color: #ffffff !important; // Force pure white
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  position: relative;
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  &.bg-success { background: linear-gradient(45deg, #43a047, #66bb6a); }
+  &.bg-primary { background: linear-gradient(45deg, #1e88e5, #42a5f5); }
+  &.bg-warning { background: linear-gradient(45deg, #fb8c00, #ffa726); }
+  &.bg-cyan { background: linear-gradient(45deg, #00acc1, #26c6da); }
+
+  .body {
+    display: flex;
+    align-items: center;
     padding: 20px;
+  }
+
+  .metric-icon {
+    font-size: 48px;
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-
-    .stat-icon {
-        font-size: 48px;
-        width: 48px;
-        height: 48px;
-
-        &.sales {
-            color: #4caf50;
-        }
-
-        &.orders {
-            color: #2196f3;
-        }
-
-        &.room-service {
-            color: #ff9800;
-        }
-
-        &.dine-in {
-            color: #9c27b0;
-        }
-    }
-
-    .stat-content {
-        h3 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        p {
-            margin: 5px 0 0 0;
-            color: #666;
-            font-size: 14px;
-        }
-    }
-}
-
-.alert-card {
-    padding: 15px;
-    background: #fff3cd;
-    border-left: 4px solid #ffc107;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    margin-right: 15px;
 
     mat-icon {
-        color: #ff9800;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      color: #ffffff !important; // Ensure icon is white
     }
+  }
 
-    span {
-        font-weight: 500;
+  .metric-content {
+    flex: 1;
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #ffffff !important; // Ensure text is white
+      opacity: 1; // Remove opacity
     }
+    h3 {
+      margin: 5px 0 0 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: #ffffff !important; // Ensure text is white
+    }
+    .trend {
+      font-size: 12px;
+      display: block;
+      margin-top: 4px;
+      color: #ffffff !important; // Ensure text is white
+      opacity: 1; // Remove opacity
+    }
+  }
 }
 
-.quick-actions {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+.action-buttons-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 
-    button {
-        mat-icon {
-            margin-right: 8px;
-        }
+  .action-btn-lg {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+    text-align: left;
+    
+    mat-icon {
+      margin-right: 15px;
+      font-size: 24px;
     }
+
+    .btn-text {
+      font-weight: 500;
+    }
+
+    &.bg-green { background: #4caf50; }
+    &.bg-blue { background: #2196f3; }
+    &.bg-orange { background: #ff9800; float: right; color: white !important;}
+  }
+}
+
+.small-btn {
+  line-height: 24px;
+  padding: 0 10px;
+}
+
+.stats-list {
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      margin-right: 15px;
+    }
+
+    .details {
+      span {
+        display: block;
+        font-size: 13px;
+        color: #888;
+      }
+      strong {
+        display: block;
+        font-size: 16px;
+        color: #333;
+      }
+    }
+  }
+}
+
+table {
+  .small-text {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  th {
+     color: #777;
+     font-weight: 500;
+  }
 }

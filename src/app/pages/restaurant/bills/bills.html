@@ -1,14 +1,163 @@
 <section class="content">
   <div class="content-block">
     <div class="block-header">
-      <app-breadcrumb [title]="'Restaurant'" [items]="['Home', 'Restaurant']" [active_item]="'Page'"></app-breadcrumb>
+      <app-breadcrumb [title]="'Bills & Payments'" [items]="['Home', 'Restaurant']" [active_item]="'Bills'"></app-breadcrumb>
     </div>
-    <div class="row">
-      <div class="col-12">
+
+    <div class="row clearfix">
+      <!-- Order List -->
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
         <div class="card">
-          <div class="header"><h2>Restaurant Page</h2></div>
-          <div class="body"><p>Page content coming soon</p></div>
+          <div class="body">
+            <mat-tab-group>
+              <mat-tab label="Unpaid Orders">
+                <div class="table-responsive">
+                  <table class="table table-hover order-list-table">
+                    <thead>
+                      <tr>
+                        <th>Order #</th>
+                        <th>Type</th>
+                        <th>Total</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let order of activeOrders" 
+                          (click)="selectOrder(order)" 
+                          [class.active-row]="selectedOrder?.id === order.id">
+                        <td>{{order.orderNumber}}</td>
+                        <td>{{order.type}}</td>
+                        <td>₹{{order.total}}</td>
+                        <td><mat-icon>chevron_right</mat-icon></td>
+                      </tr>
+                      <tr *ngIf="activeOrders.length === 0">
+                        <td colspan="4" class="text-center">No unpaid orders</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-tab>
+              <mat-tab label="Paid History">
+                <div class="table-responsive">
+                  <table class="table table-hover order-list-table">
+                    <thead>
+                      <tr>
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let order of paidOrders" 
+                          (click)="selectOrder(order)" 
+                          [class.active-row]="selectedOrder?.id === order.id">
+                        <td>{{order.orderNumber}}</td>
+                        <td>{{order.createdAt | date:'shortDate'}}</td>
+                        <td>₹{{order.total}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
         </div>
+      </div>
+
+      <!-- Bill Details -->
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8" *ngIf="selectedOrder">
+        <div class="card" id="printableArea">
+          <div class="header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h2>
+                Bill #B-{{selectedOrder.id + 5000}} 
+                <span class="badge" [ngClass]="selectedOrder.isPaid ? 'bg-green' : 'bg-red'">
+                  {{selectedOrder.isPaid ? 'PAID' : 'UNPAID'}}
+                </span>
+              </h2>
+              <button mat-icon-button (click)="selectedOrder = null"><mat-icon>close</mat-icon></button>
+            </div>
+          </div>
+          <div class="body">
+            <div class="bill-header">
+              <div class="row">
+                <div class="col-6">
+                  <h5>Order Info</h5>
+                  <p><strong>Order #:</strong> {{selectedOrder.orderNumber}}</p>
+                  <p><strong>Date:</strong> {{selectedOrder.createdAt | date:'medium'}}</p>
+                  <p><strong>Type:</strong> {{selectedOrder.type}}</p>
+                </div>
+                <div class="col-6 text-end">
+                  <h5>Location</h5>
+                  <p *ngIf="selectedOrder.tableNumber"><strong>Table:</strong> {{selectedOrder.tableNumber}}</p>
+                  <p *ngIf="selectedOrder.roomNumber"><strong>Room:</strong> {{selectedOrder.roomNumber}}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of selectedOrder.items">
+                    <td>{{item.menuItem.name}}</td>
+                    <td class="text-center">{{item.quantity}}</td>
+                    <td class="text-end">₹{{item.menuItem.price}}</td>
+                    <td class="text-end">₹{{item.quantity * item.menuItem.price}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-lg-6 col-md-12">
+                <!-- Payment Actions -->
+                <div class="payment-actions" *ngIf="!selectedOrder.isPaid">
+                  <h5>Payment Actions</h5>
+                  <div class="d-grid gap-2 d-md-block">
+                    <button mat-raised-button color="primary" class="me-2" (click)="processPayment(selectedOrder)">
+                      <mat-icon>payments</mat-icon> Take Payment (Cash/Card)
+                    </button>
+                    <button mat-stroked-button color="accent" *ngIf="selectedOrder.type === 'Room Service'" (click)="postToRoom(selectedOrder)">
+                      <mat-icon>hotel</mat-icon> Post to Room
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-12 text-end">
+                <p><strong>Subtotal:</strong> ₹{{selectedOrder.subtotal | number:'1.2-2'}}</p>
+                <p><strong>Tax (18%):</strong> ₹{{selectedOrder.tax | number:'1.2-2'}}</p>
+                <hr>
+                <h3 class="total-amount">Total: ₹{{selectedOrder.total | number:'1.2-2'}}</h3>
+              </div>
+            </div>
+            
+            <div class="row no-print mt-4">
+              <div class="col-12 text-end">
+                <button mat-stroked-button (click)="printBill(selectedOrder)">
+                  <mat-icon>print</mat-icon> Print Bill
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- No Selection Placeolder -->
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8" *ngIf="!selectedOrder">
+         <div class="card empty-state-card">
+           <div class="body text-center">
+             <mat-icon class="large-icon">receipt</mat-icon>
+             <h3>Select an order to view bill</h3>
+           </div>
+         </div>
       </div>
     </div>
   </div>

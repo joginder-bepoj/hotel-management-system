@@ -1,13 +1,81 @@
 <section class="content">
   <div class="content-block">
     <div class="block-header">
-      <app-breadcrumb [title]="'Restaurant'" [items]="['Home', 'Restaurant']" [active_item]="'Page'"></app-breadcrumb>
+      <app-breadcrumb [title]="'Kitchen (KOT)'" [items]="['Home', 'Restaurant']" [active_item]="'Kitchen'"></app-breadcrumb>
     </div>
+
     <div class="row">
-      <div class="col-12">
+      <!-- Pending Orders Column -->
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <div class="card">
-          <div class="header"><h2>Restaurant Page</h2></div>
-          <div class="body"><p>Page content coming soon</p></div>
+          <div class="header">
+            <h2>Pending Orders <span class="badge bg-orange">{{pendingOrders.length}}</span></h2>
+          </div>
+          <div class="body kitchen-column">
+            <div class="order-card" *ngFor="let order of pendingOrders">
+              <div class="order-header">
+                <span class="order-id">{{order.orderNumber}}</span>
+                <span class="time">{{getTimeElapsed(order.createdAt)}}</span>
+              </div>
+              <div class="order-details">
+                <div class="location">
+                  <span *ngIf="order.type === 'Dine-in'">Table: {{order.tableNumber}}</span>
+                  <span *ngIf="order.type === 'Room Service'">Room: {{order.roomNumber}}</span>
+                </div>
+                <ul class="item-list">
+                  <li *ngFor="let item of order.items">
+                    <span class="qty">{{item.quantity}}x</span>
+                    <span class="name">{{item.menuItem.name}}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="order-actions">
+                <button mat-raised-button color="primary" (click)="updateStatus(order, 'Preparing')">
+                  Start Preparing
+                </button>
+              </div>
+            </div>
+            <div *ngIf="pendingOrders.length === 0" class="empty-message">
+              <p>No pending orders</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preparing Orders Column -->
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+          <div class="header">
+            <h2>Preparing <span class="badge bg-blue">{{preparingOrders.length}}</span></h2>
+          </div>
+          <div class="body kitchen-column">
+             <div class="order-card preparing" *ngFor="let order of preparingOrders">
+              <div class="order-header">
+                <span class="order-id">{{order.orderNumber}}</span>
+                <span class="time">{{getTimeElapsed(order.createdAt)}}</span>
+              </div>
+              <div class="order-details">
+                <div class="location">
+                  <span *ngIf="order.type === 'Dine-in'">Table: {{order.tableNumber}}</span>
+                  <span *ngIf="order.type === 'Room Service'">Room: {{order.roomNumber}}</span>
+                </div>
+                <ul class="item-list">
+                  <li *ngFor="let item of order.items">
+                    <span class="qty">{{item.quantity}}x</span>
+                    <span class="name">{{item.menuItem.name}}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="order-actions">
+                <button mat-raised-button color="accent" (click)="updateStatus(order, 'Ready')">
+                  Mark Ready
+                </button>
+              </div>
+            </div>
+            <div *ngIf="preparingOrders.length === 0" class="empty-message">
+               <p>No orders in preparation</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

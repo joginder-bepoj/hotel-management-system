@@ -1,13 +1,146 @@
 <section class="content">
   <div class="content-block">
     <div class="block-header">
-      <app-breadcrumb [title]="'New Order'" [items]="['Home', 'Restaurant']" [active_item]="'New Order'"></app-breadcrumb>
+      <app-breadcrumb [title]="'New Order (POS)'" [items]="['Home', 'Restaurant']" [active_item]="'New Order'"></app-breadcrumb>
     </div>
-    <div class="row">
-      <div class="col-12">
+
+    <div class="row clearfix">
+      <!-- Menu Selection Section -->
+      <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
         <div class="card">
-          <div class="header"><h2>New Order</h2></div>
-          <div class="body"><p>New Order page - Coming soon</p></div>
+          <div class="body">
+            <!-- Order Type & Search -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Order Type</mat-label>
+                  <mat-select [(ngModel)]="orderType">
+                    <mat-option value="Dine-in">Dine-in</mat-option>
+                    <mat-option value="Room Service">Room Service</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <!-- Dynamic Location Selection based on Order Type -->
+                <mat-form-field appearance="outline" class="w-100" *ngIf="orderType === 'Dine-in'">
+                  <mat-label>Select Table</mat-label>
+                  <mat-select [(ngModel)]="selectedTableNumber">
+                    <mat-option *ngFor="let table of tables" [value]="table.tableNumber">
+                      {{table.tableNumber}} ({{table.capacity}} Pax)
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-100" *ngIf="orderType === 'Room Service'">
+                  <mat-label>Room Number</mat-label>
+                  <input matInput [(ngModel)]="roomNumber" placeholder="Ex: 101">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="category-scroll">
+               <button mat-stroked-button class="category-btn" 
+                       [class.active-cat]="selectedCategory === 'All'"
+                       (click)="selectedCategory = 'All'">All</button>
+               <button mat-stroked-button class="category-btn"
+                       *ngFor="let cat of categories"
+                       [class.active-cat]="selectedCategory === cat"
+                       (click)="selectedCategory = cat">
+                 {{cat}}
+               </button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-bar mt-3 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Search Menu Items...</mat-label>
+                <input matInput [(ngModel)]="searchQuery" placeholder="Burger, Pizza, Coke...">
+              </mat-form-field>
+            </div>
+
+            <!-- Menu Items Grid -->
+            <div class="row menu-grid">
+              <div class="col-lg-3 col-md-4 col-sm-6 mb-3" *ngFor="let item of filteredItems">
+                <div class="menu-item-card" (click)="addToCart(item)">
+                   <div class="item-img-placeholder">
+                      <span>{{item.name.charAt(0)}}</span>
+                   </div>
+                   <div class="item-info">
+                     <h6>{{item.name}}</h6>
+                     <p>₹ {{item.price}}</p>
+                   </div>
+                   <button mat-mini-fab color="primary" class="add-btn">
+                     <mat-icon>add</mat-icon>
+                   </button>
+                </div>
+              </div>
+              
+              <div class="col-12 text-center mt-5" *ngIf="filteredItems.length === 0">
+                <p class="text-muted">No items found matching your criteria.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart / Order Summary Section -->
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="card cart-card">
+          <div class="header">
+            <h2>Current Order</h2>
+          </div>
+          <div class="body">
+            <div class="cart-items-list">
+              <div class="cart-item" *ngFor="let item of cart; let i = index">
+                <div class="item-details">
+                   <h6>{{item.menuItem.name}}</h6>
+                   <p>₹ {{item.menuItem.price}} x {{item.quantity}}</p>
+                </div>
+                <div class="item-actions">
+                   <button mat-icon-button color="warn" class="qty-btn" (click)="updateQuantity(i, -1)">
+                     <mat-icon>remove_circle_outline</mat-icon>
+                   </button>
+                   <span class="qty-display">{{item.quantity}}</span>
+                   <button mat-icon-button color="primary" class="qty-btn" (click)="updateQuantity(i, 1)">
+                     <mat-icon>add_circle_outline</mat-icon>
+                   </button>
+                </div>
+                <div class="item-total">
+                  ₹ {{item.menuItem.price * item.quantity}}
+                </div>
+              </div>
+              
+              <div class="empty-cart-msg" *ngIf="cart.length === 0">
+                <mat-icon>shopping_cart</mat-icon>
+                <p>Your cart is empty</p>
+              </div>
+            </div>
+
+            <!-- Totals -->
+            <div class="cart-summary mt-3" *ngIf="cart.length > 0">
+              <div class="d-flex justify-content-between">
+                <span>Subtotal</span>
+                <span>₹ {{subtotal | number:'1.2-2'}}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>Tax (18%)</span>
+                <span>₹ {{tax | number:'1.2-2'}}</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between total-row">
+                 <span>Total</span>
+                 <span>₹ {{total | number:'1.2-2'}}</span>
+              </div>
+
+              <div class="actions mt-4">
+                 <button mat-raised-button color="primary" class="w-100" (click)="placeOrder()">
+                   Place Order
+                 </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,83 @@
+.order-list-table {
+  tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: #f5f5f5;
+    }
+    
+    &.active-row {
+      background-color: #e3f2fd; // Light blue selection
+      border-left: 4px solid #2196f3;
+    }
+  }
+}
+
+.bill-header {
+  background-color: #fafafa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  
+  h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  p {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+.total-amount {
+  color: #2196f3;
+  font-weight: 700;
+}
+
+.empty-state-card {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .large-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #e0e0e0;
+    margin-bottom: 10px;
+  }
+}
+
+.badge {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  vertical-align: middle;
+  
+  &.bg-green { background-color: #4caf50; }
+  &.bg-red { background-color: #f44336; }
+}
+
+@media print {
+  .no-print, .sidebar, .navbar {
+    display: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

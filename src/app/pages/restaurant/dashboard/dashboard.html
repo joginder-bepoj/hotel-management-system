@@ -6,80 +6,227 @@
             </app-breadcrumb>
         </div>
 
-        <!-- Summary Cards -->
+        <!-- Row 1: Metric Cards -->
         <div class="row">
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-                <mat-card class="stat-card">
-                    <mat-icon class="stat-icon sales">attach_money</mat-icon>
-                    <div class="stat-content">
-                        <h3>₹{{todaysSales | number:'1.2-2'}}</h3>
-                        <p>Today's Sales</p>
+                <div class="card metric-card bg-success">
+                    <div class="body">
+                        <div class="metric-icon">
+                            <mat-icon>attach_money</mat-icon>
+                        </div>
+                        <div class="metric-content">
+                            <p>Today's Sales</p>
+                            <h3>₹{{todaysSales | number:'1.0-0'}}</h3>
+                            <span class="trend">+ 5% vs yesterday</span>
+                        </div>
                     </div>
-                </mat-card>
+                </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-                <mat-card class="stat-card">
-                    <mat-icon class="stat-icon orders">receipt_long</mat-icon>
-                    <div class="stat-content">
-                        <h3>{{totalOrders}}</h3>
-                        <p>Total Orders</p>
+                <div class="card metric-card bg-primary">
+                    <div class="body">
+                        <div class="metric-icon">
+                            <mat-icon>receipt_long</mat-icon>
+                        </div>
+                        <div class="metric-content">
+                            <p>Total Orders Today</p>
+                            <h3>{{totalOrders}}</h3>
+                        </div>
                     </div>
-                </mat-card>
+                </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-                <mat-card class="stat-card">
-                    <mat-icon class="stat-icon room-service">room_service</mat-icon>
-                    <div class="stat-content">
-                        <h3>{{roomServiceOrders}}</h3>
-                        <p>Room Service</p>
+                <div class="card metric-card bg-warning">
+                    <div class="body">
+                        <div class="metric-icon">
+                            <mat-icon>room_service</mat-icon>
+                        </div>
+                        <div class="metric-content">
+                            <p>Room Service Orders</p>
+                            <h3>{{roomServiceOrders}}</h3>
+                        </div>
                     </div>
-                </mat-card>
+                </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-                <mat-card class="stat-card">
-                    <mat-icon class="stat-icon dine-in">restaurant</mat-icon>
-                    <div class="stat-content">
-                        <h3>{{dineInOrders}}</h3>
-                        <p>Dine-in Orders</p>
+                <div class="card metric-card bg-cyan">
+                    <div class="body">
+                        <div class="metric-icon">
+                            <mat-icon>kitchen</mat-icon>
+                        </div>
+                        <div class="metric-content">
+                            <p>Pending Kitchen Orders</p>
+                            <h3>{{pendingOrdersCount}}</h3>
+                        </div>
                     </div>
-                </mat-card>
+                </div>
             </div>
         </div>
 
-        <!-- Pending Orders Alert -->
-        <div class="row" *ngIf="pendingOrders > 0">
-            <div class="col-12">
-                <mat-card class="alert-card">
-                    <mat-icon>warning</mat-icon>
-                    <span>{{pendingOrders}} orders pending in kitchen</span>
-                </mat-card>
+        <!-- Row 2: Charts & Quick Actions -->
+        <div class="row clearfix">
+            <!-- Sales Chart -->
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="card">
+                    <div class="header">
+                        <h2>Sales Today <small class="text-success float-end">▲ 5%</small></h2>
+                    </div>
+                    <div class="body">
+                        <apx-chart 
+                            [series]="salesChartOptions.series!" 
+                            [chart]="salesChartOptions.chart!"
+                            [xaxis]="salesChartOptions.xaxis!" 
+                            [stroke]="salesChartOptions.stroke!"
+                            [tooltip]="salesChartOptions.tooltip!" 
+                            [dataLabels]="salesChartOptions.dataLabels!"
+                            [grid]="salesChartOptions.grid!"
+                            [yaxis]="salesChartOptions.yaxis!"
+                            [fill]="salesChartOptions.fill!"
+                            [markers]="salesChartOptions.markers!"
+                            [theme]="salesChartOptions.theme!">
+                        </apx-chart>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Quick Actions -->
-        <div class="row">
-            <div class="col-12">
-                <mat-card>
+            <!-- Order Split Chart -->
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+                <div class="card">
+                    <div class="header">
+                        <h2>Order Type Split</h2>
+                    </div>
+                    <div class="body text-center">
+                        <apx-chart
+                            [series]="splitChartOptions.series!"
+                            [chart]="splitChartOptions.chart!"
+                            [labels]="splitChartOptions.labels!"
+                            [responsive]="splitChartOptions.responsive!"
+                            [colors]="splitChartOptions.colors!"
+                            [legend]="splitChartOptions.legend!"
+                            [dataLabels]="splitChartOptions.dataLabels!">
+                        </apx-chart>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+                <div class="card">
                     <div class="header">
                         <h2>Quick Actions</h2>
                     </div>
                     <div class="body">
-                        <div class="quick-actions">
-                            <button mat-raised-button color="primary" (click)="navigateToNewOrder()">
-                                <mat-icon>add</mat-icon>
-                                New Order
+                        <div class="action-buttons-stack">
+                            <button mat-flat-button color="primary" class="action-btn-lg bg-green" (click)="navigateToNewOrder()">
+                                <mat-icon>add_circle</mat-icon> 
+                                <div class="btn-text">New Order</div>
                             </button>
-                            <button mat-raised-button color="accent" (click)="navigateToKitchen()">
+                            <button mat-flat-button color="primary" class="action-btn-lg bg-blue" (click)="navigateToKitchen()">
                                 <mat-icon>kitchen</mat-icon>
-                                View Kitchen
+                                <div class="btn-text">View Kitchen</div>
                             </button>
-                            <button mat-raised-button (click)="navigateToTables()">
+                            <button mat-flat-button color="accent" class="action-btn-lg bg-orange" (click)="navigateToTables()">
                                 <mat-icon>table_restaurant</mat-icon>
-                                View Tables
+                                <div class="btn-text">View Open Tables</div>
                             </button>
                         </div>
                     </div>
-                </mat-card>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Pending Orders & Secondary Actions -->
+        <div class="row clearfix">
+            <!-- Pending Orders Table -->
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-9">
+                <div class="card">
+                    <div class="header d-flex justify-content-between align-items-center">
+                        <h2>Pending Kitchen Orders</h2>
+                        <button mat-stroked-button color="primary" class="small-btn" (click)="navigateToNewOrder()">+ New Order</button>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="pendingOrdersList" class="w-100">
+                                <ng-container matColumnDef="orderNo">
+                                    <th mat-header-cell *matHeaderCellDef> Order No </th>
+                                    <td mat-cell *matCellDef="let element" class="fw-bold"> {{element.orderNumber}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="type">
+                                    <th mat-header-cell *matHeaderCellDef> Type </th>
+                                    <td mat-cell *matCellDef="let element"> 
+                                        <span [class.text-primary]="element.type === 'Room Service'" 
+                                              [class.text-warn]="element.type === 'Dine-in'">
+                                            {{element.type}}
+                                        </span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="location">
+                                    <th mat-header-cell *matHeaderCellDef> Room/Table </th>
+                                    <td mat-cell *matCellDef="let element"> 
+                                        {{element.type === 'Dine-in' ? element.tableNumber : element.roomNumber}} 
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="items">
+                                    <th mat-header-cell *matHeaderCellDef> Items </th>
+                                    <td mat-cell *matCellDef="let element"> 
+                                        <div *ngFor="let item of element.items" class="small-text">
+                                            {{item.quantity}}x {{item.menuItem.name}}
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="time">
+                                    <th mat-header-cell *matHeaderCellDef> Time </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'shortTime'}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <div *ngIf="pendingOrdersList.length === 0" class="text-center p-3 text-muted">
+                                No pending orders.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats/Actions List -->
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+                <div class="card">
+                    <div class="header">
+                        <h2>Quick Stats</h2>
+                    </div>
+                    <div class="body">
+                        <ul class="list-unstyled stats-list">
+                            <li>
+                                <mat-icon class="text-muted">schedule</mat-icon>
+                                <div class="details">
+                                    <span>Avg Prep Time</span>
+                                    <strong>18 Mins</strong>
+                                </div>
+                            </li>
+                             <li>
+                                <mat-icon class="text-muted">done_all</mat-icon>
+                                <div class="details">
+                                    <span>Completed</span>
+                                    <strong>{{totalOrders - pendingOrdersCount}} Orders</strong>
+                                </div>
+                            </li>
+                             <li>
+                                <mat-icon class="text-warning">star</mat-icon>
+                                <div class="details">
+                                    <span>Rating</span>
+                                    <strong>4.8/5</strong>
+                                </div>
+                            </li>
+                        </ul>
+                         <button mat-raised-button color="primary" class="w-100 mt-3">Mark as Completed</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
