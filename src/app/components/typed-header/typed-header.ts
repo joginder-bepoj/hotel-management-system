@@ -28,6 +28,8 @@ export class TypedHeader implements AfterViewInit {
     }, 0);
   }
 
+  isTypingCompleted = false;
+
   typeNext() {
     if (this.letters.length > 0 && this.visibleCount < this.letters.length) {
       this.visibleCount++;
@@ -36,6 +38,8 @@ export class TypedHeader implements AfterViewInit {
       requestAnimationFrame(() => this.moveCursor());
 
       setTimeout(() => this.typeNext(), this.typingSpeed);
+    } else {
+      this.isTypingCompleted = true;
     }
   }
 

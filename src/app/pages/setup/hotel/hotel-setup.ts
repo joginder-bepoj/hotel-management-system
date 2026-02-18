@@ -70,6 +70,14 @@ export class HotelSetupComponent implements OnInit {
     this.configurationForm.get('roomTypes')!.valueChanges.subscribe(value => {
       this.updateRoomPrices(value);
     });
+
+    // Automatically set check-out time based on check-in time
+    this.policiesForm.get('checkInTime')!.valueChanges.subscribe(value => {
+      if (value) {
+        // For a 24-hour cycle, check-out time is the same as check-in time
+        this.policiesForm.get('checkOutTime')!.setValue(value, { emitEvent: false });
+      }
+    });
   }
 
   updateRoomPrices(roomTypesStr: string) {

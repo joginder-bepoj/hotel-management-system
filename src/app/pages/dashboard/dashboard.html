@@ -2,288 +2,249 @@
   <div class="content-block">
     <div class="block-header mt-n3">
       <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <ul class="breadcrumb breadcrumb-style">
             <li class="breadcrumb-item">
               <h4 class="wlcm-text">Welcome to {{activeHotel?.hotel_name || 'HMS Dashboard'}}!</h4>
             </li>
           </ul>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-          <div class="breadcrumb float-end">
-            <div class="mb-xl-0">
-              <div class="float-end msl-2">
-                <p class="text-secondary mb-0">Total Income</p>
-                <apx-chart
-                  [series]="totalIncomeSeries"
-                  [chart]="totalIncomeChart"
-                  [plotOptions]="totalIncomePlotOptions"
-                  [colors]="totalIncomeColors"
-                  [tooltip]="totalIncomeTooltip"
-                >
-                </apx-chart>
+      </div>
+    </div>
+    
+    <!-- Row 1: Key Metrics -->
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card info-box-5 bg-blue">
+          <div class="card-icon">
+            <mat-icon>login</mat-icon>
+          </div>
+          <div class="card-content">
+            <div class="text">Today's Check-ins</div>
+            <div class="number">{{checkInsToday}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card info-box-5 bg-orange">
+          <div class="card-icon">
+            <mat-icon>logout</mat-icon>
+          </div>
+          <div class="card-content">
+            <div class="text">Today's Check-outs</div>
+            <div class="number">{{checkOutsToday}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card info-box-5 bg-green">
+          <div class="card-icon">
+            <mat-icon>monetization_on</mat-icon>
+          </div>
+          <div class="card-content">
+            <div class="text">Today's Revenue</div>
+            <div class="number">${{totalRevenueToday | number}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card info-box-5 bg-red">
+          <div class="card-icon">
+            <mat-icon>pending_actions</mat-icon>
+          </div>
+          <div class="card-content">
+            <div class="text">Pending Payments</div>
+            <div class="number">${{pendingPayments | number}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Charts -->
+    <div class="row clearfix">
+      <!-- Revenue Summary Chart -->
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Revenue Summary</h2>
+          </div>
+          <div class="body">
+            <apx-chart
+              [series]="revenueChartOptions.series || []"
+              [chart]="revenueChartOptions.chart!"
+              [xaxis]="revenueChartOptions.xaxis!"
+              [stroke]="revenueChartOptions.stroke!"
+              [tooltip]="revenueChartOptions.tooltip!"
+              [dataLabels]="revenueChartOptions.dataLabels!"
+              [colors]="revenueChartOptions.colors!"
+            >
+            </apx-chart>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Occupancy Chart -->
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Current Occupancy</h2>
+          </div>
+          <div class="body">
+            <apx-chart
+              [series]="occupancyChartOptions.series || []"
+              [chart]="occupancyChartOptions.chart!"
+              [plotOptions]="occupancyChartOptions.plotOptions!"
+              [labels]="occupancyChartOptions.labels!"
+              [colors]="occupancyChartOptions.colors!"
+            >
+            </apx-chart>
+            <div class="text-center mt-3">
+              <p class="text-muted">Total Rooms: {{totalRooms}}</p>
+              <p class="text-success">Occupied: {{occupiedRooms}}</p>
+              <p class="text-primary">Available: {{availableRooms}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Operational Status -->
+    <div class="row clearfix">
+      
+      <!-- Room Availability Snapshot -->
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Room Availability Snapshot</h2>
+          </div>
+          <div class="body">
+            <div class="mb-3" *ngFor="let room of roomAvailability">
+              <div class="d-flex justify-content-between">
+                <span>{{room.type}}</span>
+                <span>{{room.percentage}}%</span>
               </div>
-              <div class="float-end me-3 customer-rating">
-                <p class="text-secondary mb-2">Customer Ratings</p>
+              <mat-progress-bar mode="determinate" [value]="room.percentage" [color]="room.color.startsWith('bg-') ? null : room.color" [class]="room.color.startsWith('bg-') ? room.color : ''"></mat-progress-bar>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <div class="rating-star">
-                  <i class="material-icons">star</i>
-                  <i class="material-icons">star</i>
-                  <i class="material-icons">star</i>
-                  <i class="material-icons">star_half</i>
-                  <i class="material-icons">star_border</i>
+      <!-- Housekeeping Status -->
+      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Housekeeping Status</h2>
+          </div>
+          <div class="body">
+            <ul class="list-unstyled user-progress list-unstyled-border list-unstyled-noborder">
+              <li class="media" *ngFor="let item of housekeepingStatus">
+                <div class="media-body">
+                  <div class="media-title">Room {{item.room}}</div>
+                  <div class="text-job text-muted">{{item.staff}}</div>
+                </div>
+                <div class="media-progressbar">
+                  <div class="progress-text">{{item.status}}</div>
+                </div>
+                <div class="media-cta">
+                  <span class="badge" 
+                        [class.bg-orange]="item.status === 'Cleaning'"
+                        [class.bg-blue]="item.status === 'Inspection'"
+                        [class.bg-red]="item.status === 'Dirty'"
+                        [class.bg-green]="item.status === 'Clean'">
+                    {{item.status}}
+                  </span>
+                </div>
+              </li>
+            </ul>
+             <div class="text-center pt-3">
+              <a href="#" class="btn btn-primary">View All</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                  <span class="rating-count">(9,876)</span>
+      <!-- Alerts & Notifications -->
+      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+        <div class="card">
+          <div class="header">
+            <h2>Alerts & Notifications</h2>
+          </div>
+          <div class="body">
+            <div class="recent-activity">
+              <div class="activity-item" *ngFor="let alert of alerts">
+                <div class="activity-icon" 
+                     [class.bg-orange]="alert.type === 'warning'" 
+                     [class.bg-blue]="alert.type === 'info'" 
+                     [class.bg-red]="alert.type === 'error'">
+                  <mat-icon *ngIf="alert.type === 'warning'">warning</mat-icon>
+                  <mat-icon *ngIf="alert.type === 'info'">info</mat-icon>
+                  <mat-icon *ngIf="alert.type === 'error'">error</mat-icon>
+                </div>
+                <div class="activity-content">
+                  <p class="mb-0">{{alert.message}}</p>
+                  <span class="text-muted small">{{alert.time}}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
+
+    <!-- Recent Booking Table -->
     <div class="row">
-      <div class="col-lg-3 col-md-3 col-sm-12">
-        <mat-card class="dashboard-card">
-          <mat-card-header>
-            <div mat-card-avatar class="card-icon bg-purple">
-              <mat-icon>book_online</mat-icon>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Recent Bookings</h2>
+                </div>
+                <div class="body table-responsive tableBody">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                                <th>Room Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of dataSource; let i = index">
+                                <td>
+                                    <img class="table-img" src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user{{(i % 5) + 1}}.jpg" alt="user" width="35">
+                                </td>
+                                <td>{{b.name}}</td>
+                                <td>{{b.phone}}</td>
+                                <td>{{b.checkIn}}</td>
+                                <td>{{b.checkOut}}</td>
+                                <td>{{b.roomType}}</td>
+                                <td>
+                                    <span class="badge" 
+                                          [class.bg-green]="b.status === 'Paid'" 
+                                          [class.bg-red]="b.status === 'Unpaid'"
+                                          [class.bg-orange]="b.status === 'Pending'">
+                                        {{b.status}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button mat-icon-button class="tbl-action-btn btn-tbl-edit">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button class="tbl-action-btn btn-tbl-delete">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <mat-card-title>Total Booking</mat-card-title>
-            <mat-card-subtitle>1,245</mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-12">
-        <mat-card class="dashboard-card">
-          <mat-card-header>
-            <div mat-card-avatar class="card-icon bg-orange">
-              <mat-icon>room</mat-icon>
-            </div>
-            <mat-card-title>Rooms Available</mat-card-title>
-            <mat-card-subtitle>{{activeHotel?.total_rooms || '0'}}</mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-12">
-        <mat-card class="dashboard-card">
-          <mat-card-header>
-            <div mat-card-avatar class="card-icon bg-green">
-              <mat-icon>people</mat-icon>
-            </div>
-            <mat-card-title>New Customers</mat-card-title>
-            <mat-card-subtitle>1,532</mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-12">
-        <mat-card class="dashboard-card">
-          <mat-card-header>
-            <div mat-card-avatar class="card-icon bg-cyan">
-              <mat-icon>monetization_on</mat-icon>
-            </div>
-            <mat-card-title>Total Revenue</mat-card-title>
-            <mat-card-subtitle>$22,567</mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-      </div>
-    </div>
-    <div class="row">
-      <!-- Hotel Survey -->
-      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-        <mat-card class="p-3">
-          <div class="card-header">
-            <h3>Hotel Survey</h3>
-          </div>
-
-          <apx-chart
-            [series]="hotelSurveySeries"
-            [chart]="hotelSurveyChart"
-            [xaxis]="hotelSurveyXAxis"
-            [stroke]="hotelSurveyStroke"
-            [fill]="hotelSurveyFill"
-            [colors]="hotelSurveyColors"
-            [legend]="legend"
-          >
-          </apx-chart>
-        </mat-card>
-      </div>
-
-      <!-- Room Booking -->
-      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <mat-card class="p-3">
-          <div class="card-header">
-            <h3>Room Booking Chart</h3>
-          </div>
-
-          <apx-chart
-            [series]="roomBookingSeries"
-            [chart]="roomBookingChart"
-            [labels]="roomBookingLabels"
-            [colors]="roomBookingColors"
-            [legend]="legend"
-          >
-          </apx-chart>
-        </mat-card>
-      </div>
-    </div>
-
-    <div class="row clearfix mt-3">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-  <div class="dashboard-card card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h2>Booking Details</h2>
-      <button mat-icon-button class="icon-btn">⋮</button>
-    </div>
-    <div class="tableBody">
-      <div class="table-responsive">
-        <table class="table booking-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Check In</th>
-              <th>Check Out</th>
-              <th>Status</th>
-              <th>Phone</th>
-              <th>Room Type</th>
-              <th>Documents</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-  
-          <tbody>
-            <tr>
-              <td><img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user8.jpg" class="user-img"></td>
-              <td>John Deo</td>
-              <td>12-08-2019</td>
-              <td>15-08-2019</td>
-              <td><span class="badge paid">Paid</span></td>
-              <td>(123) 123456</td>
-              <td>Single</td>
-              <td><i class="far fa-file-pdf tbl-pdf"></i></td>
-              <td>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-edit"
-                  aria-label="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-delete"
-                  aria-label="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-  
-            <tr>
-              <td><img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user2.jpg" class="user-img"></td>
-              <td>Jens Brincker</td>
-              <td>13-08-2019</td>
-              <td>16-08-2019</td>
-              <td><span class="badge unpaid">Unpaid</span></td>
-              <td>(123) 123456</td>
-              <td>Double</td>
-              <td><i class="far fa-file-pdf tbl-pdf"></i></td>
-              <td>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-edit"
-                  aria-label="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-delete"
-                  aria-label="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-  
-            <tr>
-              <td><img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user3.jpg" class="user-img"></td>
-              <td>Mark Hay</td>
-              <td>15-08-2019</td>
-              <td>18-08-2019</td>
-              <td><span class="badge paid">Paid</span></td>
-              <td>(123) 123456</td>
-              <td>Single</td>
-              <td><i class="far fa-file-pdf tbl-pdf"></i></td>
-              <td>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-edit"
-                  aria-label="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-delete"
-                  aria-label="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-  
-            <tr>
-              <td><img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user4.jpg" class="user-img"></td>
-              <td>Anthony Davie</td>
-              <td>16-08-2019</td>
-              <td>17-08-2019</td>
-              <td><span class="badge unpaid">Unpaid</span></td>
-              <td>(123) 123456</td>
-              <td>King</td>
-              <td><i class="far fa-file-pdf tbl-pdf"></i></td>
-              <td>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-edit"
-                  aria-label="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-delete"
-                  aria-label="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-  
-            <tr>
-              <td><img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user6.jpg" class="user-img"></td>
-              <td>Alan Gilchrist</td>
-              <td>21-08-2019</td>
-              <td>23-08-2019</td>
-              <td><span class="badge paid">Paid</span></td>
-              <td>(123) 123456</td>
-              <td>Apartment</td>
-              <td><i class="far fa-file-pdf tbl-pdf"></i></td>
-              <td>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-edit"
-                  aria-label="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-delete"
-                  aria-label="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-  
-            <tr>
-              <td><img src="https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user7.jpg" class="user-img"></td>
-              <td>Sue Woodger</td>
-              <td>25-08-2019</td>
-              <td>26-08-2019</td>
-              <td><span class="badge pending">Pending</span></td>
-              <td>(123) 123456</td>
-              <td>Single</td>
-              <td><i class="far fa-file-pdf tbl-pdf"></i></td>
-              <td>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-edit"
-                  aria-label="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button mat-icon-button class="tbl-action-btn btn-tbl-delete"
-                  aria-label="Delete">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
+        </div>
     </div>
   </div>
 </section>

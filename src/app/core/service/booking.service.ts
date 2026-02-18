@@ -40,29 +40,48 @@ export interface Booking {
   providedIn: 'root',
 })
 export class BookingService {
-  private bookings: Booking[] = [
-    {
-      id: 1,
-      first: 'Pooja',
-      last: 'Patel',
-      email: 'test@email.com',
-      gender: 'Female',
-      mobile: '1234567890',
-      city: 'Surat',
-      arriveDate: new Date('2018-02-09'),
-      departDate: new Date('2018-02-15'),
-      totalPerson: 2,
-      roomType: 'Super Delux',
-      address: '123 Main St',
-      uploadFile: '',
-      note: 'None',
-      payment: 'Unpaid',
-    },
-  ];
-  private bookingsSubject: BehaviorSubject<Booking[]> = new BehaviorSubject<Booking[]>(this.bookings);
-  bookings$: Observable<Booking[]> = this.bookingsSubject.asObservable();
+  private readonly STORAGE_KEY = 'hms_bookings_list';
+  private bookingsSubject = new BehaviorSubject<Booking[]>(this.loadFromStorage());
+  bookings$ = this.bookingsSubject.asObservable();
 
   constructor() {}
+
+  private loadFromStorage(): Booking[] {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    if (!data) {
+      // Default sample data if nothing in storage
+      return [
+        {
+          id: 1,
+          first: 'Pooja',
+          last: 'Patel',
+          email: 'test@email.com',
+          gender: 'Female',
+          mobile: '1234567890',
+          city: 'Surat',
+          arriveDate: new Date('2026-02-18'), // Updated to today for demo
+          departDate: new Date('2026-02-25'),
+          totalPerson: 2,
+          roomType: 'Super Delux',
+          address: '123 Main St',
+          uploadFile: '',
+          note: 'None',
+          payment: 'Unpaid',
+        },
+      ];
+    }
+    const parsed = JSON.parse(data);
+    return parsed.map((b: any) => ({
+      ...b,
+      arriveDate: new Date(b.arriveDate),
+      departDate: new Date(b.departDate)
+    }));
+  }
+
+  private saveToStorage(bookings: Booking[]) {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(bookings));
+    this.bookingsSubject.next(bookings);
+  }
 
   getBookings(): Booking[] {
     return this.bookingsSubject.value;
@@ -71,9 +90,9 @@ export class BookingService {
   addBooking(booking: Booking): void {
     const currentBookings = this.bookingsSubject.value;
     booking.id = currentBookings.length > 0 ? Math.max(...currentBookings.map(b => b.id)) + 1 : 1;
-    booking.payment = 'Unpaid'; // Default status
+    if (!booking.payment) booking.payment = 'Unpaid';
     const updatedBookings = [...currentBookings, booking];
-    this.bookingsSubject.next(updatedBookings);
+    this.saveToStorage(updatedBookings);
   }
 
   getBooking(id: number): Booking | undefined {
@@ -86,12 +105,12 @@ export class BookingService {
     if (index !== -1) {
       const updatedBookings = [...currentBookings];
       updatedBookings[index] = updatedBooking;
-      this.bookingsSubject.next(updatedBookings);
+      this.saveToStorage(updatedBookings);
     }
   }
 
   deleteBooking(id: number): void {
     const updatedBookings = this.bookingsSubject.value.filter((b) => b.id !== id);
-    this.bookingsSubject.next(updatedBookings);
+    this.saveToStorage(updatedBookings);
   }
 }
