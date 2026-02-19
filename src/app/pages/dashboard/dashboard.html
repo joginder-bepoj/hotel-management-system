@@ -118,12 +118,21 @@
             <h2>Room Availability Snapshot</h2>
           </div>
           <div class="body">
-            <div class="mb-3" *ngFor="let room of roomAvailability">
-              <div class="d-flex justify-content-between">
-                <span>{{room.type}}</span>
-                <span>{{room.percentage}}%</span>
+            <div class="mb-4" *ngFor="let room of roomAvailability">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="font-weight-600">{{room.type}}</span>
+                <span class="badge" [ngClass]="'badge-solid-' + room.color">{{room.percentage}}%</span>
               </div>
-              <mat-progress-bar mode="determinate" [value]="room.percentage" [color]="room.color.startsWith('bg-') ? null : room.color" [class]="room.color.startsWith('bg-') ? room.color : ''"></mat-progress-bar>
+              <div class="progress skill-progress w-100">
+                <div role="progressbar" 
+                     [attr.aria-valuenow]="room.percentage" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100" 
+                     [style.width.%]="room.percentage"
+                     [ngClass]="'l-bg-' + room.color"
+                     class="progress-bar">
+                </div>
+              </div>
             </div>
           </div>
         </div>

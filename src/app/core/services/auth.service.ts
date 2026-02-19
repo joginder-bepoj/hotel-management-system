@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +12,26 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(userData: any): Observable<any> {
-    // const formData = new FormData();
-    // formData.append('username', userData.username);
-    // formData.append('email', userData.email);
-    // formData.append('phone_number', userData.phone_number);
-    // formData.append('password', userData.password);
-    // formData.append('confirm_password', userData.confirm_password);
+    // For mock purposes, save user to localStorage "database"
+    const registeredUsers = JSON.parse(localStorage.getItem('hms_registered_users') || '[]');
     
-    // return this.http.post(`${this.baseUrl}/register`, formData);
-    return of({ message: 'Registration successful', user: userData });
+    // Check if user already exists
+    if (registeredUsers.find((u: any) => u.email === userData.email)) {
+      return of({ message: 'User already exists', success: false }).pipe(
+        map(res => { throw { error: res }; })
+      );
+    }
+
+    const newUser = {
+      ...userData,
+      id: registeredUsers.length + 1,
+      is_setup_complete: false
+    };
+    
+    registeredUsers.push(newUser);
+    localStorage.setItem('hms_registered_users', JSON.stringify(registeredUsers));
+    
+    return of({ message: 'Registration successful', user: newUser });
   }
 
   verifyOtp(email: string, otp: string): Observable<any> {
@@ -40,21 +52,37 @@ export class AuthService {
   }
 
   login(credentials: any): Observable<any> {
-    // const formData = new FormData();
-    // formData.append('email', credentials.email);
-    // formData.append('password', credentials.password);
-    
-    // return this.http.post(`${this.baseUrl}/login`, formData);
+    // Check against mock "database"
+    const registeredUsers = JSON.parse(localStorage.getItem('hms_registered_users') || '[]');
+    const user = registeredUsers.find((u: any) => u.email === credentials.email);
 
-    // Mock Login Response
-    const mockUser = {
-      id: 1,
-      username: credentials.email.split('@')[0],
-      email: credentials.email,
-      phone_number: '9876543210',
-      is_setup_complete: true, // Defaulting to true to access dashboard
-      token: 'mock-jwt-token'
-    };
-    return of({ message: 'Login successful', user: mockUser });
+    if (!user) {
+      // User doesn't exist
+      return of({ 
+        message: 'No account found with this email. Please sign up first.', 
+        error: true 
+      }).pipe(
+        map(res => { 
+          // Throw error so it's caught by the component's error handler
+          const errorObj = { error: { message: res.message } };
+          throw errorObj;
+        })
+      );
+    }
+
+    if (user.password !== credentials.password) {
+      return of({ 
+        message: 'Invalid password', 
+        error: true 
+      }).pipe(
+        map(() => { throw { error: { message: 'Invalid credentials' } }; })
+      );
+    }
+
+    // Check if hotel setup is complete (check across both user object and localStorage)
+    const activeHotels = JSON.parse(localStorage.getItem('hms_hotels_list') || '[]');
+    user.is_setup_complete = activeHotels.length > 0;
+
+    return of({ message: 'Login successful', user: user });
   }
 }

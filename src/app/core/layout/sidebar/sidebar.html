@@ -10,7 +10,7 @@
               <div class="user-panel clickable-panel" [matMenuTriggerFor]="hotelMenu">
                 <div class="image">
                   <img
-                    [src]="activeHotel?.hotel_images?.length ? activeHotel.hotel_images[0] : '/images/hotel-icon.png'"
+                    [src]="activeHotel?.hotel_images?.length ? activeHotel.hotel_images[0] : '/images/logo.avif'"
                     alt="Hotel" class="user-img" />
                 </div>
                 <div class="profile">
@@ -22,17 +22,34 @@
 
             <!-- Hotel Switcher Menu -->
             <mat-menu #hotelMenu="matMenu" class="hotel-switch-menu">
-              <div class="menu-header">Your Hotels</div>
-              <button mat-menu-item *ngFor="let h of hotels" (click)="onSwitchHotel(h.id)"
-                [class.active-hotel]="h.id === activeHotel?.id">
-                <mat-icon [color]="h.id === activeHotel?.id ? 'primary' : ''">business</mat-icon>
-                <span>{{h.hotel_name}}</span>
-              </button>
+              <div class="menu-header">
+                <i class="fas fa-city"></i>
+                <span>Switch Hotel</span>
+              </div>
+              <div class="menu-content">
+                <button mat-menu-item *ngFor="let h of hotels; let i = index" (click)="onSwitchHotel(h.id)"
+                  [class.active-hotel]="h.id === activeHotel?.id">
+                  <div class="hotel-card-item">
+                    <div class="hotel-icon-container" [ngClass]="'icon-vibrant-' + (i % 5)">
+                      <i class="fas fa-hotel"></i>
+                    </div>
+                    <div class="hotel-text-info">
+                      <div class="hotel-primary-name">{{h.hotel_name}}</div>
+                      <div class="hotel-secondary-info">{{h.city || 'Property Management'}}</div>
+                    </div>
+                    <div class="selected-indicator" *ngIf="h.id === activeHotel?.id">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+                </button>
+              </div>
               <mat-divider></mat-divider>
-              <button mat-menu-item (click)="onAddNewHotel()">
-                <mat-icon color="accent">add_circle</mat-icon>
-                <span>Add New Hotel</span>
-              </button>
+              <div class="menu-footer">
+                <button mat-menu-item (click)="onAddNewHotel()" class="add-hotel-btn">
+                  <i class="fas fa-plus-circle me-2"></i>
+                  <span>Add New Property</span>
+                </button>
+              </div>
             </mat-menu>
 
             <!-- Main -->
