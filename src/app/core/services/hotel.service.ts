@@ -85,4 +85,9 @@ export class HotelService {
   getMyHotel(): Observable<any> {
     return of(this.getActiveHotel());
   }
+
+  isSetupComplete(): boolean {
+    const hotels = this.getHotels();
+    return hotels.length > 0;
+  }
 }

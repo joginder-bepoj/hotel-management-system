@@ -5,11 +5,18 @@
         <h4 class="page-title mb-0">{{title}}</h4>
       </li>
       <li class="breadcrumb-item bcrumb-1">
-        <a routerLink="/dashboard/main">
+        <a routerLink="/dashboard">
           <i class="fa fa-home breadcrumb-icon"></i>
         </a>
       </li>
-      <li class="breadcrumb-item" *ngFor="let item of items">{{item}}</li>
+      <li class="breadcrumb-item" *ngFor="let item of items">
+        <ng-container *ngIf="getItemLink(item) as link; else noLink">
+          <a [routerLink]="link">{{getItemLabel(item)}}</a>
+        </ng-container>
+        <ng-template #noLink>
+          {{getItemLabel(item)}}
+        </ng-template>
+      </li>
       <li class="breadcrumb-item active">{{active_item}}</li>
     </ul>
   </div>

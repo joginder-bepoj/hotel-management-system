@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { Layout } from './core/layout/layout';
 
+import { setupGuard } from './core/guards/setup.guard';
+import { authGuard } from './core/guards/auth.guard';
+
 export const routes: Routes = [
   {
     path: 'authentication/login',
@@ -19,28 +22,35 @@ export const routes: Routes = [
   },
   {
     path: 'setup',
-    loadComponent: () =>
-      import('./pages/setup/setup').then((c) => c.SetupComponent),
-  },
-  {
-    path: 'setup/hotel',
-    loadComponent: () =>
-      import('./pages/setup/hotel/hotel-setup').then((c) => c.HotelSetupComponent),
-  },
-  {
-    path: 'setup/restaurant',
-    loadComponent: () =>
-      import('./pages/setup/restaurant/restaurant-setup').then((c) => c.RestaurantSetupComponent),
-  },
-  {
-    path: 'setup/apartment',
-    loadComponent: () =>
-      import('./pages/setup/apartment/apartment-setup').then((c) => c.ApartmentSetupComponent),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/setup/setup').then((c) => c.SetupComponent),
+      },
+      {
+        path: 'hotel',
+        loadComponent: () =>
+          import('./pages/setup/hotel/hotel-setup').then((c) => c.HotelSetupComponent),
+      },
+      {
+        path: 'restaurant',
+        loadComponent: () =>
+          import('./pages/setup/restaurant/restaurant-setup').then((c) => c.RestaurantSetupComponent),
+      },
+      {
+        path: 'apartment',
+        loadComponent: () =>
+          import('./pages/setup/apartment/apartment-setup').then((c) => c.ApartmentSetupComponent),
+      },
+    ]
   },
   { path: '', redirectTo: '/authentication/login', pathMatch: 'full' },
   {
     path: '',
     component: Layout,
+    canActivate: [authGuard, setupGuard],
     children: [
       {
         path: 'dashboard',

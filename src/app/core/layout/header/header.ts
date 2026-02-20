@@ -60,6 +60,7 @@ export class Header implements OnInit {
   }
 
   logout(): void {
+    localStorage.removeItem('user');
     this.router.navigate(['/authentication/login']);
   }
 }
