@@ -79,9 +79,9 @@ export class AuthService {
       );
     }
 
-    // Check if hotel setup is complete (check across both user object and localStorage)
+    // Check if hotel setup is complete for THIS specific user
     const activeHotels = JSON.parse(localStorage.getItem('hms_hotels_list') || '[]');
-    user.is_setup_complete = activeHotels.length > 0;
+    user.is_setup_complete = activeHotels.some((h: any) => h.user_id === user.id);
 
     return of({ message: 'Login successful', user: user });
   }

@@ -1,14 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { HotelService } from '../../../core/services/hotel.service';
 
 @Component({
@@ -24,7 +26,9 @@ import { HotelService } from '../../../core/services/hotel.service';
     MatButtonModule,
     MatSelectModule,
     MatCheckboxModule,
-    MatIconModule
+    MatChipsModule,
+    MatIconModule,
+    MatExpansionModule
   ],
   templateUrl: './hotel-setup.html',
   styleUrls: ['./hotel-setup.scss']
@@ -42,77 +46,120 @@ export class HotelSetupComponent implements OnInit {
     rating: ['']
   });
 
-  configurationForm: FormGroup = this._formBuilder.group({
-    floors: ['', Validators.required],
-    rooms: ['', Validators.required],
-    roomTypes: [''],
-    amenityWifi: [false],
-    amenityParking: [false],
-    amenityPool: [false],
-    amenityGym: [false],
-    amenityRestaurant: [false],
-    amenityRoomService: [false]
+  roomsForm: FormGroup = this._formBuilder.group({
+    roomTypes: this._formBuilder.array([])
+  });
+
+  amenitiesForm: FormGroup = this._formBuilder.group({
+    general: [[]],
+    foodAndBeverage: [[]],
+    wellness: [[]],
+    business: [[]]
   });
 
   pricingForm: FormGroup = this._formBuilder.group({
-    roomPrices: this._formBuilder.group({}),
-    baseRoomPrice: ['', Validators.required],
-    seasonalMultiplier: [''],
-    discount: ['']
+    basePrice: ['', [Validators.required, Validators.min(0)]],
+    weekendPricing: ['', Validators.min(0)],
+    seasonalPricing: ['', Validators.min(0)],
+    extraGuestCharge: ['', Validators.min(0)],
+    taxPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+    promoCode: ['']
   });
-
-  roomTypesList: string[] = [];
-
-  ngOnInit() {
-    // Initialize with current value
-    this.updateRoomPrices(this.configurationForm.get('roomTypes')!.value);
-    
-    this.configurationForm.get('roomTypes')!.valueChanges.subscribe(value => {
-      this.updateRoomPrices(value);
-    });
-
-    // Automatically set check-out time based on check-in time
-    this.policiesForm.get('checkInTime')!.valueChanges.subscribe(value => {
-      if (value) {
-        // For a 24-hour cycle, check-out time is the same as check-in time
-        this.policiesForm.get('checkOutTime')!.setValue(value, { emitEvent: false });
-      }
-    });
-  }
-
-  updateRoomPrices(roomTypesStr: string) {
-    const types = roomTypesStr.split(',').map(t => t.trim()).filter(t => t !== '');
-    this.roomTypesList = [...new Set(types)]; // Unique types
-
-    const roomPricesGroup = this.pricingForm.get('roomPrices') as FormGroup;
-    
-    // Get current controls
-    const currentControls = Object.keys(roomPricesGroup.controls);
-    
-    // Add new controls
-    this.roomTypesList.forEach(type => {
-      if (!roomPricesGroup.contains(type)) {
-        roomPricesGroup.addControl(type, this._formBuilder.control('', Validators.required));
-      }
-    });
-
-    // Remove old controls
-    currentControls.forEach(controlName => {
-      if (!this.roomTypesList.includes(controlName)) {
-        roomPricesGroup.removeControl(controlName);
-      }
-    });
-  }
 
   policiesForm: FormGroup = this._formBuilder.group({
     checkInTime: ['', Validators.required],
     checkOutTime: ['', Validators.required],
-    cancellationPolicy: ['']
+    cancellationPolicy: [''],
+    noShowPolicy: [''],
+    childExtraBedPolicy: [''],
+    petPolicy: ['No Pets Allowed']
+  });
+
+  staffForm: FormGroup = this._formBuilder.group({
+    staffAccounts: this._formBuilder.array([])
   });
 
   mediaForm: FormGroup = this._formBuilder.group({
     gstId: ['']
   });
+
+  ngOnInit() {
+    // Add an initial room type
+    this.addRoomType();
+    // Add an initial staff account
+    this.addStaffAccount();
+
+    // Automatically set check-out time based on check-in time
+    this.policiesForm.get('checkInTime')!.valueChanges.subscribe(value => {
+      if (value) {
+        this.policiesForm.get('checkOutTime')!.setValue(value, { emitEvent: false });
+      }
+    });
+  }
+
+  get roomTypes() {
+    return this.roomsForm.get('roomTypes') as FormArray;
+  }
+
+  get staffAccounts() {
+    return this.staffForm.get('staffAccounts') as FormArray;
+  }
+
+  addRoomType() {
+    const roomTypeGroup = this._formBuilder.group({
+      name: ['', Validators.required],
+      totalRooms: [1, [Validators.required, Validators.min(1)]],
+      bedType: ['Single', Validators.required],
+      maxOccupancy: [2, [Validators.required, Validators.min(1)]],
+      size: [''],
+      amenities: [[]]
+    });
+    this.roomTypes.push(roomTypeGroup);
+  }
+
+  removeRoomType(index: number) {
+    if (this.roomTypes.length > 1) {
+      this.roomTypes.removeAt(index);
+    }
+  }
+
+  addStaffAccount() {
+    const staffGroup = this._formBuilder.group({
+      fullName: ['', Validators.required],
+      role: ['Receptionist', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      permissions: [[]]
+    });
+    this.staffAccounts.push(staffGroup);
+  }
+
+  removeStaffAccount(index: number) {
+    if (this.staffAccounts.length > 1) {
+      this.staffAccounts.removeAt(index);
+    }
+  }
+
+  // Amenities list
+  generalAmenities = ['Wi-Fi', 'Parking', 'Lift', '24h Front Desk', 'Security'];
+  foodAmenities = ['Restaurant', 'Bar', 'Room Service', 'Breakfast Included'];
+  wellnessAmenities = ['Gym', 'Spa', 'Pool', 'Yoga Center'];
+  businessAmenities = ['Conference Room', 'Banquet Hall', 'Business Center'];
+
+  toggleAmenity(category: string, amenity: string) {
+    const control = this.amenitiesForm.get(category);
+    if (control) {
+      const current = control.value as string[];
+      if (current.includes(amenity)) {
+        control.setValue(current.filter(a => a !== amenity));
+      } else {
+        control.setValue([...current, amenity]);
+      }
+    }
+  }
+
+  isAmenitySelected(category: string, amenity: string): boolean {
+    return (this.amenitiesForm.get(category)?.value as string[]).includes(amenity);
+  }
 
   selectedImages: File[] = [];
   selectedDocs: File[] = [];
@@ -129,20 +176,14 @@ export class HotelSetupComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.basicDetailsForm.valid && this.configurationForm.valid && this.pricingForm.valid && this.policiesForm.valid) {
+    if (this.basicDetailsForm.valid && this.roomsForm.valid && this.pricingForm.valid && this.policiesForm.valid) {
       const basicDetails = this.basicDetailsForm.value;
-      const configuration = this.configurationForm.value;
+      const rooms = this.roomsForm.value;
+      const amenities = this.amenitiesForm.value;
       const pricing = this.pricingForm.value;
       const policies = this.policiesForm.value;
+      const staff = this.staffForm.value;
       const media = this.mediaForm.value;
-
-      const amenities = [];
-      if (configuration.amenityWifi) amenities.push('WiFi');
-      if (configuration.amenityParking) amenities.push('Parking');
-      if (configuration.amenityPool) amenities.push('Pool');
-      if (configuration.amenityGym) amenities.push('Gym');
-      if (configuration.amenityRestaurant) amenities.push('Restaurant');
-      if (configuration.amenityRoomService) amenities.push('RoomService');
 
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : { id: 1 };
@@ -154,22 +195,47 @@ export class HotelSetupComponent implements OnInit {
         contact_number: basicDetails.contactNumber,
         email: basicDetails.email,
         rating: basicDetails.rating,
-        total_floor: configuration.floors,
-        total_rooms: configuration.rooms,
-        room_types: configuration.roomTypes.split(',').map((t: string) => t.trim()).filter((t: string) => t !== ''),
-        amenities: amenities,
-        base_room_price: pricing.baseRoomPrice,
-        peak_season_multiplier: pricing.seasonalMultiplier,
-        discount: pricing.discount,
+        
+        // Step 2: Rooms & Inventory
+        room_types: rooms.roomTypes,
+        total_rooms: rooms.roomTypes.reduce((acc: number, rt: any) => acc + (rt.totalRooms || 0), 0),
+        
+        // Step 3: Amenities
+        amenities: [
+          ...amenities.general,
+          ...amenities.foodAndBeverage,
+          ...amenities.wellness,
+          ...amenities.business
+        ],
+        categorized_amenities: amenities,
+
+        // Step 4: Pricing
+        base_room_price: pricing.basePrice,
+        weekday_pricing: pricing.basePrice, // default
+        weekend_pricing: pricing.weekendPricing || pricing.basePrice,
+        seasonal_pricing: pricing.seasonalPricing || pricing.basePrice,
+        extra_guest_charge: pricing.extraGuestCharge,
+        tax_percentage: pricing.taxPercentage,
+        promo_codes: pricing.promoCode ? [pricing.promoCode] : [],
+
+        // Step 5: Policies
         check_in_time: policies.checkInTime,
         check_out_time: policies.checkOutTime,
         cancellation_policy: policies.cancellationPolicy,
+        no_show_policy: policies.noShowPolicy,
+        child_extra_bed_policy: policies.childExtraBedPolicy,
+        pet_policy: policies.petPolicy,
+
+        // Step 7: Staff
+        staff_accounts: staff.staffAccounts,
+
+        // Media
         gst_tax_id: media.gstId,
         image_count: this.selectedImages.length,
-        doc_count: this.selectedDocs.length
+        doc_count: this.selectedDocs.length,
+        created_at: new Date().toISOString()
       };
 
-      // Use the refactored HotelService to save to the multi-hotel list
       this._hotelService.addHotel(hotelData).subscribe(success => {
         if (success) {
           alert('Hotel Setup Completed!');
@@ -182,16 +248,17 @@ export class HotelSetupComponent implements OnInit {
     } else {
       console.log('Form is invalid');
       this.markFormGroupTouched(this.basicDetailsForm);
-      this.markFormGroupTouched(this.configurationForm);
+      this.markFormGroupTouched(this.roomsForm);
       this.markFormGroupTouched(this.pricingForm);
       this.markFormGroupTouched(this.policiesForm);
+      this.markFormGroupTouched(this.staffForm);
     }
   }
 
-  private markFormGroupTouched(formGroup: FormGroup) {
+  private markFormGroupTouched(formGroup: FormGroup | FormArray) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
-      if (control instanceof FormGroup) {
+      if (control instanceof FormGroup || control instanceof FormArray) {
         this.markFormGroupTouched(control);
       }
     });

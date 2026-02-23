@@ -60,11 +60,22 @@ export class ApartmentSetupComponent {
   });
 
   onSubmit() {
-    if (this.basicInfoForm.valid && this.detailsForm.valid && this.pricingForm.valid) {
+    if (this.basicInfoForm.valid) {
       const setupData = {
         ...this.basicInfoForm.value,
-        ...this.detailsForm.value,
-        ...this.pricingForm.value
+        // Default values for fields removed from UI (to be configured later in dashboard)
+        bedroomCount: 0,
+        bathroomCount: 0,
+        areaSize: 0,
+        facilityWifi: false,
+        facilityParking: false,
+        facilityAc: false,
+        facilityKitchen: false,
+        facilityTv: false,
+        facilityWashingMachine: false,
+        rent: 0,
+        deposit: 0,
+        houseRules: ''
       };
       
       this._apartmentService.saveApartmentDetails(setupData).subscribe(success => {
@@ -79,8 +90,6 @@ export class ApartmentSetupComponent {
     } else {
       console.log('Form is invalid');
       this.markFormGroupTouched(this.basicInfoForm);
-      this.markFormGroupTouched(this.detailsForm);
-      this.markFormGroupTouched(this.pricingForm);
     }
   }
 

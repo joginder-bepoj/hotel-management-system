@@ -5,64 +5,145 @@
                 [active_item]="'Cleaning Schedule'">
             </app-breadcrumb>
         </div>
-        <div class="row clearfix">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <div class="card">
+
+        <!-- Stats Row -->
+        <div class="row stats-row">
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card total-tasks">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>task</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>Total Tasks</h3>
+                            <div class="number">{{stats.total}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card pending-tasks">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>hourglass_empty</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>Pending</h3>
+                            <div class="number">{{stats.pending}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card in-progress">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>autorenew</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>In Progress</h3>
+                            <div class="number">{{stats.inProgress}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card completed">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>check_circle</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>Completed</h3>
+                            <div class="number">{{stats.completed}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card main-card">
                     <div class="header">
                         <h2>Daily Cleaning Schedule</h2>
                     </div>
                     <div class="body">
+                        <div class="materialTableHeader">
+                            <div class="row align-items-center">
+                                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+                                    <div class="search-container">
+                                        <mat-icon class="search-icon">search</mat-icon>
+                                        <input placeholder="Search tasks by room, housekeeper or type..." type="text" (keyup)="applyFilter($event)"
+                                            #input class="browser-default search-field" aria-label="Search box">
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 d-flex justify-content-end">
+                                    <button mat-raised-button class="add-btn" (click)="addTask()">
+                                        <mat-icon class="me-2">add_task</mat-icon>
+                                        Assign New Task
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 w-100">
+                            <table mat-table [dataSource]="dataSource" matSort>
 
                                 <!-- Room Column -->
                                 <ng-container matColumnDef="room">
-                                    <th mat-header-cell *matHeaderCellDef> Room </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Room </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <span class="room-chip">{{row.room}}</span>
+                                    </td>
                                 </ng-container>
 
                                 <!-- Housekeeper Column -->
                                 <ng-container matColumnDef="housekeeper">
-                                    <th mat-header-cell *matHeaderCellDef> Housekeeper </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.housekeeper}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Housekeeper </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <div class="staff-info">
+                                            <span class="name">{{row.housekeeper}}</span>
+                                        </div>
+                                    </td>
                                 </ng-container>
 
                                 <!-- Type Column -->
                                 <ng-container matColumnDef="type">
-                                    <th mat-header-cell *matHeaderCellDef> Task Type </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Task Type </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <span class="type-text">{{row.type}}</span>
+                                    </td>
                                 </ng-container>
 
                                 <!-- Time Column -->
                                 <ng-container matColumnDef="scheduledTime">
-                                    <th mat-header-cell *matHeaderCellDef> Time </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.scheduledTime}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Scheduled Time </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <span class="time-info">
+                                            <mat-icon class="tiny-icon">access_time</mat-icon>
+                                            {{row.scheduledTime}}
+                                        </span>
+                                    </td>
                                 </ng-container>
 
                                 <!-- Priority Column -->
                                 <ng-container matColumnDef="priority">
-                                    <th mat-header-cell *matHeaderCellDef> Priority </th>
-                                    <td mat-cell *matCellDef="let element">
-                                        <span class="badge" [ngClass]="{
-                                            'bg-danger': element.priority === 'High',
-                                            'bg-warning': element.priority === 'Normal',
-                                            'bg-success': element.priority === 'Low'
-                                        }">
-                                            {{element.priority}}
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="badge-priority" [ngClass]="getPriorityClass(row.priority)">
+                                            {{row.priority}}
                                         </span>
                                     </td>
                                 </ng-container>
 
                                 <!-- Status Column -->
                                 <ng-container matColumnDef="status">
-                                    <th mat-header-cell *matHeaderCellDef> Status </th>
-                                    <td mat-cell *matCellDef="let element">
-                                        <span class="badge" [ngClass]="{
-                                            'badge-solid-orange': element.status === 'Pending',
-                                            'badge-solid-blue': element.status === 'In Progress',
-                                            'badge-solid-green': element.status === 'Completed'
-                                        }">
-                                            {{element.status}}
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="badge-premium" [ngClass]="getStatusClass(row.status)">
+                                            {{row.status}}
                                         </span>
                                     </td>
                                 </ng-container>
@@ -70,20 +151,50 @@
                                 <!-- Actions Column -->
                                 <ng-container matColumnDef="actions">
                                     <th mat-header-cell *matHeaderCellDef> Actions </th>
-                                    <td mat-cell *matCellDef="let element">
-                                        <button mat-icon-button color="primary" matTooltip="Edit Task">
-                                            <mat-icon>edit</mat-icon>
-                                        </button>
-                                        <button mat-icon-button color="warn" matTooltip="Delete">
-                                            <mat-icon>delete</mat-icon>
-                                        </button>
+                                    <td mat-cell *matCellDef="let row">
+                                        <div class="action-buttons">
+                                            <button mat-icon-button class="btn-edit" (click)="editTask(row)" matTooltip="Edit Task">
+                                                <mat-icon>edit_note</mat-icon>
+                                            </button>
+                                            <button mat-icon-button [matMenuTriggerFor]="statusMenu" class="btn-status" matTooltip="Update Status">
+                                                <mat-icon>sync</mat-icon>
+                                            </button>
+                                            <button mat-icon-button class="btn-delete" (click)="deleteTask(row)" matTooltip="Delete Task">
+                                                <mat-icon>delete_outline</mat-icon>
+                                            </button>
+
+                                            <mat-menu #statusMenu="matMenu">
+                                                <button mat-menu-item (click)="updateStatus(row, 'Pending')">
+                                                    <mat-icon class="text-warning">hourglass_empty</mat-icon>
+                                                    <span>Mark Pending</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateStatus(row, 'In Progress')">
+                                                    <mat-icon class="text-primary">autorenew</mat-icon>
+                                                    <span>Mark In Progress</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateStatus(row, 'Completed')">
+                                                    <mat-icon class="text-success">check_circle</mat-icon>
+                                                    <span>Mark Completed</span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
                                     </td>
                                 </ng-container>
 
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                                <tr class="mat-row" *matNoDataRow>
+                                    <td class="mat-cell" colspan="10" style="text-align: center; padding: 40px;">
+                                        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #ddd; margin-bottom: 10px;">cleaning_services</mat-icon>
+                                        <p>No cleaning tasks found matching <strong>"{{input.value}}"</strong></p>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
+
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25]"
+                            aria-label="Select page of tasks"></mat-paginator>
                     </div>
                 </div>
             </div>

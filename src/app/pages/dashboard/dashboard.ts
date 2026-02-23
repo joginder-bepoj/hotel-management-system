@@ -274,8 +274,8 @@ export class DashboardComponent implements OnInit {
   }
 
   loadRoomAvailability() {
-    if (this.activeHotel && this.activeHotel.room_types) {
-      this.roomAvailability = this.activeHotel.room_types.map((type: string, index: number) => {
+    if (this.activeHotel && this.activeHotel.room_types && this.activeHotel.room_types.length > 0) {
+      this.roomAvailability = this.activeHotel.room_types.map((rt: any, index: number) => {
         // Mock some occupancy percentages based on room types
         const mockPercentages = [80, 45, 20, 65, 30, 50];
         const value = mockPercentages[index % mockPercentages.length];
@@ -285,7 +285,7 @@ export class DashboardComponent implements OnInit {
         const colorClass = colors[index % colors.length];
 
         return {
-          type: type,
+          type: rt.name || rt, // Work with both new object structure and old string structure
           percentage: value,
           color: colorClass
         };
@@ -293,10 +293,8 @@ export class DashboardComponent implements OnInit {
       
       // Update global summary based on setup if available
       if (this.activeHotel.total_rooms) {
-        const floors = Number(this.activeHotel.total_floor || 1);
-        const roomsPerFloor = Number(this.activeHotel.total_rooms || 0);
-        this.totalRooms = floors * roomsPerFloor;
-        
+        // total_rooms in setup is now the absolute total
+        this.totalRooms = Number(this.activeHotel.total_rooms);
         this.occupiedRooms = Math.round((this.totalRooms * 75) / 100); // 75% default
         this.availableRooms = this.totalRooms - this.occupiedRooms;
       }

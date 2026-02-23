@@ -7,11 +7,10 @@
       <form [formGroup]="basicDetailsForm">
         <ng-template matStepLabel>Basic Details</ng-template>
 
-        <div class="row mt-2">
+        <div class="row mt-3">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Hotel Name</mat-label>
             <input matInput formControlName="hotelName" placeholder="Ex. Grand Plaza" required>
-            <mat-error *ngIf="basicDetailsForm.get('hotelName')?.hasError('required')">Hotel name is required</mat-error>
           </mat-form-field>
         </div>
 
@@ -19,7 +18,6 @@
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Address</mat-label>
             <textarea matInput formControlName="address" placeholder="Ex. 123 Main St, City, Country" required></textarea>
-            <mat-error *ngIf="basicDetailsForm.get('address')?.hasError('required')">Address is required</mat-error>
           </mat-form-field>
         </div>
 
@@ -27,20 +25,17 @@
           <mat-form-field appearance="outline">
             <mat-label>Contact Number</mat-label>
             <input matInput formControlName="contactNumber" placeholder="Ex. +1 234 567 890" required>
-            <mat-error *ngIf="basicDetailsForm.get('contactNumber')?.hasError('required')">Contact number is required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
             <input matInput formControlName="email" placeholder="Ex. info@grandplaza.com" required>
-            <mat-error *ngIf="basicDetailsForm.get('email')?.hasError('required')">Email is required</mat-error>
-            <mat-error *ngIf="basicDetailsForm.get('email')?.hasError('email')">Invalid email address</mat-error>
           </mat-form-field>
         </div>
 
         <div class="row">
           <mat-form-field appearance="outline">
-            <mat-label>Hotel Type</mat-label>
+            <mat-label>Star Rating</mat-label>
             <mat-select formControlName="rating">
               <mat-option value="1">1 Star</mat-option>
               <mat-option value="2">2 Stars</mat-option>
@@ -57,91 +52,157 @@
       </form>
     </mat-step>
 
-    <!-- Step 2: Configuration -->
-    <mat-step [stepControl]="configurationForm">
-      <form [formGroup]="configurationForm">
-        <ng-template matStepLabel>Configuration</ng-template>
-
-        <div class="row mt-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Total Floors</mat-label>
-            <input matInput type="number" formControlName="floors" required>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Total Rooms</mat-label>
-            <input matInput type="number" formControlName="rooms" required>
-          </mat-form-field>
-        </div>
-
-        <h3 class="section-title">Room Types</h3>
-        <div class="row mt-2">
-           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Room Types (Comma separated)</mat-label>
-            <input matInput formControlName="roomTypes" placeholder="Ex. Single, Double, Suite">
-            <mat-hint>Enter types separated by commas</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <h3 class="section-title">Amenities</h3>
-        <div class="amenities-grid">
-           <mat-checkbox formControlName="amenityWifi">Free Wi-Fi</mat-checkbox>
-           <mat-checkbox formControlName="amenityParking">Parking</mat-checkbox>
-           <mat-checkbox formControlName="amenityPool">Swimming Pool</mat-checkbox>
-           <mat-checkbox formControlName="amenityGym">Gym</mat-checkbox>
-           <mat-checkbox formControlName="amenityRestaurant">Restaurant</mat-checkbox>
-           <mat-checkbox formControlName="amenityRoomService">Room Service</mat-checkbox>
-        </div>
-
-        <div class="actions-container">
-          <button mat-button matStepperPrevious type="button">Back</button>
-          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
-        </div>
-      </form>
-    </mat-step>
-
-    <!-- Step 3: Pricing Setup -->
-    <mat-step [stepControl]="pricingForm">
-      <form [formGroup]="pricingForm">
-        <ng-template matStepLabel>Pricing Setup</ng-template>
-
-        <div class="row mt-2" formGroupName="roomPrices">
-          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3" *ngFor="let type of roomTypesList">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Price for {{type}}</mat-label>
-              <input matInput type="number" [formControlName]="type" required>
-              <span matPrefix>&nbsp;Rs.&nbsp;</span>
-              <mat-error *ngIf="pricingForm.get('roomPrices')?.get(type)?.hasError('required')">Price is required</mat-error>
-            </mat-form-field>
+    <!-- Step 2: Rooms & Inventory -->
+    <mat-step [stepControl]="roomsForm">
+      <form [formGroup]="roomsForm">
+        <ng-template matStepLabel>Rooms & Inventory</ng-template>
+        
+        <div formArrayName="roomTypes">
+          <div *ngFor="let roomType of roomTypes.controls; let i=index" [formGroupName]="i" class="card-item mb-3">
+            <div class="card-header">
+              <h4>Room Type {{i + 1}}</h4>
+              <button mat-icon-button color="warn" (click)="removeRoomType(i)" *ngIf="roomTypes.length > 1">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Room Type Name</mat-label>
+                <input matInput formControlName="name" placeholder="Ex. Deluxe Room" required>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Number of Rooms</mat-label>
+                <input matInput type="number" formControlName="totalRooms" required>
+              </mat-form-field>
+            </div>
+            
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Bed Type</mat-label>
+                <mat-select formControlName="bedType">
+                  <mat-option value="Single">Single Bed</mat-option>
+                  <mat-option value="Double">Double Bed</mat-option>
+                  <mat-option value="King">King Size</mat-option>
+                  <mat-option value="Queen">Queen Size</mat-option>
+                  <mat-option value="Twin">Twin Beds</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Max Occupancy</mat-label>
+                <input matInput type="number" formControlName="maxOccupancy" required>
+              </mat-form-field>
+            </div>
           </div>
         </div>
 
-        <div class="row mt-2" *ngIf="roomTypesList.length === 0">
-           <p class="text-danger">Please enter room types in the previous step to set prices.</p>
+        <button mat-stroked-button color="primary" type="button" (click)="addRoomType()" class="mb-3">
+          <mat-icon>add</mat-icon> Add Another Room Type
+        </button>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Amenities & Facilities -->
+    <mat-step [stepControl]="amenitiesForm">
+      <form [formGroup]="amenitiesForm">
+        <ng-template matStepLabel>Amenities</ng-template>
+
+        <div class="amenities-grid">
+          <div class="amenity-category">
+            <h4>General</h4>
+            <div class="chips-container">
+              <mat-chip-listbox multiple>
+                <mat-chip-option *ngFor="let item of generalAmenities" 
+                  [selected]="isAmenitySelected('general', item)"
+                  (click)="toggleAmenity('general', item)">
+                  {{item}}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+          </div>
+
+          <div class="amenity-category">
+            <h4>Food & Beverage</h4>
+            <div class="chips-container">
+              <mat-chip-listbox multiple>
+                <mat-chip-option *ngFor="let item of foodAmenities" 
+                   [selected]="isAmenitySelected('foodAndBeverage', item)"
+                   (click)="toggleAmenity('foodAndBeverage', item)">
+                  {{item}}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+          </div>
+
+          <div class="amenity-category">
+            <h4>Wellness</h4>
+            <div class="chips-container">
+              <mat-chip-listbox multiple>
+                <mat-chip-option *ngFor="let item of wellnessAmenities" 
+                   [selected]="isAmenitySelected('wellness', item)"
+                   (click)="toggleAmenity('wellness', item)">
+                  {{item}}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+          </div>
+
+          <div class="amenity-category">
+            <h4>Business</h4>
+            <div class="chips-container">
+              <mat-chip-listbox multiple>
+                <mat-chip-option *ngFor="let item of businessAmenities" 
+                   [selected]="isAmenitySelected('business', item)"
+                   (click)="toggleAmenity('business', item)">
+                  {{item}}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+          </div>
         </div>
 
-        <h3 class="section-title">Base Pricing</h3>
-        <div class="row mt-2">
+        <div class="actions-container mt-4">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 4: Pricing & Rate Plans -->
+    <mat-step [stepControl]="pricingForm">
+      <form [formGroup]="pricingForm">
+        <ng-template matStepLabel>Pricing</ng-template>
+
+        <div class="row mt-3">
           <mat-form-field appearance="outline">
-            <mat-label>Base Room Price (Starting From)</mat-label>
-            <input matInput type="number" formControlName="baseRoomPrice" placeholder="Ex. 2500" required>
-            <span matPrefix>Rs.&nbsp;</span>
-            <mat-error *ngIf="pricingForm.get('baseRoomPrice')?.hasError('required')">Base room price is required</mat-error>
+            <mat-label>Base Room Price (per night)</mat-label>
+            <input matInput type="number" formControlName="basePrice" placeholder="Ex. 1500" required>
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tax Percentage (GST/Service)</mat-label>
+            <input matInput type="number" formControlName="taxPercentage" placeholder="Ex. 12" required>
+            <span matSuffix>%</span>
           </mat-form-field>
         </div>
 
-        <h3 class="section-title">Seasonal Pricing</h3>
-        <div class="row mt-2">
+        <div class="row">
           <mat-form-field appearance="outline">
-            <mat-label>Peak Season Multiplier</mat-label>
-            <input matInput type="number" formControlName="seasonalMultiplier" step="0.1" placeholder="Ex. 1.5">
+            <mat-label>Weekend Pricing Surge</mat-label>
+            <input matInput type="number" formControlName="weekendPricing" placeholder="Ex. 1800">
           </mat-form-field>
-        </div>
 
-         <div class="row mt-2">
           <mat-form-field appearance="outline">
-            <mat-label>Default Discount (%)</mat-label>
-            <input matInput type="number" formControlName="discount" min="0" max="100">
+            <mat-label>Extra Guest Charge</mat-label>
+            <input matInput type="number" formControlName="extraGuestCharge" placeholder="Ex. 500">
           </mat-form-field>
         </div>
 
@@ -152,12 +213,12 @@
       </form>
     </mat-step>
 
-    <!-- Step 4: Policies -->
+    <!-- Step 5: Policies Configuration -->
     <mat-step [stepControl]="policiesForm">
       <form [formGroup]="policiesForm">
         <ng-template matStepLabel>Policies</ng-template>
 
-        <div class="row mt-2">
+        <div class="row mt-3">
           <mat-form-field appearance="outline">
             <mat-label>Check-in Time</mat-label>
             <input matInput type="time" formControlName="checkInTime" required>
@@ -166,14 +227,21 @@
           <mat-form-field appearance="outline">
             <mat-label>Check-out Time</mat-label>
             <input matInput type="time" formControlName="checkOutTime" required>
-            <mat-hint>Defaults to 24h after check-in</mat-hint>
+            <mat-hint>Defaults to check-in time</mat-hint>
           </mat-form-field>
         </div>
 
         <div class="row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Cancellation Policy</mat-label>
-            <textarea matInput formControlName="cancellationPolicy" rows="4" placeholder="Enter cancellation rules here..."></textarea>
+            <textarea matInput formControlName="cancellationPolicy" rows="2" placeholder="Ex. Full refund within 24 hours..."></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Pet Policy</mat-label>
+            <input matInput formControlName="petPolicy" placeholder="Ex. No pets allowed / Small pets welcome">
           </mat-form-field>
         </div>
 
@@ -184,12 +252,63 @@
       </form>
     </mat-step>
 
-    <!-- Step 5: Media & Documents -->
+    <!-- Step 6: Staff & Role Management -->
+    <mat-step [stepControl]="staffForm">
+      <form [formGroup]="staffForm">
+        <ng-template matStepLabel>Staff</ng-template>
+
+        <div formArrayName="staffAccounts">
+          <div *ngFor="let staff of staffAccounts.controls; let i=index" [formGroupName]="i" class="card-item mb-3">
+            <div class="card-header">
+              <h4>Staff Member {{i + 1}}</h4>
+              <button mat-icon-button color="warn" (click)="removeStaffAccount(i)" *ngIf="staffAccounts.length > 1">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="fullName" placeholder="Ex. John Doe" required>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Email Address</mat-label>
+                <input matInput type="email" formControlName="email" required>
+              </mat-form-field>
+            </div>
+            
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role">
+                  <mat-option value="Admin">Admin</mat-option>
+                  <mat-option value="Manager">Manager</mat-option>
+                  <mat-option value="Receptionist">Receptionist</mat-option>
+                  <mat-option value="Housekeeping">Housekeeping</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <button mat-stroked-button color="primary" type="button" (click)="addStaffAccount()" class="mb-3">
+          <mat-icon>person_add</mat-icon> Add Another Staff Member
+        </button>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 7: Media & Documents -->
     <mat-step [stepControl]="mediaForm">
       <form [formGroup]="mediaForm">
-        <ng-template matStepLabel>Media & Documents</ng-template>
+        <ng-template matStepLabel>Media</ng-template>
 
-        <div class="row mt-2">
+        <div class="row mt-3">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>GST / Tax ID</mat-label>
             <input matInput formControlName="gstId">
@@ -200,21 +319,13 @@
         <div class="file-upload-container" (click)="imageInput.click()">
           <mat-icon>cloud_upload</mat-icon>
           <p>Click or drag images here to upload</p>
-          <p *ngIf="selectedImages.length" style="color: green">{{ selectedImages.length }} files selected</p>
+          <p *ngIf="selectedImages.length" style="color: #4CAF50; font-weight: bold;">{{ selectedImages.length }} files selected</p>
           <input #imageInput type="file" multiple style="display: none;" (change)="onFileSelected($event, 'images')">
         </div>
 
-        <!-- <h3 class="section-title">Licenses & Documents</h3>
-        <div class="file-upload-container" (click)="docInput.click()">
-          <mat-icon>description</mat-icon>
-          <p>Click or drag documents here to upload</p>
-           <p *ngIf="selectedDocs.length" style="color: green">{{ selectedDocs.length }} files selected</p>
-          <input #docInput type="file" multiple style="display: none;" (change)="onFileSelected($event, 'docs')">
-        </div> -->
-
-        <div class="actions-container">
+        <div class="actions-container mt-4">
           <button mat-button matStepperPrevious type="button">Back</button>
-          <button mat-button (click)="onSubmit()" color="primary" raised class="btn-primary">Complete Setup</button>
+          <button mat-raised-button (click)="onSubmit()" class="btn-complete">Complete Setup</button>
         </div>
       </form>
     </mat-step>

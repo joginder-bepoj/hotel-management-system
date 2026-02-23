@@ -41,46 +41,16 @@ export class RestaurantSetupComponent {
     email: ['', [Validators.email]]
   });
 
-  menuForm: FormGroup = this._formBuilder.group({
-    menuItems: this._formBuilder.array([])
-  });
-
-  timingsForm: FormGroup = this._formBuilder.group({
-    openTime: ['', Validators.required],
-    closeTime: ['', Validators.required],
-    tableCount: ['', Validators.required],
-    seatingCapacity: ['']
-  });
-
-  constructor() {
-    // Add one initial menu item
-    this.addMenuItem();
-  }
-
-  get menuItems() {
-    return this.menuForm.get('menuItems') as FormArray;
-  }
-
-  addMenuItem() {
-    const itemForm = this._formBuilder.group({
-      name: ['', Validators.required],
-      category: ['', Validators.required],
-      price: ['', Validators.required],
-      isVeg: [false]
-    });
-    this.menuItems.push(itemForm);
-  }
-
-  removeMenuItem(index: number) {
-    this.menuItems.removeAt(index);
-  }
-
   onSubmit() {
-    if (this.basicInfoForm.valid && this.menuForm.valid && this.timingsForm.valid) {
+    if (this.basicInfoForm.valid) {
       const setupData = {
         ...this.basicInfoForm.value,
-        menuItems: this.menuForm.value.menuItems,
-        ...this.timingsForm.value
+        // Default values for fields removed from UI (to be configured later in dashboard)
+        menuItems: [],
+        openTime: '09:00',
+        closeTime: '22:00',
+        tableCount: 1,
+        seatingCapacity: 4
       };
       
       this._restaurantService.saveRestaurantDetails(setupData).subscribe(success => {
@@ -95,8 +65,6 @@ export class RestaurantSetupComponent {
     } else {
       console.log('Form is invalid');
       this.markFormGroupTouched(this.basicInfoForm);
-      this.markFormGroupTouched(this.menuForm);
-      this.markFormGroupTouched(this.timingsForm);
     }
   }
 

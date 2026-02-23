@@ -5,71 +5,202 @@
                 [active_item]="'Laundry Management'">
             </app-breadcrumb>
         </div>
-        <div class="row clearfix">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <div class="card">
+
+        <!-- Stats Row -->
+        <div class="row stats-row">
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card total-orders">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>local_laundry_service</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>Total Orders</h3>
+                            <div class="number">{{stats.totalOrders}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card pending-orders">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>hourglass_empty</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>Pending</h3>
+                            <div class="number">{{stats.pending}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card in-progress">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>autorenew</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>In Progress</h3>
+                            <div class="number">{{stats.inProgress}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                <div class="card revenue">
+                    <div class="card-content">
+                        <div class="icon-box">
+                            <mat-icon>monetization_on</mat-icon>
+                        </div>
+                        <div class="details">
+                            <h3>Total Revenue</h3>
+                            <div class="number">${{stats.totalRevenue | number:'1.2-2'}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card main-card">
                     <div class="header">
-                        <h2>Guest Laundry Orders</h2>
+                        <h2>Laundry Service Orders</h2>
                     </div>
                     <div class="body">
+                        <div class="materialTableHeader">
+                            <div class="row align-items-center">
+                                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+                                    <div class="search-container">
+                                        <mat-icon class="search-icon">search</mat-icon>
+                                        <input placeholder="Search orders by guest, room or order ID..." type="text" (keyup)="applyFilter($event)"
+                                            #input class="browser-default search-field" aria-label="Search box">
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 d-flex justify-content-end">
+                                    <button mat-raised-button class="add-btn" (click)="addOrder()">
+                                        <mat-icon class="me-2">add</mat-icon>
+                                        New Laundry Order
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table mat-table [dataSource]="dataSource" matSort class="w-100">
+                            <table mat-table [dataSource]="dataSource" matSort>
 
                                 <!-- ID Column -->
                                 <ng-container matColumnDef="id">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Order ID </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <span class="order-id">{{row.id}}</span>
+                                    </td>
                                 </ng-container>
 
-                                <!-- Guest Name Column -->
+                                <!-- Guest Column -->
                                 <ng-container matColumnDef="guestName">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Guest Name </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.guestName}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Guest Details </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <div class="guest-info">
+                                            <span class="name">{{row.guestName}}</span>
+                                            <span class="room">Room: {{row.roomNumber}}</span>
+                                        </div>
+                                    </td>
                                 </ng-container>
 
-                                <!-- Room Number Column -->
+                                <!-- Room Column (Simplified since it's in guest info) -->
                                 <ng-container matColumnDef="roomNumber">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Room No </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.roomNumber}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="display: none;"> Room </th>
+                                    <td mat-cell *matCellDef="let row" style="display: none;"> {{row.roomNumber}} </td>
                                 </ng-container>
 
                                 <!-- Items Column -->
                                 <ng-container matColumnDef="items">
-                                    <th mat-header-cell *matHeaderCellDef> Items </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.items}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Items </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <span class="item-chip">{{row.items}}</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Cost Column -->
+                                <ng-container matColumnDef="cost">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cost </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <span class="cost-amount">{{row.cost | number:'1.2-2'}}</span>
+                                    </td>
                                 </ng-container>
 
                                 <!-- Status Column -->
                                 <ng-container matColumnDef="status">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
                                     <td mat-cell *matCellDef="let row">
-                                        <span class="badge" [ngClass]="getStatusClass(row.status)">
+                                        <span class="badge-premium" [ngClass]="getStatusClass(row.status)">
                                             {{row.status}}
                                         </span>
                                     </td>
                                 </ng-container>
 
-                                <!-- Time Column -->
+                                <!-- Date Column -->
                                 <ng-container matColumnDef="requestTime">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.requestTime | date:'shortTime'}} </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Date </th>
+                                    <td mat-cell *matCellDef="let row"> 
+                                        <div class="d-flex flex-column">
+                                            <span>{{row.requestTime | date:'mediumDate'}}</span>
+                                            <small class="text-muted">{{row.requestTime | date:'shortTime'}}</small>
+                                        </div>
+                                    </td>
                                 </ng-container>
 
                                 <!-- Actions Column -->
                                 <ng-container matColumnDef="actions">
                                     <th mat-header-cell *matHeaderCellDef> Actions </th>
                                     <td mat-cell *matCellDef="let row">
-                                        <button mat-icon-button color="primary" matTooltip="Update Status">
-                                            <mat-icon>edit</mat-icon>
-                                        </button>
+                                        <div class="action-buttons">
+                                            <button mat-icon-button [matMenuTriggerFor]="statusMenu" class="btn-status" matTooltip="Update Status">
+                                                <mat-icon>edit_note</mat-icon>
+                                            </button>
+                                            <mat-menu #statusMenu="matMenu">
+                                                <button mat-menu-item (click)="updateStatus(row, 'Received')">
+                                                    <mat-icon class="text-warning">hourglass_empty</mat-icon>
+                                                    <span>Mark Received</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateStatus(row, 'Washing')">
+                                                    <mat-icon class="text-primary">local_laundry_service</mat-icon>
+                                                    <span>Mark Washing</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateStatus(row, 'Ironing')">
+                                                    <mat-icon class="text-info">iron</mat-icon>
+                                                    <span>Mark Ironing</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateStatus(row, 'Delivered')">
+                                                    <mat-icon class="text-success">check_circle</mat-icon>
+                                                    <span>Mark Delivered</span>
+                                                </button>
+                                                <button mat-menu-item (click)="updateStatus(row, 'Cancelled')">
+                                                    <mat-icon class="text-danger">cancel</mat-icon>
+                                                    <span>Cancel Order</span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
                                     </td>
                                 </ng-container>
 
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                                <tr class="mat-row" *matNoDataRow>
+                                    <td class="mat-cell" colspan="10" style="text-align: center; padding: 40px;">
+                                        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #ddd; margin-bottom: 10px;">local_laundry_service</mat-icon>
+                                        <p>No laundry orders found matching <strong>"{{input.value}}"</strong></p>
+                                    </td>
+                                </tr>
                             </table>
-                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
                         </div>
+
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25]"
+                            aria-label="Select page of orders"></mat-paginator>
                     </div>
                 </div>
             </div>
