@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 import { RoomService } from '../../../core/service/room.service';
 
 interface RoomStatus {
@@ -81,10 +82,12 @@ export class RoomStatusMonitoringComponent implements OnInit {
         if (newStatus === 'cleaning' || newStatus === 'available') {
             room.lastCleaned = new Date();
         }
-        this.snackBar.open(`Room ${room.roomNo} status updated to ${newStatus}`, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
+        Swal.fire({
+            title: 'Updated!',
+            text: `Room ${room.roomNo} status updated to ${newStatus}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
         });
         this.applyFilter(this.selectedFilter);
     }

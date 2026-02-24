@@ -8,20 +8,88 @@
         <div class="row clearfix">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card">
-                    <div class="header">
-                        <h2>Room Types & Pricing</h2>
+                    <div class="header justify-content-between mt-2">
+                        <div class="card-header-flex">
+                            <h2>Room Types & Pricing</h2>
+                          
+                        </div>
+                          <button mat-raised-button color="primary" (click)="addNewRoomType()" *ngIf="!isAddingNew">
+                                <mat-icon>add</mat-icon> Add New Room Type
+                            </button>
                     </div>
                     <div class="body">
                         <div class="room-types-pricing">
-                            <!-- Room Type Cards -->
                             <div class="room-types-grid">
+                                <!-- Add New Form Card -->
+                                <mat-card *ngIf="isAddingNew" class="room-type-card add-new-card">
+                                    <mat-card-header>
+                                        <mat-card-title>New Room Type</mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <div class="edit-mode">
+                                            <div class="edit-form">
+                                                <mat-form-field appearance="outline" class="full-width">
+                                                    <mat-label>Room Type Name</mat-label>
+                                                    <input matInput [(ngModel)]="editingRoom!.type" placeholder="Ex. Super Deluxe">
+                                                </mat-form-field>
+
+                                                <mat-form-field appearance="outline" class="full-width">
+                                                    <mat-label>Description</mat-label>
+                                                    <textarea matInput [(ngModel)]="editingRoom!.description" rows="2" placeholder="Describe the room characteristics"></textarea>
+                                                </mat-form-field>
+
+                                                <h4>Pricing</h4>
+                                                <div class="pricing-inputs">
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Base Price</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.basePrice">
+                                                        <span matPrefix>₹&nbsp;</span>
+                                                    </mat-form-field>
+
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Weekend Price</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.weekendPrice">
+                                                        <span matPrefix>₹&nbsp;</span>
+                                                    </mat-form-field>
+
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Peak Season Price</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.peakSeasonPrice">
+                                                        <span matPrefix>₹&nbsp;</span>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <mat-form-field appearance="outline" class="full-width">
+                                                    <mat-label>Max Occupancy</mat-label>
+                                                    <input matInput type="number" [(ngModel)]="editingRoom!.maxOccupancy">
+                                                </mat-form-field>
+
+                                                <div class="action-buttons">
+                                                    <button mat-raised-button color="primary" (click)="saveRoomType()" [disabled]="!editingRoom?.type">
+                                                        <mat-icon>check</mat-icon> Create
+                                                    </button>
+                                                    <button mat-raised-button (click)="cancelEdit()">
+                                                        <mat-icon>close</mat-icon> Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+
+                                <!-- Existing Room Type Cards -->
                                 <mat-card *ngFor="let room of roomTypes" class="room-type-card">
                                     <mat-card-header>
                                         <div class="card-header-content">
                                             <mat-card-title>{{ room.type }}</mat-card-title>
-                                            <button mat-icon-button (click)="editRoomType(room)" *ngIf="editingRoom?.id !== room.id">
-                                                <mat-icon>edit</mat-icon>
-                                            </button>
+                                            <div class="card-actions">
+                                                <button mat-icon-button (click)="editRoomType(room)" *ngIf="editingRoom?.id !== room.id">
+                                                    <mat-icon color="primary">edit</mat-icon>
+                                                </button>
+                                                <button mat-icon-button (click)="deleteRoomType(room.id)" *ngIf="editingRoom?.id !== room.id">
+                                                    <mat-icon color="warn">delete</mat-icon>
+                                                </button>
+                                            </div>
                                         </div>
                                     </mat-card-header>
                                     <mat-card-content>
@@ -58,40 +126,47 @@
                                         </div>
 
                                         <!-- Edit Mode -->
-                                        <div *ngIf="editingRoom?.id === room.id" class="edit-mode">
+                                        <div *ngIf="editingRoom?.id === room.id && editingRoom?.id !== null" class="edit-mode">
                                             <div class="edit-form">
+                                                <mat-form-field appearance="outline" class="full-width">
+                                                    <mat-label>Room Type Name</mat-label>
+                                                    <input matInput [(ngModel)]="editingRoom!.type">
+                                                </mat-form-field>
+
                                                 <mat-form-field appearance="outline" class="full-width">
                                                     <mat-label>Description</mat-label>
                                                     <textarea matInput [(ngModel)]="editingRoom!.description" rows="2"></textarea>
                                                 </mat-form-field>
 
                                                 <h4>Pricing</h4>
-                                                <mat-form-field appearance="outline">
-                                                    <mat-label>Base Price</mat-label>
-                                                    <input matInput type="number" [(ngModel)]="editingRoom!.basePrice">
-                                                    <span matPrefix>₹&nbsp;</span>
-                                                </mat-form-field>
+                                                <div class="pricing-inputs">
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Base Price</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.basePrice">
+                                                        <span matPrefix>₹&nbsp;</span>
+                                                    </mat-form-field>
 
-                                                <mat-form-field appearance="outline">
-                                                    <mat-label>Weekend Price</mat-label>
-                                                    <input matInput type="number" [(ngModel)]="editingRoom!.weekendPrice">
-                                                    <span matPrefix>₹&nbsp;</span>
-                                                </mat-form-field>
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Weekend Price</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.weekendPrice">
+                                                        <span matPrefix>₹&nbsp;</span>
+                                                    </mat-form-field>
 
-                                                <mat-form-field appearance="outline">
-                                                    <mat-label>Peak Season Price</mat-label>
-                                                    <input matInput type="number" [(ngModel)]="editingRoom!.peakSeasonPrice">
-                                                    <span matPrefix>₹&nbsp;</span>
-                                                </mat-form-field>
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Peak Season Price</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.peakSeasonPrice">
+                                                        <span matPrefix>₹&nbsp;</span>
+                                                    </mat-form-field>
 
-                                                <mat-form-field appearance="outline">
-                                                    <mat-label>Max Occupancy</mat-label>
-                                                    <input matInput type="number" [(ngModel)]="editingRoom!.maxOccupancy">
-                                                </mat-form-field>
+                                                    <mat-form-field appearance="outline">
+                                                        <mat-label>Max Occupancy</mat-label>
+                                                        <input matInput type="number" [(ngModel)]="editingRoom!.maxOccupancy">
+                                                    </mat-form-field>
+                                                </div>
 
                                                 <div class="action-buttons">
                                                     <button mat-raised-button color="primary" (click)="saveRoomType()">
-                                                        <mat-icon>save</mat-icon> Save
+                                                        <mat-icon>save</mat-icon> Update
                                                     </button>
                                                     <button mat-raised-button (click)="cancelEdit()">
                                                         <mat-icon>cancel</mat-icon> Cancel

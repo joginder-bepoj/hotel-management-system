@@ -58,6 +58,11 @@ export const routes: Routes = [
           import('./pages/dashboard/dashboard').then((c) => c.DashboardComponent),
       },
       {
+        path: 'hotel-portfolio',
+        loadComponent: () =>
+          import('./pages/hotel-portfolio/hotel-portfolio').then((c) => c.HotelPortfolioComponent),
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./pages/profile/profile').then((c) => c.ProfileComponent),

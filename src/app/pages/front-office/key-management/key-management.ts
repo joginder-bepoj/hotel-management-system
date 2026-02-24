@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 export interface KeyLog {
     id: number;
@@ -109,7 +110,13 @@ export class KeyManagementComponent implements OnInit, AfterViewInit {
         row.keyReceived = true;
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`Key ${row.keyId} for Room ${row.roomNumber} returned successfully`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Key Returned',
+            text: `Key ${row.keyId} for Room ${row.roomNumber} returned successfully`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     reportLost(row: KeyLog) {
@@ -117,7 +124,13 @@ export class KeyManagementComponent implements OnInit, AfterViewInit {
         row.keyReceived = false;
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`Key ${row.keyId} for Room ${row.roomNumber} reported as LOST`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Reported Lost',
+            text: `Key ${row.keyId} for Room ${row.roomNumber} reported as LOST`,
+            icon: 'warning',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     addKeyLog() {
@@ -134,7 +147,13 @@ export class KeyManagementComponent implements OnInit, AfterViewInit {
         this.dataSource.data = [newLog, ...this.dataSource.data];
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`New Key Log added for Room ${newLog.roomNumber}`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Added!',
+            text: `New Key Log added for Room ${newLog.roomNumber}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 }
 

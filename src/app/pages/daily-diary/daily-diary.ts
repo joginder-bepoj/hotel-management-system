@@ -10,9 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 import { DailyDiaryService, DailyDiary, DailyExpense, DailyIssue, DailyEvent } from '../../core/services/daily-diary.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-daily-diary',
@@ -62,8 +62,7 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private diaryService: DailyDiaryService,
-        private snackBar: MatSnackBar
+        private diaryService: DailyDiaryService
     ) {
         this.expenseForm = this.fb.group({
             category: ['', Validators.required],
@@ -151,7 +150,13 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
             }
             this.showExpenseForm = false;
             this.loadDiary();
-            this.snackBar.open('Expense saved', 'Close', { duration: 2000 });
+            Swal.fire({
+                title: 'Saved!',
+                text: 'Expense saved successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
     }
 
@@ -162,11 +167,23 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
     }
 
     deleteExpense(expenseId: number) {
-        if (this.currentDiary && confirm('Delete this expense?')) {
-            this.diaryService.deleteExpense(this.currentDiary.id, expenseId);
-            this.loadDiary();
-            this.snackBar.open('Expense deleted', 'Close', { duration: 2000 });
-        }
+        if (!this.currentDiary) return;
+        
+        Swal.fire({
+            title: 'Delete Expense?',
+            text: "Are you sure you want to delete this expense?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed && this.currentDiary) {
+                this.diaryService.deleteExpense(this.currentDiary.id, expenseId);
+                this.loadDiary();
+                Swal.fire('Deleted!', 'Expense has been deleted.', 'success');
+            }
+        });
     }
 
     // Issue Methods
@@ -189,7 +206,13 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
             }
             this.showIssueForm = false;
             this.loadDiary();
-            this.snackBar.open('Issue saved', 'Close', { duration: 2000 });
+            Swal.fire({
+                title: 'Saved!',
+                text: 'Issue saved successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
     }
 
@@ -200,11 +223,23 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
     }
 
     deleteIssue(issueId: number) {
-        if (this.currentDiary && confirm('Delete this issue?')) {
-            this.diaryService.deleteIssue(this.currentDiary.id, issueId);
-            this.loadDiary();
-            this.snackBar.open('Issue deleted', 'Close', { duration: 2000 });
-        }
+        if (!this.currentDiary) return;
+        
+        Swal.fire({
+            title: 'Delete Issue?',
+            text: "Are you sure you want to delete this issue?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed && this.currentDiary) {
+                this.diaryService.deleteIssue(this.currentDiary.id, issueId);
+                this.loadDiary();
+                Swal.fire('Deleted!', 'Issue has been deleted.', 'success');
+            }
+        });
     }
 
     // Event Methods
@@ -227,7 +262,13 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
             }
             this.showEventForm = false;
             this.loadDiary();
-            this.snackBar.open('Event saved', 'Close', { duration: 2000 });
+            Swal.fire({
+                title: 'Saved!',
+                text: 'Event saved successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
     }
 
@@ -238,28 +279,56 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
     }
 
     deleteEvent(eventId: number) {
-        if (this.currentDiary && confirm('Delete this event?')) {
-            this.diaryService.deleteEvent(this.currentDiary.id, eventId);
-            this.loadDiary();
-            this.snackBar.open('Event deleted', 'Close', { duration: 2000 });
-        }
+        if (!this.currentDiary) return;
+        
+        Swal.fire({
+            title: 'Delete Event?',
+            text: "Are you sure you want to delete this event?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed && this.currentDiary) {
+                this.diaryService.deleteEvent(this.currentDiary.id, eventId);
+                this.loadDiary();
+                Swal.fire('Deleted!', 'Event has been deleted.', 'success');
+            }
+        });
     }
 
     // Diary Actions
     saveDraft() {
         if (this.currentDiary) {
             this.diaryService.saveDiary(this.currentDiary);
-            this.snackBar.open('Draft saved successfully', 'Close', { duration: 3000 });
+            Swal.fire({
+                title: 'Saved!',
+                text: 'Draft saved successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
     }
 
     markAsCompleted() {
         if (this.currentDiary) {
-            if (confirm('Mark this diary as completed? You won\'t be able to edit it afterwards.')) {
-                this.diaryService.markAsCompleted(this.currentDiary.id);
-                this.loadDiary();
-                this.snackBar.open('Diary marked as completed', 'Close', { duration: 3000 });
-            }
+            Swal.fire({
+                title: 'Mark as Completed?',
+                text: "You won't be able to edit this diary afterwards.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Yes, complete it!'
+            }).then((result) => {
+                if (result.isConfirmed && this.currentDiary) {
+                    this.diaryService.markAsCompleted(this.currentDiary.id);
+                    this.loadDiary();
+                    Swal.fire('Completed!', 'Diary has been marked as completed.', 'success');
+                }
+            });
         }
     }
 

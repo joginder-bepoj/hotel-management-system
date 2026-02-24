@@ -10,6 +10,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import Swal from 'sweetalert2';
 
 export interface LaundryOrder {
     id: string;
@@ -111,7 +112,13 @@ export class LaundryManagementComponent implements OnInit, AfterViewInit {
         order.status = newStatus;
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`Order ${order.id} updated to ${newStatus}`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Updated!',
+            text: `Order ${order.id} updated to ${newStatus}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     addOrder() {
@@ -127,7 +134,13 @@ export class LaundryManagementComponent implements OnInit, AfterViewInit {
         this.dataSource.data = [newOrder, ...this.dataSource.data];
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`New laundry order created: ${newOrder.id}`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Created!',
+            text: `New laundry order created: ${newOrder.id}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     getStatusClass(status: string): string {

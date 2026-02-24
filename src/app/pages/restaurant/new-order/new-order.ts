@@ -13,6 +13,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { RestaurantService, MenuItem, Order, OrderItem, Table } from '../../../core/services/restaurant.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-new-order',
@@ -148,9 +149,12 @@ export class NewOrderComponent implements OnInit {
   }
 
   showNotification(message: string, type: 'success' | 'error') {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      panelClass: type === 'success' ? 'snackbar-success' : 'snackbar-error'
+    Swal.fire({
+      title: type === 'success' ? 'Success!' : 'Error',
+      text: message,
+      icon: type,
+      timer: 2000,
+      showConfirmButton: false
     });
   }
 }

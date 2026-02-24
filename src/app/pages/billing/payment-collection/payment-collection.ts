@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 interface Payment {
     id: string;
@@ -73,29 +74,38 @@ export class PaymentCollectionComponent implements OnInit {
     processPayment(): void {
         if (!this.selectedGuest || this.paymentAmount <= 0) return;
 
-        const newPayment: Payment = {
-            id: `PAY-${Math.floor(Math.random() * 9000) + 1000}`,
-            guestName: this.selectedGuest.guestName,
-            bookingId: 'BK-XXXX', // In real app, this would be linked
-            amount: this.paymentAmount,
-            method: this.paymentMethod as any,
-            date: new Date(),
-            status: 'Success'
-        };
+        Swal.fire({
+            title: 'Processing Payment...',
+            text: `Processing ₹${this.paymentAmount} via ${this.paymentMethod}`,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            timer: 1500
+        }).then(() => {
+            const newPayment: Payment = {
+                id: `PAY-${Math.floor(Math.random() * 9000) + 1000}`,
+                guestName: this.selectedGuest.guestName,
+                bookingId: 'BK-XXXX',
+                amount: this.paymentAmount,
+                method: this.paymentMethod as any,
+                date: new Date(),
+                status: 'Success'
+            };
 
-        this.recentPayments = [newPayment, ...this.recentPayments];
-        
-        // Remove from pending
-        this.pendingCollections = this.pendingCollections.filter(p => p.guestName !== this.selectedGuest.guestName);
-        
-        this.snackBar.open(`Payment of ₹${this.paymentAmount} processed successfully for ${this.selectedGuest.guestName}`, 'Close', {
-            duration: 3000,
-            horizontalPosition: 'right',
-            verticalPosition: 'top'
+            this.recentPayments = [newPayment, ...this.recentPayments];
+            this.pendingCollections = this.pendingCollections.filter(p => p.guestName !== this.selectedGuest.guestName);
+
+            Swal.fire({
+                title: 'Success!',
+                text: `Payment of ₹${this.paymentAmount} processed successfully for ${this.selectedGuest.guestName}`,
+                icon: 'success',
+                confirmButtonColor: '#28a745'
+            });
+
+            this.selectedGuest = null;
+            this.paymentAmount = 0;
         });
-
-        this.selectedGuest = null;
-        this.paymentAmount = 0;
     }
 
     cancelCollection(): void {

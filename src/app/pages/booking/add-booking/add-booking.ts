@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BookingService } from '../../../core/service/booking.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-booking',
@@ -81,12 +82,15 @@ export class AddBookingComponent {
   onSubmit() {
     if (this.bookingForm.valid) {
       this.bookingService.addBooking(this.bookingForm.value);
-      this.snackBar.open('Booking added successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
+      Swal.fire({
+        title: 'Booked!',
+        text: 'Booking added successfully!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/booking/all-booking']);
       });
-      this.router.navigate(['/booking/all-booking']);
     }
   }
 }

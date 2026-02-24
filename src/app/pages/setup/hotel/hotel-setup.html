@@ -52,7 +52,54 @@
       </form>
     </mat-step>
 
-    <!-- Step 2: Rooms & Inventory -->
+    <!-- Step 2: Location -->
+    <mat-step [stepControl]="locationForm">
+      <form [formGroup]="locationForm">
+        <ng-template matStepLabel>Location</ng-template>
+
+        <div class="row mt-3">
+          <div class="search-container full-width">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Search Hotel Location</mat-label>
+              <input matInput [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}" (keyup.enter)="searchLocation()" placeholder="Search for area, city, or landmark">
+              <button mat-icon-button matSuffix (click)="searchLocation()" type="button">
+                <mat-icon>search</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <div class="search-results-list" *ngIf="showSearchResults">
+              <div class="result-item" *ngFor="let result of searchResults" (click)='selectResult(result)'>
+                <mat-icon>location_on</mat-icon>
+                <span>{{ result.display_name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-wrapper mb-3">
+          <div #mapElement class="map-container"></div>
+          <div class="map-hint">
+            <mat-icon>info</mat-icon>
+            <span>Click on the map to pin the exact location</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="full-width">
+             <mat-label>Selected Address / Coordinates</mat-label>
+             <input matInput formControlName="displayAddress" readonly>
+             <mat-error *ngIf="locationForm.get('latitude')?.hasError('required')">Please select a location on the map</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="actions-container">
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Rooms & Inventory -->
     <mat-step [stepControl]="roomsForm">
       <form [formGroup]="roomsForm">
         <ng-template matStepLabel>Rooms & Inventory</ng-template>
@@ -109,111 +156,7 @@
       </form>
     </mat-step>
 
-    <!-- Step 3: Amenities & Facilities -->
-    <mat-step [stepControl]="amenitiesForm">
-      <form [formGroup]="amenitiesForm">
-        <ng-template matStepLabel>Amenities</ng-template>
-
-        <div class="amenities-grid">
-          <div class="amenity-category">
-            <h4>General</h4>
-            <div class="chips-container">
-              <mat-chip-listbox multiple>
-                <mat-chip-option *ngFor="let item of generalAmenities" 
-                  [selected]="isAmenitySelected('general', item)"
-                  (click)="toggleAmenity('general', item)">
-                  {{item}}
-                </mat-chip-option>
-              </mat-chip-listbox>
-            </div>
-          </div>
-
-          <div class="amenity-category">
-            <h4>Food & Beverage</h4>
-            <div class="chips-container">
-              <mat-chip-listbox multiple>
-                <mat-chip-option *ngFor="let item of foodAmenities" 
-                   [selected]="isAmenitySelected('foodAndBeverage', item)"
-                   (click)="toggleAmenity('foodAndBeverage', item)">
-                  {{item}}
-                </mat-chip-option>
-              </mat-chip-listbox>
-            </div>
-          </div>
-
-          <div class="amenity-category">
-            <h4>Wellness</h4>
-            <div class="chips-container">
-              <mat-chip-listbox multiple>
-                <mat-chip-option *ngFor="let item of wellnessAmenities" 
-                   [selected]="isAmenitySelected('wellness', item)"
-                   (click)="toggleAmenity('wellness', item)">
-                  {{item}}
-                </mat-chip-option>
-              </mat-chip-listbox>
-            </div>
-          </div>
-
-          <div class="amenity-category">
-            <h4>Business</h4>
-            <div class="chips-container">
-              <mat-chip-listbox multiple>
-                <mat-chip-option *ngFor="let item of businessAmenities" 
-                   [selected]="isAmenitySelected('business', item)"
-                   (click)="toggleAmenity('business', item)">
-                  {{item}}
-                </mat-chip-option>
-              </mat-chip-listbox>
-            </div>
-          </div>
-        </div>
-
-        <div class="actions-container mt-4">
-          <button mat-button matStepperPrevious type="button">Back</button>
-          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
-        </div>
-      </form>
-    </mat-step>
-
-    <!-- Step 4: Pricing & Rate Plans -->
-    <mat-step [stepControl]="pricingForm">
-      <form [formGroup]="pricingForm">
-        <ng-template matStepLabel>Pricing</ng-template>
-
-        <div class="row mt-3">
-          <mat-form-field appearance="outline">
-            <mat-label>Base Room Price (per night)</mat-label>
-            <input matInput type="number" formControlName="basePrice" placeholder="Ex. 1500" required>
-            <span matPrefix>$&nbsp;</span>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Tax Percentage (GST/Service)</mat-label>
-            <input matInput type="number" formControlName="taxPercentage" placeholder="Ex. 12" required>
-            <span matSuffix>%</span>
-          </mat-form-field>
-        </div>
-
-        <div class="row">
-          <mat-form-field appearance="outline">
-            <mat-label>Weekend Pricing Surge</mat-label>
-            <input matInput type="number" formControlName="weekendPricing" placeholder="Ex. 1800">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Extra Guest Charge</mat-label>
-            <input matInput type="number" formControlName="extraGuestCharge" placeholder="Ex. 500">
-          </mat-form-field>
-        </div>
-
-        <div class="actions-container">
-          <button mat-button matStepperPrevious type="button">Back</button>
-          <button mat-button matStepperNext type="button" class="btn-primary">Next</button>
-        </div>
-      </form>
-    </mat-step>
-
-    <!-- Step 5: Policies Configuration -->
+    <!-- Step 4: Policies Configuration -->
     <mat-step [stepControl]="policiesForm">
       <form [formGroup]="policiesForm">
         <ng-template matStepLabel>Policies</ng-template>
@@ -252,7 +195,7 @@
       </form>
     </mat-step>
 
-    <!-- Step 6: Staff & Role Management -->
+    <!-- Step 5: Staff & Role Management -->
     <mat-step [stepControl]="staffForm">
       <form [formGroup]="staffForm">
         <ng-template matStepLabel>Staff</ng-template>
@@ -303,7 +246,7 @@
       </form>
     </mat-step>
 
-    <!-- Step 7: Media & Documents -->
+    <!-- Step 6: Media & Documents -->
     <mat-step [stepControl]="mediaForm">
       <form [formGroup]="mediaForm">
         <ng-template matStepLabel>Media</ng-template>

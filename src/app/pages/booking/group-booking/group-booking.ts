@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BookingService } from '../../../core/service/booking.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-group-booking',
@@ -83,12 +84,15 @@ export class GroupBookingComponent {
             };
 
             this.bookingService.addBooking(groupBooking);
-            this.snackBar.open('Group booking created successfully!', 'Close', {
-                duration: 3000,
-                verticalPosition: 'bottom',
-                horizontalPosition: 'center'
+            Swal.fire({
+                title: 'Group Booking Created!',
+                text: 'Group booking created successfully!',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                this.router.navigate(['/booking/all-booking']);
             });
-            this.router.navigate(['/booking/all-booking']);
         }
     }
 }

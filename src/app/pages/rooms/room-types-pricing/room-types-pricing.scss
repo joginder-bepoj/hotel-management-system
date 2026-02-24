@@ -41,6 +41,53 @@
             mat-card-content {
                 padding: 20px !important;
 
+                .edit-mode {
+                    .edit-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+
+                        .pricing-inputs {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 15px;
+
+                            mat-form-field:last-child {
+                                grid-column: span 2;
+                            }
+                        }
+
+                        h4 {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #333;
+                            margin: 10px 0 5px 0;
+                        }
+
+                        mat-form-field {
+                            width: 100%;
+
+                            &.full-width {
+                                width: 100%;
+                            }
+                        }
+
+                        .action-buttons {
+                            display: flex;
+                            gap: 10px;
+                            margin-top: 10px;
+
+                            button {
+                                flex: 1;
+
+                                mat-icon {
+                                    margin-right: 5px;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 .description {
                     color: #666;
                     font-size: 14px;

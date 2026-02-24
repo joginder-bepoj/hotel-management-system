@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 export interface GuestHistory {
     id: number;
@@ -112,11 +113,23 @@ export class GuestHistoryComponent implements OnInit, AfterViewInit {
     }
 
     exportData() {
-        this.snackBar.open('Guest history data exported successfully', 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Exported!',
+            text: 'Guest history data exported successfully',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     viewDetails(guest: GuestHistory) {
-        this.snackBar.open(`Viewing details for ${guest.name}`, 'Close', { duration: 2000 });
+        Swal.fire({
+            title: 'Guest Details',
+            text: `Viewing details for ${guest.name} (Feature demo)`,
+            icon: 'info',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 }
 

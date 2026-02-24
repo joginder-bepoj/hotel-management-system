@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Booking, BookingService } from '../../../core/service/booking.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-booking',
@@ -94,8 +95,15 @@ export class EditBookingComponent implements OnInit {
         // but we can assume string path or skip it for this demo.
       });
     } else {
-      this.snackBar.open('Booking not found!', 'Close', { duration: 3000 });
-      this.router.navigate(['/booking/all-booking']);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Booking not found!',
+        icon: 'error',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/booking/all-booking']);
+      });
     }
   }
 
@@ -106,12 +114,15 @@ export class EditBookingComponent implements OnInit {
         ...this.bookingForm.value
       };
       this.bookingService.updateBooking(updatedBooking);
-      this.snackBar.open('Booking updated successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
+      Swal.fire({
+        title: 'Updated!',
+        text: 'Booking updated successfully!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/booking/all-booking']);
       });
-      this.router.navigate(['/booking/all-booking']);
     }
   }
 

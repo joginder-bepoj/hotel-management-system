@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { RestaurantService, Order } from '../../../core/services/restaurant.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-bills',
@@ -69,22 +70,41 @@ export class BillsComponent implements OnInit {
   }
 
   processPayment(order: Order) {
-    // In a real app, this would open a dialog for payment mode
-    if (confirm(`Process payment of ₹${order.total} for Order #${order.orderNumber}?`)) {
-      this.restaurantService.markOrderPaid(order.id, 'Cash', false);
-      this.loadOrders();
-      this.selectedOrder = null;
-    }
+    Swal.fire({
+      title: 'Process Payment',
+      text: `Process payment of ₹${order.total} for Order #${order.orderNumber}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirm Payment',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.restaurantService.markOrderPaid(order.id, 'Cash', false);
+        this.loadOrders();
+        this.selectedOrder = null;
+        Swal.fire('Paid!', 'Order has been marked as paid.', 'success');
+      }
+    });
   }
 
   postToRoom(order: Order) {
     if (order.type !== 'Room Service' || !order.roomNumber) return;
     
-    if (confirm(`Post charges of ₹${order.total} to Room ${order.roomNumber}?`)) {
-      this.restaurantService.markOrderPaid(order.id, 'Room Posting', true);
-      this.loadOrders();
-      this.selectedOrder = null;
-    }
+    Swal.fire({
+      title: 'Post to Room',
+      text: `Post charges of ₹${order.total} to Room ${order.roomNumber}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirm Post',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.restaurantService.markOrderPaid(order.id, 'Room Posting', true);
+        this.loadOrders();
+        this.selectedOrder = null;
+        Swal.fire('Posted!', 'Charges have been posted to the room.', 'success');
+      }
+    });
   }
 
   printBill(order: Order) {

@@ -10,6 +10,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import Swal from 'sweetalert2';
 
 export interface CleaningTask {
     id: number;
@@ -110,20 +111,46 @@ export class CleaningScheduleComponent implements OnInit, AfterViewInit {
         task.status = newStatus;
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`Task for Room ${task.room} updated to ${newStatus}`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Updated!',
+            text: `Task for Room ${task.room} updated to ${newStatus}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     editTask(task: CleaningTask) {
-        this.snackBar.open(`Editing task for Room ${task.room} (Feature demo)`, 'Close', { duration: 2000 });
+        Swal.fire({
+            title: 'Edit Task',
+            text: `Editing task for Room ${task.room} (Feature demo)`,
+            icon: 'info',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     deleteTask(task: CleaningTask) {
-        if (confirm(`Are you sure you want to delete the cleaning task for Room ${task.room}?`)) {
-            this.dataSource.data = this.dataSource.data.filter(t => t.id !== task.id);
-            this.saveData();
-            this.calculateStats();
-            this.snackBar.open(`Task for Room ${task.room} deleted`, 'Close', { duration: 3000 });
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Are you sure you want to delete the cleaning task for Room ${task.room}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.dataSource.data = this.dataSource.data.filter(t => t.id !== task.id);
+                this.saveData();
+                this.calculateStats();
+                Swal.fire(
+                    'Deleted!',
+                    'Cleaning task has been deleted.',
+                    'success'
+                );
+            }
+        });
     }
 
     addTask() {
@@ -139,7 +166,13 @@ export class CleaningScheduleComponent implements OnInit, AfterViewInit {
         this.dataSource.data = [newTask, ...this.dataSource.data];
         this.saveData();
         this.calculateStats();
-        this.snackBar.open(`New cleaning task assigned to Room ${newTask.room}`, 'Close', { duration: 3000 });
+        Swal.fire({
+            title: 'Task Assigned',
+            text: `New cleaning task assigned to Room ${newTask.room}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
     getPriorityClass(priority: string): string {

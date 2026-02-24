@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AmenityService, Amenity } from '../../../core/service/amenity.service';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-amenities',
@@ -54,10 +55,12 @@ export class AmenitiesComponent implements OnInit {
   onSubmit(): void {
     if (this.amenityForm.valid) {
       this.amenityService.addAmenity(this.amenityForm.value);
-      this.snackBar.open('Amenity added successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
+      Swal.fire({
+        title: 'Added!',
+        text: 'Amenity added successfully!',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
       });
       this.amenityForm.reset();
       this.loadAmenities();
@@ -65,14 +68,24 @@ export class AmenitiesComponent implements OnInit {
   }
 
   deleteAmenity(id: number): void {
-    if (confirm('Are you sure you want to delete this amenity?')) {
-      this.amenityService.deleteAmenity(id);
-      this.snackBar.open('Amenity deleted!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
-      });
-      this.loadAmenities();
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.amenityService.deleteAmenity(id);
+        this.loadAmenities();
+        Swal.fire(
+          'Deleted!',
+          'Amenity has been deleted.',
+          'success'
+        );
+      }
+    });
   }
 }

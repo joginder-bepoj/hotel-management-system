@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { ApartmentService } from '../../../core/services/apartment.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-apartment-setup',
@@ -80,10 +81,21 @@ export class ApartmentSetupComponent {
       
       this._apartmentService.saveApartmentDetails(setupData).subscribe(success => {
         if (success) {
-          alert('Apartment Setup Completed!');
-          this._router.navigate(['/dashboard']);
+          Swal.fire({
+            title: 'Setup Completed!',
+            text: 'Apartment Setup Completed Successfully!',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            this._router.navigate(['/hotel-portfolio']);
+          });
         } else {
-          alert('Failed to save details. Please try again.');
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to save details. Please try again.',
+            icon: 'error'
+          });
         }
       });
       

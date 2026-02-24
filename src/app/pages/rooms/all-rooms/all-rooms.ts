@@ -15,7 +15,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RoomService, Room } from '../../../core/service/room.service';
 import { RouterModule } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-all-rooms',
@@ -56,7 +56,7 @@ export class AllRooms implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private roomService: RoomService, private snackBar: MatSnackBar) {}
+  constructor(private roomService: RoomService) {}
 
   ngOnInit() {
     this.loadRooms();
@@ -80,15 +80,26 @@ export class AllRooms implements OnInit {
   }
 
   deleteRoom(id: number) {
-    if (confirm('Are you sure you want to delete this room?')) {
-      this.roomService.deleteRoom(id);
-      this.loadRooms();
-      this.snackBar.open('Room deleted successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
-      });
-      this.selection.clear();
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.roomService.deleteRoom(id);
+        this.loadRooms();
+        this.selection.clear();
+        
+        Swal.fire(
+          'Deleted!',
+          'Room has been deleted.',
+          'success'
+        );
+      }
+    });
   }
 }

@@ -16,6 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BookingService, Booking } from '../../../core/service/booking.service';
 import { RouterModule, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-all-booking',
@@ -94,15 +95,26 @@ export class AllBooking implements OnInit {
   }
 
   deleteBooking(id: number) {
-    if (confirm('Are you sure you want to delete this booking?')) {
-      this.bookingService.deleteBooking(id);
-      this.loadBookings();
-      this.snackBar.open('Booking deleted successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
-      });
-      this.selection.clear();
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.bookingService.deleteBooking(id);
+        this.loadBookings();
+        this.selection.clear();
+        
+        Swal.fire(
+          'Deleted!',
+          'Booking has been deleted.',
+          'success'
+        );
+      }
+    });
   }
 }

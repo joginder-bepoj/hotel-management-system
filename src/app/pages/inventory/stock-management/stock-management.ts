@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 interface StockItem {
     id: number;
@@ -122,10 +123,12 @@ export class StockManagementComponent implements OnInit {
         this.applyFilters();
 
         const action = adjustment > 0 ? 'added to' : 'removed from';
-        this.snackBar.open(`Stock ${action} ${item.name}`, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
+        Swal.fire({
+            title: 'Stock Updated!',
+            text: `Stock ${action} ${item.name}`,
+            icon: adjustment > 0 ? 'success' : 'info',
+            timer: 2000,
+            showConfirmButton: false
         });
     }
 

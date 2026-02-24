@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BookingService } from '../../../core/service/booking.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-online-reservation',
@@ -80,12 +81,15 @@ export class OnlineReservationComponent {
     onSubmit() {
         if (this.reservationForm.valid) {
             this.bookingService.addBooking(this.reservationForm.value);
-            this.snackBar.open('Online Reservation submitted successfully!', 'Close', {
-                duration: 3000,
-                verticalPosition: 'bottom',
-                horizontalPosition: 'center'
+            Swal.fire({
+                title: 'Submitted!',
+                text: 'Online Reservation submitted successfully!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                this.router.navigate(['/booking/all-booking']);
             });
-            this.router.navigate(['/booking/all-booking']);
         }
     }
 }

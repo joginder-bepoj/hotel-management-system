@@ -9,6 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { BookingService } from '../../../core/service/booking.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -86,10 +87,12 @@ export class CheckInOutComponent implements OnInit {
     checkIn(booking: any): void {
         booking.status = 'Checked-In';
         this.bookingService.updateBooking(booking);
-        this.snackBar.open(`${booking.first} ${booking.last} checked in successfully!`, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
+        Swal.fire({
+            title: 'Checked-In!',
+            text: `${booking.first} ${booking.last} checked in successfully!`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
         });
         this.filterTodayBookings();
     }
@@ -97,10 +100,12 @@ export class CheckInOutComponent implements OnInit {
     checkOut(booking: any): void {
         booking.status = 'Checked-Out';
         this.bookingService.updateBooking(booking);
-        this.snackBar.open(`${booking.first} ${booking.last} checked out successfully!`, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
+        Swal.fire({
+            title: 'Checked-Out!',
+            text: `${booking.first} ${booking.last} checked out successfully!`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
         });
         this.filterTodayBookings();
     }

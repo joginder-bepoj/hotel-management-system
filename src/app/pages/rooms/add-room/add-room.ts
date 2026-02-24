@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { RoomService } from '../../../core/service/room.service';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-room',
@@ -31,8 +31,7 @@ export class AddRoomComponent {
   constructor(
     private fb: FormBuilder,
     private roomService: RoomService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private router: Router
   ) {
     this.roomForm = this.fb.group({
       roomNo: ['', [Validators.required]],
@@ -48,12 +47,15 @@ export class AddRoomComponent {
   onSubmit() {
     if (this.roomForm.valid) {
       this.roomService.addRoom(this.roomForm.value);
-      this.snackBar.open('Room added successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
+      Swal.fire({
+        title: 'Success!',
+        text: 'Room added successfully!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/rooms/all-rooms']);
       });
-      this.router.navigate(['/rooms/all-rooms']);
     }
   }
 

@@ -11,6 +11,7 @@ import { BookingService } from '../../../core/service/booking.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-cancellation-modification',
@@ -71,14 +72,24 @@ export class CancellationModificationComponent implements OnInit {
     }
 
     cancelBooking(booking: any): void {
-        if (confirm(`Are you sure you want to cancel the booking for ${booking.first} ${booking.last}?`)) {
-            this.bookingService.deleteBooking(booking.id);
-            this.snackBar.open(`Booking for ${booking.first} ${booking.last} has been cancelled.`, 'Close', {
-                duration: 3000,
-                verticalPosition: 'bottom',
-                horizontalPosition: 'center'
-            });
-            this.loadBookings();
-        }
+        Swal.fire({
+            title: 'Cancel Booking?',
+            text: `Are you sure you want to cancel the booking for ${booking.first} ${booking.last}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.bookingService.deleteBooking(booking.id);
+                this.loadBookings();
+                Swal.fire(
+                    'Cancelled!',
+                    `Booking for ${booking.first} ${booking.last} has been cancelled.`,
+                    'success'
+                );
+            }
+        });
     }
 }

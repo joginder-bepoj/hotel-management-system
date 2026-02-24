@@ -9,6 +9,7 @@ import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.c
 import { Room, RoomService } from '../../../core/service/room.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-room',
@@ -71,8 +72,15 @@ export class EditRoomComponent implements OnInit {
         rent: this.existingRoom.rent
       });
     } else {
-      this.snackBar.open('Room not found!', 'Close', { duration: 3000 });
-      this.router.navigate(['/rooms/all-rooms']);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Room not found!',
+        icon: 'error',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/rooms/all-rooms']);
+      });
     }
   }
 
@@ -83,12 +91,15 @@ export class EditRoomComponent implements OnInit {
         ...this.roomForm.value
       };
       this.roomService.updateRoom(updatedRoom);
-      this.snackBar.open('Room updated successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
+      Swal.fire({
+        title: 'Updated!',
+        text: 'Room updated successfully!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/rooms/all-rooms']);
       });
-      this.router.navigate(['/rooms/all-rooms']);
     }
   }
 

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 interface AlertItem {
     id: number;
@@ -66,10 +67,12 @@ export class LowStockAlertsComponent implements OnInit {
     }
 
     reorderItem(alert: AlertItem): void {
-        this.snackBar.open(`Reorder initiated for ${alert.name}`, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
+        Swal.fire({
+            title: 'Reorder Initiated',
+            text: `Reorder initiated for ${alert.name}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
         });
     }
 
@@ -78,8 +81,12 @@ export class LowStockAlertsComponent implements OnInit {
         if (index !== -1) {
             this.alerts.splice(index, 1);
             this.applyFilter(this.selectedPriority);
-            this.snackBar.open(`Alert dismissed for ${alert.name}`, 'Close', {
-                duration: 3000
+            Swal.fire({
+                title: 'Dismissed',
+                text: `Alert dismissed for ${alert.name}`,
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
             });
         }
     }

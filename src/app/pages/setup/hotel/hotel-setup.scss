@@ -23,6 +23,99 @@
   }
 }
 
+.map-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+  .map-container {
+    height: 350px;
+    width: 100%;
+    z-index: 1;
+    background-color: #f8f9fa; /* Fallback color to see the container */
+    border: 1px solid #ddd;
+  }
+
+  .map-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    pointer-events: none;
+
+    mat-icon {
+      font-size: 1.1rem;
+      width: 1.1rem;
+      height: 1.1rem;
+      color: #2196F3;
+    }
+  }
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+
+  .search-results-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+
+    .result-item {
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f5f5f5;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: #f0f7ff;
+      }
+
+      mat-icon {
+        color: #666;
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+
+      span {
+        font-size: 0.9rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
 .full-width {
   width: 100%;
 }
@@ -90,27 +183,7 @@
   }
 }
 
-.amenities-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  
-  .amenity-category {
-    h4 {
-      margin-bottom: 1rem;
-      color: #666;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-  }
-}
 
-.chips-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-}
 
 .file-upload-container {
   border: 2px dashed #b39ddb;

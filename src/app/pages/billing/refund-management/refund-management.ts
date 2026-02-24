@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 interface Refund {
     id: string;
@@ -71,30 +72,39 @@ export class RefundManagementComponent implements OnInit {
     processRefund(): void {
         if (!this.selectedPayment || this.refundAmount <= 0) return;
 
-        const newRefund: Refund = {
-            id: `REF-${Math.floor(Math.random() * 9000) + 3000}`,
-            originalPaymentId: this.selectedPayment.id,
-            guestName: this.selectedPayment.guestName,
-            amount: this.refundAmount,
-            reason: this.refundReason || 'No reason provided',
-            date: new Date(),
-            status: 'Processed'
-        };
+        Swal.fire({
+            title: 'Processing Refund...',
+            text: `Refund of ₹${this.refundAmount} for ${this.selectedPayment.guestName}`,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            timer: 1500
+        }).then(() => {
+            const newRefund: Refund = {
+                id: `REF-${Math.floor(Math.random() * 9000) + 3000}`,
+                originalPaymentId: this.selectedPayment.id,
+                guestName: this.selectedPayment.guestName,
+                amount: this.refundAmount,
+                reason: this.refundReason || 'No reason provided',
+                date: new Date(),
+                status: 'Processed'
+            };
 
-        this.refunds = [newRefund, ...this.refunds];
-        
-        // In a real app, this would update the payment status as well
-        this.refundablePayments = this.refundablePayments.filter(p => p.id !== this.selectedPayment.id);
-        
-        this.snackBar.open(`Refund of ₹${this.refundAmount} processed for ${this.selectedPayment.guestName}`, 'Close', {
-            duration: 3000,
-            horizontalPosition: 'right',
-            verticalPosition: 'top'
+            this.refunds = [newRefund, ...this.refunds];
+            this.refundablePayments = this.refundablePayments.filter(p => p.id !== this.selectedPayment.id);
+
+            Swal.fire({
+                title: 'Refunded!',
+                text: `Refund of ₹${this.refundAmount} processed successfully.`,
+                icon: 'success',
+                confirmButtonColor: '#28a745'
+            });
+
+            this.selectedPayment = null;
+            this.refundAmount = 0;
+            this.refundReason = '';
         });
-
-        this.selectedPayment = null;
-        this.refundAmount = 0;
-        this.refundReason = '';
     }
 
     cancelRefund(): void {
