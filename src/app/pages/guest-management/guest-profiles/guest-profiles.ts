@@ -9,9 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
-interface Guest {
+export interface Guest {
     id: string;
     fullName: string;
     email: string;
@@ -23,8 +26,8 @@ interface Guest {
     tier: 'Silver' | 'Gold' | 'Platinum' | 'Diamond';
     totalStays: number;
     totalSpent: number;
-    lastStay: Date;
-    avatar: string; // Placeholder for avatar image URL
+    lastStay: Date | null;
+    avatar: string;
 }
 
 interface StayHistory {
@@ -52,7 +55,11 @@ interface StayHistory {
         MatInputModule,
         MatChipsModule,
         MatTabsModule,
-        FormsModule
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ]
 })
 export class GuestProfilesComponent implements OnInit {
@@ -71,7 +78,7 @@ export class GuestProfilesComponent implements OnInit {
             totalStays: 12,
             totalSpent: 125000,
             lastStay: new Date('2024-02-05'),
-            avatar: 'https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user1.jpg' 
+            avatar: 'https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/user1.jpg'
         },
         {
             id: 'GST-1002',
@@ -107,17 +114,32 @@ export class GuestProfilesComponent implements OnInit {
 
     filteredGuests: Guest[] = [];
     selectedGuest: Guest | null = null;
-    
+
+    // Form state
+    isFormOpen: boolean = false;
+    guestForm: FormGroup;
+
     // Mock history data linked to the selected guest
     guestHistory: StayHistory[] = [
         { bookingId: 'BK-5001', roomNo: '301', checkIn: new Date('2024-02-01'), checkOut: new Date('2024-02-05'), amount: 25000, status: 'Completed' },
         { bookingId: 'BK-4020', roomNo: '205', checkIn: new Date('2023-12-20'), checkOut: new Date('2023-12-23'), amount: 18000, status: 'Completed' },
-         { bookingId: 'BK-3015', roomNo: '101', checkIn: new Date('2023-10-10'), checkOut: new Date('2023-10-12'), amount: 12000, status: 'Cancelled' }
+        { bookingId: 'BK-3015', roomNo: '101', checkIn: new Date('2023-10-10'), checkOut: new Date('2023-10-12'), amount: 12000, status: 'Cancelled' }
     ];
 
     historyColumns: string[] = ['bookingId', 'roomNo', 'dates', 'amount', 'status'];
 
-    constructor() { }
+    constructor(private fb: FormBuilder) {
+        this.guestForm = this.fb.group({
+            id: [''],
+            fullName: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            phone: ['', Validators.required],
+            nationality: ['', Validators.required],
+            idType: ['', Validators.required],
+            idNumber: ['', Validators.required],
+            tier: ['Silver', Validators.required]
+        });
+    }
 
     ngOnInit(): void {
         this.filteredGuests = this.guests;
@@ -128,20 +150,21 @@ export class GuestProfilesComponent implements OnInit {
 
     applyFilter(): void {
         const query = this.searchQuery.toLowerCase();
-        this.filteredGuests = this.guests.filter(g => 
-            g.fullName.toLowerCase().includes(query) || 
+        this.filteredGuests = this.guests.filter(g =>
+            g.fullName.toLowerCase().includes(query) ||
             g.phone.includes(query) ||
             g.email.toLowerCase().includes(query)
         );
     }
 
     selectGuest(guest: Guest): void {
+        this.isFormOpen = false;
         this.selectedGuest = guest;
         // In a real app, we would fetch history here based on guest ID
     }
 
     getTierColor(tier: string): string {
-        switch(tier) {
+        switch (tier) {
             case 'Diamond': return 'warn';
             case 'Platinum': return 'primary';
             case 'Gold': return 'accent';
@@ -151,10 +174,66 @@ export class GuestProfilesComponent implements OnInit {
     }
 
     addGuest(): void {
-        console.log('Add guest clicked');
+        this.isFormOpen = true;
+        this.selectedGuest = null;
+        this.guestForm.reset({
+            id: '',
+            tier: 'Silver'
+        });
     }
 
     editGuest(guest: Guest): void {
-        console.log('Edit guest:', guest);
+        this.isFormOpen = true;
+        this.selectedGuest = guest;
+        this.guestForm.patchValue({
+            id: guest.id,
+            fullName: guest.fullName,
+            email: guest.email,
+            phone: guest.phone,
+            nationality: guest.nationality,
+            idType: guest.idType,
+            idNumber: guest.idNumber,
+            tier: guest.tier
+        });
+    }
+
+    cancelForm(): void {
+        this.isFormOpen = false;
+        if (this.guests.length > 0 && !this.selectedGuest) {
+            this.selectGuest(this.guests[0]);
+        }
+    }
+
+    saveGuest(): void {
+        if (this.guestForm.valid) {
+            const formValue = this.guestForm.value;
+            if (formValue.id) {
+                // Edit existing
+                const index = this.guests.findIndex(g => g.id === formValue.id);
+                if (index !== -1) {
+                    this.guests[index] = {
+                        ...this.guests[index],
+                        ...formValue
+                    };
+                    this.selectedGuest = this.guests[index];
+                }
+            } else {
+                // Add new
+                const nextIdStr = (this.guests.length + 1001).toString();
+                const newGuest: Guest = {
+                    ...formValue,
+                    id: 'GST-' + nextIdStr,
+                    memberSince: new Date(),
+                    totalStays: 0,
+                    totalSpent: 0,
+                    lastStay: null,
+                    avatar: 'https://www.einfosoft.com/templates/admin/spiceangular/source/light/assets/images/user/usrbig1.jpg'
+                };
+                this.guests.unshift(newGuest);
+                this.selectedGuest = newGuest;
+            }
+            this.applyFilter();
+            this.isFormOpen = false;
+        }
     }
 }

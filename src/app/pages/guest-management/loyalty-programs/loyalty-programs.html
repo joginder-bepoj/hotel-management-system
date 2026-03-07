@@ -12,18 +12,75 @@
                     </div>
                     <div class="body">
                         <div class="loyalty-programs">
+                            <!-- Guest Context -->
+                            <div class="guest-context mb-4">
+                                <mat-card class="bg-primary-light">
+                                    <mat-card-content class="d-flex justify-content-between align-items-center py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <h4 class="mb-0 text-primary">Loyalty Profile: {{ currentGuest.name }}
+                                                </h4>
+                                                <small class="text-muted">ID: {{ currentGuest.id }}</small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <mat-form-field appearance="outline" class="mb-0 guest-select">
+                                                <mat-label>Select Guest</mat-label>
+                                                <mat-select [(ngModel)]="currentGuest"
+                                                    (selectionChange)="onGuestChange()">
+                                                    <mat-option *ngFor="let guest of guests" [value]="guest">
+                                                        {{ guest.name }} ({{ guest.id }})
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
                             <!-- Dashboard -->
                             <div class="row mb-4">
                                 <div class="col-md-4">
-                                    <mat-card class="points-card align-items-center text-center p-3" [style.border-color]="tiers[2].color">
-                                        <mat-card-content>
-                                            <div class="tier-icon mb-2" [style.color]="tiers[2].color">
-                                                <mat-icon style="font-size: 48px; height: 48px; width: 48px;">stars</mat-icon>
+                                    <mat-card class="points-card align-items-center text-center p-3 h-100"
+                                        [style.border-color]="getCurrentTierData().color">
+                                        <mat-card-content class="w-100">
+                                            <div *ngIf="!isRedeeming">
+                                                <div class="tier-icon mb-2" [style.color]="getCurrentTierData().color">
+                                                    <mat-icon
+                                                        style="font-size: 48px; height: 48px; width: 48px;">stars</mat-icon>
+                                                </div>
+                                                <h3 class="mb-0" [style.color]="getCurrentTierData().color">{{
+                                                    currentGuest.currentTier }} Member</h3>
+                                                <h1 class="display-4 fw-bold my-2">{{ currentGuest.points | number }}
+                                                </h1>
+                                                <p class="text-muted">Available Points</p>
+                                                <button mat-raised-button color="primary" class="w-100 mt-2"
+                                                    [disabled]="currentGuest.points <= 0" (click)="startRedeem()">Redeem
+                                                    Points</button>
                                             </div>
-                                            <h3 class="mb-0">{{ currentGuest.currentTier }} Member</h3>
-                                            <h1 class="display-4 fw-bold my-2">{{ currentGuest.points | number }}</h1>
-                                            <p class="text-muted">Available Points</p>
-                                            <button mat-raised-button color="primary" (click)="redeemPoints()">Redeem Points</button>
+
+                                            <div *ngIf="isRedeeming" class="redeem-form text-start">
+                                                <h4 class="mb-3">Redeem Points</h4>
+                                                <p class="small text-muted mb-3">Available: {{ currentGuest.points |
+                                                    number }}</p>
+                                                <mat-form-field appearance="outline" class="w-100 mb-2">
+                                                    <mat-label>Points to Redeem</mat-label>
+                                                    <input matInput type="number" [(ngModel)]="redeemAmount" min="1"
+                                                        [max]="currentGuest.points">
+                                                </mat-form-field>
+                                                <mat-form-field appearance="outline" class="w-100 mb-2">
+                                                    <mat-label>Description / Usage</mat-label>
+                                                    <input matInput [(ngModel)]="redeemDescription"
+                                                        placeholder="e.g. Spa, Free Night">
+                                                </mat-form-field>
+                                                <div class="d-flex justify-content-between gap-2 mt-2">
+                                                    <button mat-button class="flex-grow-1"
+                                                        (click)="cancelRedeem()">Cancel</button>
+                                                    <button mat-raised-button color="primary" class="flex-grow-1"
+                                                        [disabled]="!redeemAmount || redeemAmount <= 0 || redeemAmount > currentGuest.points || !redeemDescription"
+                                                        (click)="submitRedeem()">Confirm</button>
+                                                </div>
+                                            </div>
                                         </mat-card-content>
                                     </mat-card>
                                 </div>
@@ -35,23 +92,28 @@
                                         <mat-card-content class="pt-4">
                                             <div *ngIf="getNextTier(); else maxTier">
                                                 <div class="d-flex justify-content-between mb-2">
-                                                    <span>Current: <strong>{{ currentGuest.currentTier }}</strong></span>
+                                                    <span>Current: <strong>{{ currentGuest.currentTier
+                                                            }}</strong></span>
                                                     <span>Next: <strong>{{ getNextTier()?.name }}</strong></span>
                                                 </div>
-                                                <mat-progress-bar mode="determinate" [value]="getProgress()" class="mb-2"></mat-progress-bar>
+                                                <mat-progress-bar mode="determinate" [value]="getProgress()"
+                                                    class="mb-2"></mat-progress-bar>
                                                 <p class="text-muted small">
-                                                    You need {{ (getNextTier()?.minPoints || 0) - currentGuest.points | number }} more points to reach {{ getNextTier()?.name }} status.
+                                                    You need {{ (getNextTier()?.minPoints || 0) - currentGuest.points |
+                                                    number }} more points to reach {{ getNextTier()?.name }} status.
                                                 </p>
                                             </div>
                                             <ng-template #maxTier>
                                                 <div class="alert alert-success">
-                                                    Congratulations! You have reached the highest tier using the Loyalty Program.
+                                                    Congratulations! You have reached the highest tier using the Loyalty
+                                                    Program.
                                                 </div>
                                             </ng-template>
 
                                             <h5 class="mt-4 mb-3">Current Benefits</h5>
                                             <div class="row">
-                                                <div class="col-md-6" *ngFor="let benefit of tiers[2].benefits"> <!-- Hardcoded index for mock -->
+                                                <div class="col-md-6"
+                                                    *ngFor="let benefit of getCurrentTierData().benefits">
                                                     <div class="d-flex align-items-center mb-2">
                                                         <mat-icon class="text-success me-2">check_circle</mat-icon>
                                                         <span>{{ benefit }}</span>
@@ -71,15 +133,16 @@
                                             <mat-card-title>Points History</mat-card-title>
                                         </mat-card-header>
                                         <mat-card-content class="p-0">
-                                            <table mat-table [dataSource]="transactions" class="w-100">
+                                            <table mat-table [dataSource]="currentGuest.transactions" class="w-100">
                                                 <ng-container matColumnDef="date">
                                                     <th mat-header-cell *matHeaderCellDef> Date </th>
-                                                    <td mat-cell *matCellDef="let t"> {{ t.date | date:'mediumDate' }} </td>
+                                                    <td mat-cell *matCellDef="let t"> {{ t.date | date:'mediumDate' }}
+                                                    </td>
                                                 </ng-container>
 
                                                 <ng-container matColumnDef="description">
                                                     <th mat-header-cell *matHeaderCellDef> Description </th>
-                                                    <td mat-cell *matCellDef="let t"> 
+                                                    <td mat-cell *matCellDef="let t">
                                                         <div class="d-flex flex-column">
                                                             <span>{{ t.description }}</span>
                                                             <small class="text-muted">{{ t.id }}</small>
@@ -89,8 +152,9 @@
 
                                                 <ng-container matColumnDef="type">
                                                     <th mat-header-cell *matHeaderCellDef> Type </th>
-                                                    <td mat-cell *matCellDef="let t"> 
-                                                        <span class="badge" [class.bg-success]="t.type === 'Earned'" [class.bg-danger]="t.type === 'Redeemed'">
+                                                    <td mat-cell *matCellDef="let t">
+                                                        <span class="badge" [class.bg-success]="t.type === 'Earned'"
+                                                            [class.bg-danger]="t.type === 'Redeemed'">
                                                             {{ t.type }}
                                                         </span>
                                                     </td>
@@ -98,14 +162,21 @@
 
                                                 <ng-container matColumnDef="points">
                                                     <th mat-header-cell *matHeaderCellDef class="text-end"> Points </th>
-                                                    <td mat-cell *matCellDef="let t" class="text-end fw-bold" [class.text-success]="t.points > 0" [class.text-danger]="t.points < 0"> 
-                                                        {{ t.points > 0 ? '+' : '' }}{{ t.points | number }} 
+                                                    <td mat-cell *matCellDef="let t" class="text-end fw-bold"
+                                                        [class.text-success]="t.points > 0"
+                                                        [class.text-danger]="t.points < 0">
+                                                        {{ t.points > 0 ? '+' : '' }}{{ t.points | number }}
                                                     </td>
                                                 </ng-container>
 
                                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                                             </table>
+
+                                            <div *ngIf="currentGuest.transactions.length === 0"
+                                                class="text-center py-4 text-muted">
+                                                No transaction history found.
+                                            </div>
                                         </mat-card-content>
                                     </mat-card>
                                 </div>

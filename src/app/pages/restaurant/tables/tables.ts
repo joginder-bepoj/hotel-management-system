@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
-import { RestaurantService, Table } from '../../../core/services/restaurant.service';
+import { RestaurantService, Table, Order } from '../../../core/services/restaurant.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tables',
@@ -23,20 +24,25 @@ import { RestaurantService, Table } from '../../../core/services/restaurant.serv
     BreadcrumbComponent
   ]
 })
-export class TablesComponent implements OnInit {
+export class TablesComponent implements OnInit, OnDestroy {
   tables: Table[] = [];
+  private subscriptions = new Subscription();
 
   constructor(
     private restaurantService: RestaurantService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.loadTables();
+    this.subscriptions.add(
+      this.restaurantService.tables$.subscribe(tables => {
+        this.tables = tables;
+      })
+    );
   }
 
-  loadTables() {
-    this.tables = this.restaurantService.getTables();
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   getStatusColor(status: string): string {

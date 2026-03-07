@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -14,6 +14,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { RestaurantService, MenuItem, Order, OrderItem, Table } from '../../../core/services/restaurant.service';
 import Swal from 'sweetalert2';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-order',
@@ -35,43 +36,62 @@ import Swal from 'sweetalert2';
     BreadcrumbComponent
   ]
 })
-export class NewOrderComponent implements OnInit {
+export class NewOrderComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [];
   categories: string[] = ['Starters', 'Main Course', 'Beverages', 'Desserts'];
-  
+
   // Order State
   cart: OrderItem[] = [];
   orderType: 'Dine-in' | 'Room Service' = 'Dine-in';
-  
+
   // Selection State
   tables: Table[] = [];
   selectedTableNumber: string = '';
   roomNumber: string = '';
-  
+
   // UI State
   selectedCategory: string = 'All';
   searchQuery: string = '';
+
+  private subscriptions = new Subscription();
 
   constructor(
     private restaurantService: RestaurantService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.menuItems = this.restaurantService.getActiveMenuItems();
-    this.tables = this.restaurantService.getAvailableTables();
-    
-    this.route.queryParams.subscribe(params => {
-      if (params['tableId']) {
-        const table = this.tables.find(t => t.id === Number(params['tableId']));
-        if (table) {
-          this.orderType = 'Dine-in';
-          this.selectedTableNumber = table.tableNumber;
-        }
-      }
-    });
+    this.subscriptions.add(
+      this.restaurantService.getActiveMenuItems$().subscribe(items => {
+        this.menuItems = items;
+      })
+    );
+
+    this.subscriptions.add(
+      this.restaurantService.getAvailableTables$().subscribe(tables => {
+        this.tables = tables;
+
+        // Handle query params table pre-selection
+        this.route.queryParams.subscribe(params => {
+          if (params['tableId']) {
+            const tableId = Number(params['tableId']);
+            // Look in all tables (not just available) to prevent clearing if table just became occupied
+            const allTables = this.restaurantService.getTables();
+            const table = allTables.find(t => t.id === tableId);
+            if (table) {
+              this.orderType = 'Dine-in';
+              this.selectedTableNumber = table.tableNumber;
+            }
+          }
+        });
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   get filteredItems() {
@@ -142,7 +162,7 @@ export class NewOrderComponent implements OnInit {
       status: 'Pending' as const,
       isPaid: false
     };
-    
+
     this.restaurantService.createOrder(orderData);
     this.showNotification('Order placed successfully!', 'success');
     this.router.navigate(['/restaurant/kitchen']);

@@ -14,23 +14,41 @@
                         <div class="guest-preferences">
                             <!-- Guest Context -->
                             <div class="guest-context mb-4">
-                                <div class="d-flex align-items-center">
-                                    <img [src]="currentGuest.avatar" alt="Avatar" class="avatar-medium me-3">
-                                    <div>
-                                        <h4 class="mb-0">Preferences for {{ currentGuest.name }}</h4>
-                                        <small class="text-muted">ID: {{ currentGuest.id }}</small>
-                                    </div>
-                                </div>
+                                <mat-card class="bg-primary-light">
+                                    <mat-card-content class="d-flex justify-content-between align-items-center py-3">
+                                        <div class="d-flex align-items-center">
+                                            <img [src]="currentGuest.avatar" alt="Avatar" class="avatar-medium me-3"
+                                                style="border-radius: 50%; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                            <div>
+                                                <h4 class="mb-0 text-primary">{{ currentGuest.name }}</h4>
+                                                <small class="text-muted">ID: {{ currentGuest.id }}</small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <mat-form-field appearance="outline" class="mb-0 guest-select">
+                                                <mat-label>Select Guest</mat-label>
+                                                <mat-select [(ngModel)]="currentGuest"
+                                                    (selectionChange)="onGuestChange()">
+                                                    <mat-option *ngFor="let guest of guests" [value]="guest">
+                                                        {{ guest.name }} ({{ guest.id }})
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
                             </div>
 
                             <div class="row">
                                 <!-- Preference Categories -->
                                 <div class="col-md-8">
                                     <div class="row">
-                                        <div class="col-md-12 mb-3" *ngFor="let category of preferences; let i = index">
+                                        <div class="col-md-12 mb-3"
+                                            *ngFor="let category of currentGuest.preferences; let i = index">
                                             <mat-card class="preference-card">
                                                 <mat-card-header>
-                                                    <mat-icon mat-card-avatar color="primary">{{ category.icon }}</mat-icon>
+                                                    <mat-icon mat-card-avatar color="primary">{{ category.icon
+                                                        }}</mat-icon>
                                                     <mat-card-title>{{ category.category }}</mat-card-title>
                                                 </mat-card-header>
                                                 <mat-card-content class="pt-3">
@@ -38,20 +56,22 @@
                                                         <mat-label>Add Preference</mat-label>
                                                         <mat-chip-grid #chipGrid aria-label="Enter preferences">
                                                             <mat-chip-row *ngFor="let item of category.items"
-                                                                         (removed)="remove(item, i)"
-                                                                         [editable]="true">
+                                                                (removed)="remove(item, i)">
                                                                 {{ item }}
-                                                                <button matChipRemove [attr.aria-label]="'remove ' + item">
+                                                                <button matChipRemove>
                                                                     <mat-icon>cancel</mat-icon>
                                                                 </button>
                                                             </mat-chip-row>
-                                                            <input placeholder="New preference..."
-                                                                   [matChipInputFor]="chipGrid"
-                                                                   [matAutocomplete]="auto"
-                                                                   (matChipInputTokenEnd)="add($event, i)">
+                                                            <input placeholder="New preference..." #chipInput
+                                                                [formControl]="tagCtrls[i]" [matChipInputFor]="chipGrid"
+                                                                [matAutocomplete]="auto"
+                                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                                (matChipInputTokenEnd)="add($event, i)">
                                                         </mat-chip-grid>
-                                                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event, i)">
-                                                            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                                                        <mat-autocomplete #auto="matAutocomplete"
+                                                            (optionSelected)="selected($event, i, chipInput)">
+                                                            <mat-option *ngFor="let tag of filteredTagsList[i] | async"
+                                                                [value]="tag">
                                                                 {{ tag }}
                                                             </mat-option>
                                                         </mat-autocomplete>
@@ -59,6 +79,12 @@
                                                 </mat-card-content>
                                             </mat-card>
                                         </div>
+                                    </div>
+
+                                    <div class="text-end mt-4">
+                                        <button mat-raised-button color="primary" (click)="saveAllPreferences()">
+                                            <mat-icon>save</mat-icon> Save Preferences
+                                        </button>
                                     </div>
                                 </div>
 
@@ -69,26 +95,36 @@
                                             <mat-icon mat-card-avatar class="text-warning">stars</mat-icon>
                                             <mat-card-title>Special Requests</mat-card-title>
                                         </mat-card-header>
-                                        <mat-card-content class="pt-3">
-                                            <div class="request-list mb-3">
-                                                <div *ngFor="let req of specialRequests; let i = index" class="request-item d-flex justify-content-between align-items-start">
-                                                    <p class="mb-0">{{ req }}</p>
-                                                    <button mat-icon-button color="warn" class="small-icon-btn" (click)="removeRequest(i)">
-                                                        <mat-icon>close</mat-icon>
+                                        <mat-card-content class="pt-3 d-flex flex-column h-100">
+                                            <div class="request-list flex-grow-1 mb-4"
+                                                style="max-height: 400px; overflow-y: auto;">
+                                                <div *ngFor="let req of currentGuest.specialRequests; let i = index"
+                                                    class="request-item d-flex justify-content-between align-items-start p-3 mb-2 rounded bg-light">
+                                                    <p class="mb-0 text-dark">{{ req }}</p>
+                                                    <button mat-icon-button color="warn"
+                                                        class="small-icon-btn ms-2 mt-n1 me-n2"
+                                                        (click)="removeRequest(i)"
+                                                        style="width: 24px; height: 24px; line-height: 24px;">
+                                                        <mat-icon style="font-size: 16px;">close</mat-icon>
                                                     </button>
                                                 </div>
-                                                <div *ngIf="specialRequests.length === 0" class="text-muted text-center py-4">
+                                                <div *ngIf="currentGuest.specialRequests.length === 0"
+                                                    class="text-muted text-center py-4">
                                                     No special requests recorded.
                                                 </div>
                                             </div>
 
-                                            <mat-form-field appearance="outline" class="w-100">
-                                                <mat-label>Add New Request</mat-label>
-                                                <textarea matInput #requestInput rows="3" placeholder="Enter special request..."></textarea>
-                                            </mat-form-field>
-                                            <button mat-flat-button color="primary" class="w-100" (click)="addRequest(requestInput.value); requestInput.value = ''">
-                                                Add Request
-                                            </button>
+                                            <div class="mt-auto">
+                                                <mat-form-field appearance="outline" class="w-100 mb-0">
+                                                    <mat-label>Add New Request</mat-label>
+                                                    <textarea matInput #requestInput rows="2"
+                                                        placeholder="Enter special request..."></textarea>
+                                                </mat-form-field>
+                                                <button mat-flat-button color="primary" class="w-100 mt-2"
+                                                    (click)="addRequest(requestInput.value, requestInput)">
+                                                    Add Request
+                                                </button>
+                                            </div>
                                         </mat-card-content>
                                     </mat-card>
                                 </div>

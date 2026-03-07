@@ -6,6 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 interface Review {
     id: string;
@@ -16,6 +20,8 @@ interface Review {
     comment: string;
     stayType: 'Business' | 'Leisure' | 'Family';
     source: 'Google' | 'TripAdvisor' | 'Direct';
+    reply?: string;
+    replyDate?: Date;
 }
 
 @Component({
@@ -30,7 +36,11 @@ interface Review {
         MatIconModule,
         MatButtonModule,
         MatProgressBarModule,
-        MatChipsModule
+        MatChipsModule,
+        FormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule
     ]
 })
 export class FeedbackReviewsComponent implements OnInit {
@@ -43,7 +53,9 @@ export class FeedbackReviewsComponent implements OnInit {
             date: new Date('2024-02-08'),
             comment: 'Absolutely fantastic stay! The staff went above and beyond.',
             stayType: 'Leisure',
-            source: 'TripAdvisor'
+            source: 'TripAdvisor',
+            reply: 'Thank you for your wonderful feedback, John! We hope to see you again soon.',
+            replyDate: new Date('2024-02-09')
         },
         {
             id: 'REV-102',
@@ -77,6 +89,9 @@ export class FeedbackReviewsComponent implements OnInit {
         }
     ];
 
+    filteredReviews: Review[] = [];
+    selectedFilter: string = 'All';
+
     stats = {
         averageRating: 4.25,
         totalReviews: 128,
@@ -89,9 +104,26 @@ export class FeedbackReviewsComponent implements OnInit {
         ]
     };
 
+    // Reply state
+    replyingToId: string | null = null;
+    replyText: string = '';
+
     constructor() { }
 
     ngOnInit(): void {
+        this.applyFilter();
+    }
+
+    applyFilter(): void {
+        if (this.selectedFilter === 'All') {
+            this.filteredReviews = [...this.reviews];
+        } else if (this.selectedFilter === 'Needs Reply') {
+            this.filteredReviews = this.reviews.filter(r => !r.reply);
+        } else if (this.selectedFilter === 'Positive') {
+            this.filteredReviews = this.reviews.filter(r => r.rating >= 4);
+        } else if (this.selectedFilter === 'Critical') {
+            this.filteredReviews = this.reviews.filter(r => r.rating <= 3);
+        }
     }
 
     getStarArray(rating: number): number[] {
@@ -102,7 +134,25 @@ export class FeedbackReviewsComponent implements OnInit {
         return Array(5 - rating).fill(0);
     }
 
-    replyToReview(review: Review): void {
-        console.log('Reply to review:', review.id);
+    startReply(reviewId: string): void {
+        this.replyingToId = reviewId;
+        this.replyText = '';
+    }
+
+    cancelReply(): void {
+        this.replyingToId = null;
+        this.replyText = '';
+    }
+
+    submitReply(review: Review): void {
+        if (this.replyText.trim()) {
+            review.reply = this.replyText.trim();
+            review.replyDate = new Date();
+            this.replyingToId = null;
+            this.replyText = '';
+
+            // Re-apply filter in case we're on "Needs Reply"
+            this.applyFilter();
+        }
     }
 }

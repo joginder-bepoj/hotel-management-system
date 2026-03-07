@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { of, Observable } from 'rxjs';
+import { of, Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface MenuItem {
   id: number;
@@ -46,7 +47,8 @@ export class RestaurantService {
   private readonly STORAGE_KEY = 'restaurant_details';
   private readonly USER_KEY = 'user';
 
-  private menuItems: MenuItem[] = [
+  // INITIAL MOCK DATA
+  private initialMenuItems: MenuItem[] = [
     { id: 1, name: 'Paneer Butter Masala', category: 'Main Course', price: 350, isActive: true },
     { id: 2, name: 'Chicken Tikka', category: 'Starters', price: 280, isActive: true },
     { id: 3, name: 'Roti', category: 'Main Course', price: 20, isActive: true },
@@ -57,7 +59,7 @@ export class RestaurantService {
     { id: 8, name: 'Ice Cream', category: 'Desserts', price: 100, isActive: true },
   ];
 
-  private tables: Table[] = [
+  private initialTables: Table[] = [
     { id: 1, tableNumber: 'T1', capacity: 2, status: 'Available' },
     { id: 2, tableNumber: 'T2', capacity: 4, status: 'Occupied', activeOrderId: 1 },
     { id: 3, tableNumber: 'T3', capacity: 4, status: 'Available' },
@@ -66,15 +68,15 @@ export class RestaurantService {
     { id: 6, tableNumber: 'T6', capacity: 8, status: 'Available' },
   ];
 
-  private orders: Order[] = [
+  private initialOrders: Order[] = [
     {
       id: 1,
       orderNumber: 'ORD-1001',
       type: 'Dine-in',
       tableNumber: 'T2',
       items: [
-        { menuItem: this.menuItems[0], quantity: 2 },
-        { menuItem: this.menuItems[2], quantity: 4 }
+        { menuItem: this.initialMenuItems[0], quantity: 2 },
+        { menuItem: this.initialMenuItems[2], quantity: 4 }
       ],
       subtotal: 780,
       tax: 140.4,
@@ -89,8 +91,8 @@ export class RestaurantService {
       type: 'Room Service',
       roomNumber: '203',
       items: [
-        { menuItem: this.menuItems[1], quantity: 1 },
-        { menuItem: this.menuItems[5], quantity: 2 }
+        { menuItem: this.initialMenuItems[1], quantity: 1 },
+        { menuItem: this.initialMenuItems[5], quantity: 2 }
       ],
       subtotal: 400,
       tax: 72,
@@ -100,6 +102,15 @@ export class RestaurantService {
       isPaid: false
     }
   ];
+
+  private _menuItems = new BehaviorSubject<MenuItem[]>(this.initialMenuItems);
+  private _tables = new BehaviorSubject<Table[]>(this.initialTables);
+  private _orders = new BehaviorSubject<Order[]>(this.initialOrders);
+
+  // Expose Observables
+  public readonly menuItems$ = this._menuItems.asObservable();
+  public readonly tables$ = this._tables.asObservable();
+  public readonly orders$ = this._orders.asObservable();
 
   private nextOrderId = 3;
   private nextOrderNumber = 1003;
@@ -130,6 +141,19 @@ export class RestaurantService {
     return data ? JSON.parse(data) : null;
   }
 
+  // Current State Sync Getters
+  get menuItems(): MenuItem[] {
+    return this._menuItems.getValue();
+  }
+
+  get tables(): Table[] {
+    return this._tables.getValue();
+  }
+
+  get orders(): Order[] {
+    return this._orders.getValue();
+  }
+
   // Menu Methods
   getMenuItems(): MenuItem[] {
     return [...this.menuItems];
@@ -137,6 +161,12 @@ export class RestaurantService {
 
   getActiveMenuItems(): MenuItem[] {
     return this.menuItems.filter(item => item.isActive);
+  }
+
+  getActiveMenuItems$(): Observable<MenuItem[]> {
+    return this.menuItems$.pipe(
+      map(items => items.filter(item => item.isActive))
+    );
   }
 
   getMenuItemsByCategory(category: string): MenuItem[] {
@@ -148,21 +178,25 @@ export class RestaurantService {
       ...item,
       id: Math.max(...this.menuItems.map(i => i.id), 0) + 1
     };
-    this.menuItems.push(newItem);
+    this._menuItems.next([...this.menuItems, newItem]);
     return newItem;
   }
 
   updateMenuItem(item: MenuItem): void {
-    const index = this.menuItems.findIndex(i => i.id === item.id);
+    const items = [...this.menuItems];
+    const index = items.findIndex(i => i.id === item.id);
     if (index !== -1) {
-      this.menuItems[index] = item;
+      items[index] = item;
+      this._menuItems.next(items);
     }
   }
 
   disableMenuItem(id: number): void {
-    const item = this.menuItems.find(i => i.id === id);
+    const items = [...this.menuItems];
+    const item = items.find(i => i.id === id);
     if (item) {
       item.isActive = false;
+      this._menuItems.next(items);
     }
   }
 
@@ -175,11 +209,18 @@ export class RestaurantService {
     return this.tables.filter(t => t.status === 'Available');
   }
 
+  getAvailableTables$(): Observable<Table[]> {
+    return this.tables$.pipe(
+      map(tables => tables.filter(t => t.status === 'Available'))
+    );
+  }
+
   updateTableStatus(id: number, status: Table['status'], activeOrderId?: number): void {
-    const table = this.tables.find(t => t.id === id);
-    if (table) {
-      table.status = status;
-      table.activeOrderId = activeOrderId;
+    const tables = [...this.tables];
+    const tableIndex = tables.findIndex(t => t.id === id);
+    if (tableIndex !== -1) {
+      tables[tableIndex] = { ...tables[tableIndex], status, activeOrderId };
+      this._tables.next(tables);
     }
   }
 
@@ -192,12 +233,24 @@ export class RestaurantService {
     return this.orders.find(o => o.id === id);
   }
 
+  getOrderById$(id: number): Observable<Order | undefined> {
+    return this.orders$.pipe(
+      map(orders => orders.find(o => o.id === id))
+    );
+  }
+
   getPendingOrders(): Order[] {
     return this.orders.filter(o => !o.isPaid);
   }
 
   getOrdersByStatus(status: Order['status']): Order[] {
     return this.orders.filter(o => o.status === status);
+  }
+
+  getOrdersByStatus$(status: Order['status']): Observable<Order[]> {
+    return this.orders$.pipe(
+      map(orders => orders.filter(o => o.status === status))
+    );
   }
 
   createOrder(orderData: Omit<Order, 'id' | 'orderNumber' | 'createdAt'>): Order {
@@ -207,13 +260,21 @@ export class RestaurantService {
       orderNumber: `ORD-${this.nextOrderNumber++}`,
       createdAt: new Date()
     };
-    this.orders.push(newOrder);
 
+    // Update Orders
+    this._orders.next([...this.orders, newOrder]);
+
+    // Update Tables if Dine-in
     if (newOrder.type === 'Dine-in' && newOrder.tableNumber) {
-      const table = this.tables.find(t => t.tableNumber === newOrder.tableNumber);
-      if (table) {
-        table.status = 'Occupied';
-        table.activeOrderId = newOrder.id;
+      const tables = [...this.tables];
+      const tableIndex = tables.findIndex(t => t.tableNumber === newOrder.tableNumber);
+      if (tableIndex !== -1) {
+        tables[tableIndex] = {
+          ...tables[tableIndex],
+          status: 'Occupied',
+          activeOrderId: newOrder.id
+        };
+        this._tables.next(tables);
       }
     }
 
@@ -221,24 +282,29 @@ export class RestaurantService {
   }
 
   updateOrderStatus(id: number, status: Order['status']): void {
-    const order = this.orders.find(o => o.id === id);
-    if (order) {
-      order.status = status;
+    const orders = [...this.orders];
+    const orderIndex = orders.findIndex(o => o.id === id);
+    if (orderIndex !== -1) {
+      orders[orderIndex] = { ...orders[orderIndex], status };
+      this._orders.next(orders);
     }
   }
 
   markOrderPaid(id: number, paymentMode: string, postedToRoom?: boolean): void {
-    const order = this.orders.find(o => o.id === id);
-    if (order) {
-      order.isPaid = true;
-      order.paymentMode = paymentMode;
-      order.postedToRoom = postedToRoom;
+    const orders = [...this.orders];
+    const orderIndex = orders.findIndex(o => o.id === id);
+
+    if (orderIndex !== -1) {
+      const order = { ...orders[orderIndex], isPaid: true, paymentMode, postedToRoom };
+      orders[orderIndex] = order;
+      this._orders.next(orders);
 
       if (order.type === 'Dine-in' && order.tableNumber) {
-        const table = this.tables.find(t => t.tableNumber === order.tableNumber);
-        if (table) {
-          table.status = 'Available';
-          table.activeOrderId = undefined;
+        const tables = [...this.tables];
+        const tableIndex = tables.findIndex(t => t.tableNumber === order.tableNumber);
+        if (tableIndex !== -1) {
+          tables[tableIndex] = { ...tables[tableIndex], status: 'Available', activeOrderId: undefined };
+          this._tables.next(tables);
         }
       }
     }

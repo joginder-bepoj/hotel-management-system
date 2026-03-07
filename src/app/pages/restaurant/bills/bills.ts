@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -10,6 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { RestaurantService, Order } from '../../../core/services/restaurant.service';
 import Swal from 'sweetalert2';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-bills',
@@ -27,39 +28,46 @@ import Swal from 'sweetalert2';
     BreadcrumbComponent
   ]
 })
-export class BillsComponent implements OnInit {
+export class BillsComponent implements OnInit, OnDestroy {
   activeOrders: Order[] = [];
   paidOrders: Order[] = [];
   selectedOrder: Order | null = null;
   displayedColumns: string[] = ['billNo', 'orderNo', 'type', 'total', 'paymentMode'];
+  private subscriptions = new Subscription();
 
   constructor(
     private restaurantService: RestaurantService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.loadOrders();
+    this.subscriptions.add(
+      this.restaurantService.orders$.subscribe(orders => {
+        this.activeOrders = orders.filter(o => !o.isPaid).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        this.paidOrders = orders.filter(o => o.isPaid).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+        // Refresh selected order if it exists
+        if (this.selectedOrder) {
+          this.selectedOrder = orders.find(o => o.id === this.selectedOrder!.id) || null;
+        }
+      })
+    );
+
     this.route.queryParams.subscribe(params => {
       if (params['orderId']) {
-        this.selectOrderById(Number(params['orderId']));
+        const orderId = Number(params['orderId']);
+        this.selectOrderById(orderId);
       }
     });
   }
 
-  loadOrders() {
-    const allOrders = this.restaurantService.getOrders();
-    this.activeOrders = allOrders.filter(o => !o.isPaid);
-    this.paidOrders = allOrders.filter(o => o.isPaid);
-    
-    // Refresh selected order if it exists
-    if (this.selectedOrder) {
-      this.selectedOrder = this.restaurantService.getOrderById(this.selectedOrder.id) || null;
-    }
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   selectOrderById(id: number) {
-    const order = this.restaurantService.getOrderById(id);
+    const orders = this.restaurantService.getOrders();
+    const order = orders.find(o => o.id === id);
     if (order) {
       this.selectedOrder = order;
     }
@@ -80,7 +88,6 @@ export class BillsComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.restaurantService.markOrderPaid(order.id, 'Cash', false);
-        this.loadOrders();
         this.selectedOrder = null;
         Swal.fire('Paid!', 'Order has been marked as paid.', 'success');
       }
@@ -89,7 +96,7 @@ export class BillsComponent implements OnInit {
 
   postToRoom(order: Order) {
     if (order.type !== 'Room Service' || !order.roomNumber) return;
-    
+
     Swal.fire({
       title: 'Post to Room',
       text: `Post charges of ₹${order.total} to Room ${order.roomNumber}?`,
@@ -100,7 +107,6 @@ export class BillsComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.restaurantService.markOrderPaid(order.id, 'Room Posting', true);
-        this.loadOrders();
         this.selectedOrder = null;
         Swal.fire('Posted!', 'Charges have been posted to the room.', 'success');
       }
