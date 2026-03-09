@@ -6,20 +6,48 @@
             </app-breadcrumb>
         </div>
 
-        <!-- Legend -->
-        <div class="row clearfix mb-3">
-            <div class="col-12">
-                <div class="card p-3">
-                    <div class="d-flex flex-wrap">
-                        <div class="legend-item"><span class="dot" style="background-color: #4CAF50;"></span> Available
+        <!-- Header with Summary and Actions -->
+        <div class="row clearfix mb-4">
+            <div class="col-lg-8 col-md-12">
+                <div class="card p-3 h-100">
+                    <div class="header">
+                        <h2>Room Status Legend</h2>
+                    </div>
+                    <div class="body d-flex flex-wrap align-items-center">
+                        <div class="legend-item"><span class="dot" style="background-color: #4CAF50;"></span> Available</div>
+                        <div class="legend-item"><span class="dot" style="background-color: #F44336;"></span> Occupied</div>
+                        <div class="legend-item"><span class="dot" style="background-color: #2196F3;"></span> Reserved</div>
+                        <div class="legend-item"><span class="dot" style="background-color: #FF9800;"></span> Maintenance</div>
+                        <div class="legend-item"><span class="dot" style="background-color: #9E9E9E;"></span> Dirty</div>
+                        
+                        <div class="ms-auto">
+                            <button mat-stroked-button color="primary" (click)="loadDynamicData()">
+                                <mat-icon>refresh</mat-icon> Refresh
+                            </button>
                         </div>
-                        <div class="legend-item"><span class="dot" style="background-color: #F44336;"></span> Occupied
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card p-3 h-100 pending-card">
+                    <div class="header">
+                        <h2 class="text-warning"><mat-icon class="pending-icon">notification_important</mat-icon> Pending Allocations ({{unassignedBookings.length}})</h2>
+                    </div>
+                    <div class="body">
+                        <div class="pending-list" *ngIf="unassignedBookings.length > 0">
+                            <div class="pending-item" *ngFor="let b of unassignedBookings.slice(0,3)">
+                                <div class="pending-info">
+                                    <strong>{{b.first}} {{b.last}}</strong>
+                                    <span>{{b.roomType}}</span>
+                                </div>
+                                <mat-icon class="alloc-hint text-muted">arrow_forward</mat-icon>
+                            </div>
+                            <p class="more-pending" *ngIf="unassignedBookings.length > 3">And {{unassignedBookings.length - 3}} more...</p>
+                            <p class="hint-text mt-2"><em>Tip: Click an available room below to assign one of these guests.</em></p>
                         </div>
-                        <div class="legend-item"><span class="dot" style="background-color: #2196F3;"></span> Reserved
-                        </div>
-                        <div class="legend-item"><span class="dot" style="background-color: #FF9800;"></span>
-                            Maintenance</div>
-                        <div class="legend-item"><span class="dot" style="background-color: #9E9E9E;"></span> Dirty
+                        <div class="no-pending" *ngIf="unassignedBookings.length === 0">
+                            <mat-icon class="text-success">check_circle</mat-icon>
+                            <p>All bookings are allocated!</p>
                         </div>
                     </div>
                 </div>
@@ -32,7 +60,7 @@
                 <hr>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" *ngFor="let room of getRoomsByFloor(floor)">
-                <mat-card class="room-card" [ngClass]="room.status.toLowerCase()">
+                <mat-card class="room-card clickable" [ngClass]="room.status.toLowerCase()" (click)="assignRoom(room)" matTooltip="Click to assign room" [matTooltipDisabled]="room.status === 'Occupied'">
                     <mat-card-content>
                         <div class="room-header">
                             <h4>{{room.number}}</h4>
@@ -46,7 +74,7 @@
                         <div class="room-details">
                             <p><strong>Type:</strong> {{room.type}}</p>
                             <p><strong>Status:</strong> {{room.status}}</p>
-                            <p *ngIf="room.guestName"><strong>Guest:</strong> {{room.guestName}}</p>
+                            <p *ngIf="room.guestName" class="guest-name"><strong>Guest:</strong> {{room.guestName}}</p>
                         </div>
                     </mat-card-content>
                 </mat-card>

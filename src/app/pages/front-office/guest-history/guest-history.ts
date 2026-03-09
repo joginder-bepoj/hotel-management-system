@@ -23,6 +23,8 @@ export interface GuestHistory {
     rating: number;
 }
 
+import { BookingService, Booking } from '../../../core/service/booking.service';
+
 @Component({
     selector: 'app-guest-history',
     templateUrl: './guest-history.html',
@@ -56,7 +58,10 @@ export class GuestHistoryComponent implements OnInit, AfterViewInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
 
-    constructor(private snackBar: MatSnackBar) {}
+    constructor(
+        private snackBar: MatSnackBar,
+        private bookingService: BookingService
+    ) {}
 
     ngOnInit() {
         this.loadData();
@@ -68,25 +73,39 @@ export class GuestHistoryComponent implements OnInit, AfterViewInit {
     }
 
     loadData() {
-        const storedData = localStorage.getItem('guest_history');
-        if (storedData) {
-            const data = JSON.parse(storedData);
-            this.dataSource.data = data;
-        } else {
-            const defaultData: GuestHistory[] = [
-                { id: 1, name: 'Alice Johnson', contact: '+1 555-0101', email: 'alice@example.com', totalStays: 3, lastVisit: new Date('2023-09-15').toISOString(), totalSpent: 1200, rating: 5 },
-                { id: 2, name: 'Bob Smith', contact: '+1 555-0102', email: 'bob@example.com', totalStays: 1, lastVisit: new Date('2023-10-10').toISOString(), totalSpent: 400, rating: 4 },
-                { id: 3, name: 'Charlie Brown', contact: '+1 555-0103', email: 'charlie@example.com', totalStays: 5, lastVisit: new Date('2023-08-20').toISOString(), totalSpent: 2500, rating: 5 },
-                { id: 4, name: 'David Lee', contact: '+1 555-0104', email: 'david@example.com', totalStays: 2, lastVisit: new Date('2023-10-01').toISOString(), totalSpent: 800, rating: 3 },
-            ];
-            this.dataSource.data = defaultData;
-            this.saveData();
-        }
-        this.calculateStats();
-    }
+        const allBookings = this.bookingService.getBookings();
+        
+        // Group by email to identify unique guests
+        const guestsMap = new Map<string, GuestHistory>();
+        
+        allBookings.forEach(b => {
+            const email = b.email || b.mobile; // Use mobile if email is missing
+            if (!guestsMap.has(email)) {
+                guestsMap.set(email, {
+                    id: b.id,
+                    name: `${b.first} ${b.last}`,
+                    contact: b.mobile,
+                    email: b.email,
+                    totalStays: 0,
+                    lastVisit: b.arriveDate,
+                    totalSpent: 0,
+                    rating: 5 // Default rating
+                });
+            }
+            
+            const guest = guestsMap.get(email)!;
+            guest.totalStays += 1;
+            guest.totalSpent += (b.totalRent || 0);
+            
+            // Check if this visit is later than stored lastVisit
+            if (new Date(b.arriveDate) > new Date(guest.lastVisit)) {
+                guest.lastVisit = b.arriveDate;
+            }
+        });
 
-    saveData() {
-        localStorage.setItem('guest_history', JSON.stringify(this.dataSource.data));
+        const guestList = Array.from(guestsMap.values());
+        this.dataSource.data = guestList;
+        this.calculateStats();
     }
 
     calculateStats() {
@@ -125,10 +144,8 @@ export class GuestHistoryComponent implements OnInit, AfterViewInit {
     viewDetails(guest: GuestHistory) {
         Swal.fire({
             title: 'Guest Details',
-            text: `Viewing details for ${guest.name} (Feature demo)`,
-            icon: 'info',
-            timer: 2000,
-            showConfirmButton: false
+            text: `Viewing details for ${guest.name}. Total Spent: ${guest.totalSpent}`,
+            icon: 'info'
         });
     }
 }

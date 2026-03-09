@@ -12,6 +12,7 @@
           </div>
           <div class="body">
             <form class="m-4" [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+              <!-- Section 1: Personal Information -->
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -29,6 +30,7 @@
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -40,13 +42,18 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Anniversary</mat-label>
-                    <input matInput [matDatepicker]="anniversaryPicker" formControlName="anniversary">
-                    <mat-datepicker-toggle matSuffix [for]="anniversaryPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #anniversaryPicker></mat-datepicker>
+                    <mat-label>Gender</mat-label>
+                    <mat-select formControlName="gender" required>
+                      <mat-option [value]="'Male'">Male</mat-option>
+                      <mat-option [value]="'Female'">Female</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="bookingForm.get('gender')?.hasError('required')">
+                      Gender is required
+                    </mat-error>
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -59,63 +66,35 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="gender" required>
-                      <mat-option [value]="'Male'">
-                        Male
-                      </mat-option>
-                      <mat-option [value]="'Female'">
-                        Female
-                      </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="bookingForm.get('gender')?.hasError('required')">
-                      Gender is required
+                    <mat-label>Mobile</mat-label>
+                    <input matInput formControlName="mobile" type="number" required>
+                    <mat-error *ngIf="bookingForm.get('mobile')?.hasError('required')">
+                      Mobile is required
                     </mat-error>
                   </mat-form-field>
                 </div>
               </div>
+
+              <!-- Section 2: Identification & Residence -->
               <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
-                  <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Nationality</mat-label>
-                    <input matInput formControlName="nationality">
-                  </mat-form-field>
-                </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>ID Proof No</mat-label>
                     <input matInput formControlName="idProofNo">
                   </mat-form-field>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
-                  <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Mobile</mat-label>
-                    <input matInput formControlName="mobile" type="number" required>
-                  </mat-form-field>
-                </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>City</mat-label>
                     <input matInput formControlName="city" required>
+                    <mat-error *ngIf="bookingForm.get('city')?.hasError('required')">
+                      City is required
+                    </mat-error>
                   </mat-form-field>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
-                  <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Vehicle No</mat-label>
-                    <input matInput formControlName="vehicleNo">
-                  </mat-form-field>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
-                  <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Passport No</mat-label>
-                    <input matInput formControlName="passportNo">
-                  </mat-form-field>
-                </div>
-              </div>
+
+              <!-- Section 3: Arrival & Departure -->
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -140,6 +119,8 @@
                   </mat-form-field>
                 </div>
               </div>
+
+              <!-- Section 4: Travel History & Details -->
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -154,6 +135,7 @@
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -163,13 +145,37 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Vehicle No</mat-label>
+                    <input matInput formControlName="vehicleNo">
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Section 5: Room & Occupancy -->
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
+                    <mat-label>Select Room Type</mat-label>
+                    <mat-select formControlName="roomType" required>
+                      <mat-option [value]="'Single'">Single</mat-option>
+                      <mat-option [value]="'Double'">Double</mat-option>
+                      <mat-option [value]="'Apartment'">Apartment</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="bookingForm.get('roomType')?.hasError('required')">
+                      Room Type is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                  <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>Room No</mat-label>
                     <input matInput formControlName="roomNo">
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>Total Person</mat-label>
                     <input matInput formControlName="totalPerson" type="number" required>
@@ -178,41 +184,21 @@
                     </mat-error>
                   </mat-form-field>
                 </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
-                  <mat-form-field class="example-full-width mb-3" appearance="outline">
-                    <mat-label>Select Room Type</mat-label>
-                    <mat-select formControlName="roomType" required>
-                      <mat-option [value]="'Single'">
-                        Single
-                      </mat-option>
-                      <mat-option [value]="'Double'">
-                        Double
-                      </mat-option>
-                      <mat-option [value]="'Apartment'">
-                        Apartment
-                      </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="bookingForm.get('roomType')?.hasError('required')">
-                      Room Type is required
-                    </mat-error>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>No of Adults</mat-label>
                     <input matInput formControlName="noOfAdults" type="number">
                   </mat-form-field>
                 </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>No of Children</mat-label>
                     <input matInput formControlName="noOfChildren" type="number">
                   </mat-form-field>
                 </div>
               </div>
-               <div class="row">
+
+              <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
                     <mat-label>Accompanying Persons</mat-label>
@@ -220,6 +206,8 @@
                   </mat-form-field>
                 </div>
               </div>
+
+              <!-- Section 6: Financials -->
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -234,6 +222,7 @@
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -248,6 +237,8 @@
                   </mat-form-field>
                 </div>
               </div>
+
+              <!-- Section 7: Other Information -->
               <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -256,12 +247,14 @@
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-5">
-                  <label>Upload</label>
+                  <label>Upload Document</label>
                   <app-file-upload formControlName="uploadFile"></app-file-upload>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
                   <mat-form-field class="example-full-width mb-3" appearance="outline">
@@ -270,6 +263,7 @@
                   </mat-form-field>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
                   <button class="me-3" mat-flat-button color="primary" [disabled]="!bookingForm.valid">Submit</button>

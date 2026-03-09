@@ -102,7 +102,7 @@
                                             <mat-card-title>Room Type Availability</mat-card-title>
                                         </mat-card-header>
                                         <mat-card-content>
-                                            <div class="room-type-grid">
+                                            <div class="room-type-grid" *ngIf="roomTypeAvailability.length > 0">
                                                 <div *ngFor="let roomType of roomTypeAvailability" class="room-type-item">
                                                     <div class="room-type-header">
                                                         <h4>{{ roomType.type }}</h4>
@@ -131,6 +131,13 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- No Data Placeholder for Room Types -->
+                                            <div class="no-data-placeholder" *ngIf="roomTypeAvailability.length === 0" style="text-align: center; padding: 40px;">
+                                                <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #ddd; margin-bottom: 16px;">meeting_room</mat-icon>
+                                                <h3 style="color: #666; font-weight: 500;">No Room Data Available</h3>
+                                                <p style="color: #888;">Add rooms in "Room Management" to see availability breakdown.</p>
+                                            </div>
                                         </mat-card-content>
                                     </mat-card>
                                 </div>
@@ -144,7 +151,7 @@
                                             <mat-card-title>Upcoming Check-ins & Check-outs</mat-card-title>
                                         </mat-card-header>
                                         <mat-card-content>
-                                            <div class="upcoming-timeline">
+                                            <div class="upcoming-timeline" *ngIf="upcomingBookings.length > 0">
                                                 <div *ngFor="let booking of upcomingBookings" class="timeline-item">
                                                     <div class="timeline-date">
                                                         <strong>{{ booking.date | date:'EEE' }}</strong>
@@ -161,6 +168,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <!-- No Data Placeholder for Bookings -->
+                                            <div class="no-data-placeholder" *ngIf="upcomingBookings.length === 0" style="text-align: center; padding: 40px;">
+                                                <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #ddd; margin-bottom: 16px;">event_available</mat-icon>
+                                                <h3 style="color: #666; font-weight: 500;">No Upcoming Bookings</h3>
+                                                <p style="color: #888;">New arrivals and departures for the next 5 days will appear here.</p>
                                             </div>
                                         </mat-card-content>
                                     </mat-card>

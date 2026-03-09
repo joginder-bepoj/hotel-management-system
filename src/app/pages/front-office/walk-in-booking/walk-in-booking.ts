@@ -9,6 +9,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
+import { BookingService, Booking } from '../../../core/service/booking.service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
 @Component({
     selector: 'app-walk-in-booking',
     templateUrl: './walk-in-booking.html',
@@ -29,7 +33,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 export class WalkInBookingComponent {
     bookingForm: FormGroup;
 
-    constructor(private fb: FormBuilder) {
+    constructor(
+        private fb: FormBuilder,
+        private bookingService: BookingService,
+        private router: Router
+    ) {
         this.bookingForm = this.fb.group({
             checkInDate: [new Date(), Validators.required],
             checkOutDate: ['', Validators.required],
@@ -42,7 +50,34 @@ export class WalkInBookingComponent {
 
     onSubmit() {
         if (this.bookingForm.valid) {
-            console.log('Walk-in Booking Submitted', this.bookingForm.value);
+            const val = this.bookingForm.value;
+            const names = val.guestName.split(' ');
+            const firstName = names[0];
+            const lastName = names.length > 1 ? names.slice(1).join(' ') : '';
+
+            const bookingData: Partial<Booking> = {
+                first: firstName,
+                last: lastName,
+                mobile: val.contact,
+                arriveDate: val.checkInDate,
+                departDate: val.checkOutDate,
+                totalPerson: val.guestCount,
+                roomType: val.roomType,
+                email: '', // Not required for walk-in
+                city: 'Local',
+                payment: 'Unpaid'
+            };
+
+            this.bookingService.addBooking(bookingData as Booking);
+
+            Swal.fire({
+                title: 'Success!',
+                text: 'Walk-in booking created. Please assign a room in Room Allocation.',
+                icon: 'success',
+                confirmButtonText: 'Go to Allocation'
+            }).then(() => {
+                this.router.navigate(['/front-office/room-allocation']);
+            });
         }
     }
 }

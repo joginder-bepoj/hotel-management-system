@@ -60,11 +60,11 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     rating: ['']
   });
 
-  locationForm: FormGroup = this._formBuilder.group({
-    latitude: ['', Validators.required],
-    longitude: ['', Validators.required],
-    displayAddress: ['']
-  });
+  // locationForm: FormGroup = this._formBuilder.group({
+  //   latitude: ['', Validators.required],
+  //   longitude: ['', Validators.required],
+  //   displayAddress: ['']
+  // });
 
   roomsForm: FormGroup = this._formBuilder.group({
     roomTypes: this._formBuilder.array([])
@@ -159,11 +159,11 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.marker = L.marker([lat, lng]).addTo(this.map);
     }
 
-    this.locationForm.patchValue({
-      latitude: lat,
-      longitude: lng,
-      displayAddress: address || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
-    });
+    // this.locationForm.patchValue({
+    //   latitude: lat,
+    //   longitude: lng,
+    //   displayAddress: address || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
+    // });
 
     this.map.setView([lat, lng], 15);
   }
@@ -247,9 +247,9 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
-    if (this.basicDetailsForm.valid && this.locationForm.valid && this.roomsForm.valid && this.policiesForm.valid) {
+    if (this.basicDetailsForm.valid && this.roomsForm.valid && this.policiesForm.valid) {
       const basicDetails = this.basicDetailsForm.value;
-      const location = this.locationForm.value;
+      // const location = this.locationForm.value;
       const rooms = this.roomsForm.value;
 
 
@@ -269,9 +269,9 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         rating: basicDetails.rating,
         
         // Location
-        latitude: location.latitude,
-        longitude: location.longitude,
-        map_address: location.displayAddress,
+        // latitude: location.latitude,
+        // longitude: location.longitude,
+        // map_address: location.displayAddress,
         
         // Step 2: Rooms & Inventory
         room_types: rooms.roomTypes,
@@ -322,7 +322,7 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       console.log('Form is invalid');
       this.markFormGroupTouched(this.basicDetailsForm);
-      this.markFormGroupTouched(this.locationForm);
+      // this.markFormGroupTouched(this.locationForm);
       this.markFormGroupTouched(this.roomsForm);
       this.markFormGroupTouched(this.policiesForm);
       this.markFormGroupTouched(this.staffForm);

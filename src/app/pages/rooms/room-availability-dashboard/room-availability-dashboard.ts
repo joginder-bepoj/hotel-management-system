@@ -10,8 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { RoomService } from '../../../core/service/room.service';
-
 import { HotelService } from '../../../core/services/hotel.service';
+import { BookingService, Booking } from '../../../core/service/booking.service';
 
 @Component({
     selector: 'app-room-availability-dashboard',
@@ -49,17 +49,12 @@ export class RoomAvailabilityDashboardComponent implements OnInit {
 
     roomTypeAvailability: any[] = [];
 
-    upcomingBookings = [
-        { date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), checkIns: 5, checkOuts: 3 },
-        { date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), checkIns: 3, checkOuts: 4 },
-        { date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), checkIns: 7, checkOuts: 2 },
-        { date: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), checkIns: 4, checkOuts: 5 },
-        { date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), checkIns: 2, checkOuts: 3 },
-    ];
+    upcomingBookings: any[] = [];
 
     constructor(
         private roomService: RoomService,
-        private hotelService: HotelService
+        private hotelService: HotelService,
+        private bookingService: BookingService
     ) { }
 
     ngOnInit(): void {
@@ -68,44 +63,113 @@ export class RoomAvailabilityDashboardComponent implements OnInit {
 
     loadHotelData(): void {
         this.activeHotel = this.hotelService.getActiveHotel();
+        const allRooms = this.roomService.getRooms();
+        const allBookings = this.bookingService.getBookings();
 
-        if (this.activeHotel) {
-            // total_rooms in setup is now the absolute total
-            this.availabilityStats.totalRooms = Number(this.activeHotel.total_rooms || 0);
-            
-            // Generate room type breakdown based on setup
-            if (this.activeHotel.room_types && this.activeHotel.room_types.length > 0) {
-                this.roomTypeAvailability = this.activeHotel.room_types.map((rt: any) => {
-                    const count = rt.totalRooms || 0;
-                    const typeName = rt.name || rt;
+        // 1. Determine Total Rooms (prefer hotel setup's total, fallback to actual added rooms count)
+        const setupTotal = this.activeHotel ? Number(this.activeHotel.total_rooms || 0) : 0;
+        this.availabilityStats.totalRooms = Math.max(setupTotal, allRooms.length);
 
-                    // Mock distribution: ~60% available, ~30% occupied, ~10% reserved
-                    const available = Math.floor(count * 0.6);
-                    const occupied = Math.floor(count * 0.3);
-                    const reserved = count - available - occupied;
-
-                    return {
-                        type: typeName,
-                        total: count,
-                        available: available,
-                        occupied: occupied,
-                        reserved: reserved
-                    };
-                });
-            } else {
-                // Default fallback if no room types defined
-                this.roomTypeAvailability = [
-                    { 
-                        type: 'General', 
-                        total: this.availabilityStats.totalRooms, 
-                        available: Math.floor(this.availabilityStats.totalRooms * 0.6), 
-                        occupied: Math.floor(this.availabilityStats.totalRooms * 0.3), 
-                        reserved: Math.floor(this.availabilityStats.totalRooms * 0.1) 
-                    }
-                ];
+        // Group actual created rooms by roomType
+        const physicallyAddedRoomsByType = new Map<string, any[]>();
+        allRooms.forEach(room => {
+            const type = room.roomType || 'General';
+            if (!physicallyAddedRoomsByType.has(type)) {
+                physicallyAddedRoomsByType.set(type, []);
             }
+            physicallyAddedRoomsByType.get(type)!.push(room);
+        });
+
+        // 2. Identify Occupied Rooms/Bookings for the current date
+        const isOccupied = (b: any) => {
+            const checkIn = new Date(b.arriveDate);
+            const checkOut = new Date(b.departDate);
+            return this.startDate >= checkIn && this.startDate < checkOut;
+        };
+
+        const setupRoomTypes = (this.activeHotel && this.activeHotel.room_types) ? this.activeHotel.room_types : [];
+
+        // 3. Generate dynamic Room Type breakdown
+        if (setupRoomTypes.length > 0) {
+            // Hotel has a defined setup with room types
+            this.roomTypeAvailability = setupRoomTypes.map((rt: any) => {
+                const typeName = rt.name || rt;
+                const physicalOfType = physicallyAddedRoomsByType.get(typeName) || [];
+                const capacity = Math.max(rt.totalRooms || 0, physicalOfType.length);
+                
+                const occupiedCount = allBookings.filter(b => {
+                    const occupiedAtStart = isOccupied(b);
+                    if (b.roomNo) {
+                        const roomMatches = physicalOfType.find(r => r.roomNo === b.roomNo);
+                        return occupiedAtStart && !!roomMatches;
+                    }
+                    return occupiedAtStart && b.roomType === typeName;
+                }).length;
+
+                return {
+                    type: typeName,
+                    total: capacity,
+                    available: Math.max(0, capacity - occupiedCount),
+                    occupied: occupiedCount,
+                    reserved: 0
+                };
+            });
+        } else {
+            // No setup defined, build strictly from physically added rooms
+            this.roomTypeAvailability = Array.from(physicallyAddedRoomsByType.keys()).map(typeName => {
+                const roomsOfType = physicallyAddedRoomsByType.get(typeName)!;
+                const capacity = roomsOfType.length;
+                
+                const occupiedCount = allBookings.filter(b => {
+                    const occupiedAtStart = isOccupied(b);
+                    if (b.roomNo) {
+                        const roomMatches = roomsOfType.find(r => r.roomNo === b.roomNo);
+                        return occupiedAtStart && !!roomMatches;
+                    }
+                    return occupiedAtStart && b.roomType === typeName;
+                }).length;
+
+                return {
+                    type: typeName,
+                    total: capacity,
+                    available: Math.max(0, capacity - occupiedCount),
+                    occupied: occupiedCount,
+                    reserved: 0
+                };
+            });
         }
+
+        this.calculateUpcomingBookings(allBookings);
         this.calculateStats();
+    }
+
+    calculateUpcomingBookings(bookings: Booking[]): void {
+        if (!bookings || bookings.length === 0) {
+            this.upcomingBookings = [];
+            return;
+        }
+
+        const stats = [];
+        for (let i = 1; i <= 5; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() + i);
+            date.setHours(0, 0, 0, 0);
+
+            const checkIns = bookings.filter(b => {
+                const d = new Date(b.arriveDate);
+                d.setHours(0, 0, 0, 0);
+                return d.getTime() === date.getTime();
+            }).length;
+
+            const checkOuts = bookings.filter(b => {
+                const d = new Date(b.departDate);
+                d.setHours(0, 0, 0, 0);
+                return d.getTime() === date.getTime();
+            }).length;
+
+            stats.push({ date, checkIns, checkOuts });
+        }
+        this.upcomingBookings = stats;
     }
 
     calculateStats(): void {

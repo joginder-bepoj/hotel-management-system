@@ -7,6 +7,7 @@ import { RouterModule, Router } from '@angular/router';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { HotelService } from '../../services/hotel.service';
 import { CommonModule } from '@angular/common';
+import { ROUTES, RouteInfo } from './sidebar-items';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,6 +29,7 @@ export class Sidebar implements OnInit {
   user: any;
   activeHotel: any;
   hotels: any[] = [];
+  menuItems: RouteInfo[] = [];
 
   private hotelService = inject(HotelService);
   private router = inject(Router);
@@ -36,6 +38,19 @@ export class Sidebar implements OnInit {
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    const role = this.user.role || 'Admin'; // Default to Admin
+    
+    // Filter root items without mutating original ROUTES
+    this.menuItems = ROUTES.filter(menuItem => menuItem.role.includes(role)).map(menuItem => {
+      // Create a shallow copy of the menu item
+      const item = { ...menuItem };
+      if (item.submenu && item.submenu.length > 0) {
+        // Filter submenus into a new array
+        item.submenu = item.submenu.filter(subItem => subItem.role.includes(role));
+      }
+      return item;
+    });
+
     this.loadHotels();
     
     const body = document.querySelector('body');

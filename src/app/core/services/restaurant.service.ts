@@ -38,6 +38,8 @@ export interface Order {
   isPaid: boolean;
   paymentMode?: string;
   postedToRoom?: boolean;
+  mobile?: string;
+  remark?: string;
 }
 
 @Injectable({
@@ -83,7 +85,9 @@ export class RestaurantService {
       total: 920.4,
       status: 'Preparing',
       createdAt: new Date(),
-      isPaid: false
+      isPaid: false,
+      mobile: '9876543210',
+      remark: 'Extra spicy please'
     },
     {
       id: 2,
@@ -99,7 +103,9 @@ export class RestaurantService {
       total: 472,
       status: 'Ready',
       createdAt: new Date(Date.now() - 1800000),
-      isPaid: false
+      isPaid: false,
+      mobile: '9988776655',
+      remark: 'Careful with the tray'
     }
   ];
 

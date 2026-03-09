@@ -14,37 +14,22 @@ export interface Room {
   providedIn: 'root',
 })
 export class RoomService {
-  private rooms: Room[] = [
-    {
-      id: 1,
-      roomNo: '101',
-      roomType: 'Single',
-      acNonAc: 'AC',
-      meal: 'Included',
-      capacity: 1,
-      rent: '1500',
-    },
-    {
-      id: 2,
-      roomNo: '102',
-      roomType: 'Double',
-      acNonAc: 'Non-AC',
-      meal: 'Not Included',
-      capacity: 2,
-      rent: '2500',
-    },
-    {
-      id: 3,
-      roomNo: 'A-201',
-      roomType: 'Apartment',
-      acNonAc: 'AC',
-      meal: 'Included',
-      capacity: 4,
-      rent: '5000',
-    },
-  ];
+  private readonly STORAGE_KEY = 'hms_rooms_list';
+  private rooms: Room[] = this.loadFromStorage();
 
   constructor() {}
+
+  private loadFromStorage(): Room[] {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    if (!data) {
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  private saveToStorage() {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.rooms));
+  }
 
   getRooms(): Room[] {
     return this.rooms;
@@ -53,16 +38,19 @@ export class RoomService {
   addRoom(room: Room): void {
     room.id = this.rooms.length > 0 ? Math.max(...this.rooms.map((r) => r.id)) + 1 : 1;
     this.rooms.push(room);
+    this.saveToStorage();
   }
 
   updateRoom(updatedRoom: Room): void {
     const index = this.rooms.findIndex((r) => r.id === updatedRoom.id);
     if (index !== -1) {
       this.rooms[index] = updatedRoom;
+      this.saveToStorage();
     }
   }
 
   deleteRoom(id: number): void {
     this.rooms = this.rooms.filter((r) => r.id !== id);
+    this.saveToStorage();
   }
 }

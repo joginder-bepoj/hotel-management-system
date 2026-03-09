@@ -25,7 +25,8 @@ export class AuthService {
     const newUser = {
       ...userData,
       id: registeredUsers.length + 1,
-      is_setup_complete: false
+      is_setup_complete: false,
+      role: 'Admin'
     };
     
     registeredUsers.push(newUser);

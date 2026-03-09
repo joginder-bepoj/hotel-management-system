@@ -6,7 +6,7 @@
 
     <div class="row clearfix">
       <!-- Order List -->
-      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4 no-print">
         <div class="card">
           <div class="body">
             <mat-tab-group>
@@ -64,86 +64,121 @@
         </div>
       </div>
 
-      <!-- Bill Details -->
       <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8" *ngIf="selectedOrder">
-        <div class="card" id="printableArea">
+        <div class="card details-card bill-container" id="printableArea">
           <div class="header">
             <div class="d-flex justify-content-between align-items-center">
-              <h2>
-                Bill #B-{{selectedOrder.id + 5000}} 
-                <span class="badge" [ngClass]="selectedOrder.isPaid ? 'bg-green' : 'bg-red'">
-                  {{selectedOrder.isPaid ? 'PAID' : 'UNPAID'}}
-                </span>
-              </h2>
-              <button mat-icon-button (click)="selectedOrder = null"><mat-icon>close</mat-icon></button>
+              <h2>Bill Details <span class="badge" [ngClass]="selectedOrder.isPaid ? 'bg-green' : 'bg-red'">{{selectedOrder.isPaid ? 'PAID' : 'UNPAID'}}</span></h2>
+              <button mat-icon-button (click)="selectedOrder = null" class="no-print"><mat-icon>close</mat-icon></button>
             </div>
           </div>
           <div class="body">
-            <div class="bill-header">
-              <div class="row">
-                <div class="col-6">
-                  <h5>Order Info</h5>
-                  <p><strong>Order #:</strong> {{selectedOrder.orderNumber}}</p>
-                  <p><strong>Date:</strong> {{selectedOrder.createdAt | date:'medium'}}</p>
-                  <p><strong>Type:</strong> {{selectedOrder.type}}</p>
+            <!-- Info Section -->
+            <div class="row mb-4">
+              <div class="col-md-6 border-end">
+                <div class="section-title">Party Info</div>
+                <div class="meta-field">
+                  <span class="label">Party Name:</span>
+                  <span class="value">{{selectedOrder.tableNumber ? 'TABLE ' + selectedOrder.tableNumber : selectedOrder.roomNumber ? 'ROOM ' + selectedOrder.roomNumber : 'WALK-IN'}}</span>
                 </div>
-                <div class="col-6 text-end">
-                  <h5>Location</h5>
-                  <p *ngIf="selectedOrder.tableNumber"><strong>Table:</strong> {{selectedOrder.tableNumber}}</p>
-                  <p *ngIf="selectedOrder.roomNumber"><strong>Room:</strong> {{selectedOrder.roomNumber}}</p>
+                <div class="meta-field">
+                  <span class="label">Mobile:</span>
+                  <span class="value">{{selectedOrder.mobile || 'N/A'}}</span>
+                </div>
+                <div class="meta-field">
+                  <span class="label">Address:</span>
+                  <span class="value">N/A</span>
+                </div>
+              </div>
+              <div class="col-md-6 ps-4">
+                <div class="section-title">Bill Info</div>
+                <div class="meta-field">
+                  <span class="label">Bill #:</span>
+                  <span class="value">#{{selectedOrder.orderNumber}}</span>
+                </div>
+                <div class="meta-field">
+                  <span class="label">Date:</span>
+                  <span class="value">{{selectedOrder.createdAt | date:'dd-MM-yyyy hh:mm a'}}</span>
+                </div>
+                <div class="meta-field">
+                  <span class="label">Remark:</span>
+                  <span class="value">{{selectedOrder.remark || '-'}}</span>
                 </div>
               </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
+            <!-- Items Table -->
+            <div class="section-title">Ordered Items</div>
+            <div class="table-responsive mb-4">
+              <table class="table table-hover">
+                <thead class="bg-light">
                   <tr>
-                    <th>Item</th>
+                    <th>Product</th>
                     <th class="text-center">Qty</th>
-                    <th class="text-end">Price</th>
+                    <th class="text-end">Rate</th>
+                    <th class="text-end">Tax</th>
                     <th class="text-end">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of selectedOrder.items">
-                    <td>{{item.menuItem.name}}</td>
+                    <td><strong>{{item.menuItem.name | uppercase}}</strong></td>
                     <td class="text-center">{{item.quantity}}</td>
-                    <td class="text-end">₹{{item.menuItem.price}}</td>
-                    <td class="text-end">₹{{item.quantity * item.menuItem.price}}</td>
+                    <td class="text-end">₹{{item.menuItem.price | number:'1.2-2'}}</td>
+                    <td class="text-end">₹{{(selectedOrder.subtotal > 0 ? (selectedOrder.tax / selectedOrder.subtotal * item.menuItem.price * item.quantity) : 0) | number:'1.2-2'}}</td>
+                    <td class="text-end">₹{{(item.quantity * item.menuItem.price) | number:'1.2-2'}}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div class="row mt-4">
-              <div class="col-lg-6 col-md-12">
-                <!-- Payment Actions -->
-                <div class="payment-actions" *ngIf="!selectedOrder.isPaid">
-                  <h5>Payment Actions</h5>
-                  <div class="d-grid gap-2 d-md-block">
-                    <button mat-raised-button color="primary" class="me-2" (click)="processPayment(selectedOrder)">
-                      <mat-icon>payments</mat-icon> Take Payment (Cash/Card)
+            <!-- Summary Section -->
+            <div class="row">
+              <div class="col-md-6">
+                <!-- Payment Actions (No Print) -->
+                <div class="payment-actions no-print" *ngIf="!selectedOrder.isPaid">
+                  <div class="section-title">Actions</div>
+                  <div class="d-flex gap-2">
+                    <button mat-raised-button color="primary" (click)="processPayment(selectedOrder)">
+                      <mat-icon>payments</mat-icon> Take Payment
                     </button>
                     <button mat-stroked-button color="accent" *ngIf="selectedOrder.type === 'Room Service'" (click)="postToRoom(selectedOrder)">
                       <mat-icon>hotel</mat-icon> Post to Room
                     </button>
+                    <button mat-icon-button (click)="printBill(selectedOrder)" matTooltip="Print Bill">
+                      <mat-icon>print</mat-icon>
+                    </button>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-12 text-end">
-                <p><strong>Subtotal:</strong> ₹{{selectedOrder.subtotal | number:'1.2-2'}}</p>
-                <p><strong>Tax (18%):</strong> ₹{{selectedOrder.tax | number:'1.2-2'}}</p>
-                <hr>
-                <h3 class="total-amount">Total: ₹{{selectedOrder.total | number:'1.2-2'}}</h3>
-              </div>
-            </div>
-            
-            <div class="row no-print mt-4">
-              <div class="col-12 text-end">
-                <button mat-stroked-button (click)="printBill(selectedOrder)">
-                  <mat-icon>print</mat-icon> Print Bill
-                </button>
+              <div class="col-md-6">
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <span class="lbl">Item Count:</span>
+                    <span class="val">{{selectedOrder.items.length}}</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="lbl">Value of Goods:</span>
+                    <span class="val">₹{{selectedOrder.subtotal | number:'1.2-2'}}</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="lbl">Discount:</span>
+                    <span class="val">₹0.00</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="lbl">SGST (9%):</span>
+                    <span class="val">₹{{(selectedOrder.tax / 2) | number:'1.2-2'}}</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="lbl">CGST (9%):</span>
+                    <span class="val">₹{{(selectedOrder.tax / 2) | number:'1.2-2'}}</span>
+                  </div>
+                  
+                  <div class="invoice-total">
+                    <div class="title">INVOICE VALUE</div>
+                    <div class="amount">₹{{selectedOrder.total | number:'1.2-2'}}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -199,6 +199,17 @@
                   <!-- HEADER & ROWS -->
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                  <!-- No Data Row -->
+                  <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center; padding: 2rem;">
+                      <div class="no-data-content">
+                        <i class="material-icons" style="font-size: 48px; color: #ccc; display: block; margin-bottom: 10px;">event_busy</i>
+                        <span style="font-size: 16px; color: #666; font-weight: 500;">No bookings found</span>
+                        <p style="color: #888; margin-top: 5px;">Click the "+" button to add your first booking.</p>
+                      </div>
+                    </td>
+                  </tr>
                 </table>
               </div>
             </div>

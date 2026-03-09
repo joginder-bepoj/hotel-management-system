@@ -58,9 +58,7 @@ export class AddBookingComponent {
       roomType: ['', [Validators.required]],
       roomNo: [''],
       vehicleNo: [''],
-      nationality: [''],
       purpose: [''],
-      passportNo: [''],
       arrivalFrom: [''],
       departureTo: [''],
       noOfAdults: [''],
@@ -72,7 +70,6 @@ export class AddBookingComponent {
       balance: [''],
       idProofNo: [''],
       dob: [''],
-      anniversary: [''],
       address: [''],
       uploadFile: [''],
       note: ['']

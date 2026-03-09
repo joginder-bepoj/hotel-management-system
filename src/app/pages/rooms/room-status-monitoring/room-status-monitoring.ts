@@ -8,7 +8,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import Swal from 'sweetalert2';
-import { RoomService } from '../../../core/service/room.service';
+import { RoomService, Room } from '../../../core/service/room.service';
+import { BookingService, Booking } from '../../../core/service/booking.service';
 
 interface RoomStatus {
     roomNo: string;
@@ -39,27 +40,53 @@ interface RoomStatus {
 export class RoomStatusMonitoringComponent implements OnInit {
     selectedFilter: string = 'all';
     
-    rooms: RoomStatus[] = [
-        { roomNo: '101', floor: 1, roomType: 'Single', status: 'occupied', guestName: 'John Doe', checkIn: new Date('2026-02-08'), checkOut: new Date('2026-02-12'), lastCleaned: new Date('2026-02-08') },
-        { roomNo: '102', floor: 1, roomType: 'Double', status: 'available', lastCleaned: new Date('2026-02-09') },
-        { roomNo: '103', floor: 1, roomType: 'Suite', status: 'cleaning', lastCleaned: new Date('2026-02-09') },
-        { roomNo: '104', floor: 1, roomType: 'Single', status: 'maintenance' },
-        { roomNo: '105', floor: 1, roomType: 'Double', status: 'reserved', guestName: 'Jane Smith', checkIn: new Date('2026-02-10'), checkOut: new Date('2026-02-15') },
-        { roomNo: '201', floor: 2, roomType: 'Single', status: 'available', lastCleaned: new Date('2026-02-09') },
-        { roomNo: '202', floor: 2, roomType: 'Double', status: 'occupied', guestName: 'Bob Wilson', checkIn: new Date('2026-02-07'), checkOut: new Date('2026-02-11'), lastCleaned: new Date('2026-02-07') },
-        { roomNo: '203', floor: 2, roomType: 'Suite', status: 'available', lastCleaned: new Date('2026-02-09') },
-        { roomNo: '204', floor: 2, roomType: 'Deluxe', status: 'cleaning', lastCleaned: new Date('2026-02-09') },
-        { roomNo: '205', floor: 2, roomType: 'Double', status: 'occupied', guestName: 'Alice Brown', checkIn: new Date('2026-02-08'), checkOut: new Date('2026-02-13'), lastCleaned: new Date('2026-02-08') },
-    ];
-
+    rooms: RoomStatus[] = [];
     filteredRooms: RoomStatus[] = [];
 
     constructor(
         private roomService: RoomService,
+        private bookingService: BookingService,
         private snackBar: MatSnackBar
     ) { }
 
     ngOnInit(): void {
+        this.loadDynamicStatus();
+    }
+
+    loadDynamicStatus(): void {
+        const allRooms = this.roomService.getRooms();
+        const allBookings = this.bookingService.getBookings();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        this.rooms = allRooms.map(room => {
+            // Find if there's an active booking for this room TODAY
+            const activeBooking = allBookings.find(b => {
+                if (b.roomNo !== room.roomNo) return false;
+                
+                const checkIn = new Date(b.arriveDate);
+                const checkOut = new Date(b.departDate);
+                checkIn.setHours(0, 0, 0, 0);
+                checkOut.setHours(0, 0, 0, 0);
+
+                return today >= checkIn && today < checkOut;
+            });
+
+            // Map standard Room to RoomStatus
+            const status: RoomStatus = {
+                roomNo: room.roomNo,
+                floor: parseInt(room.roomNo[0]) || 1, // Simple floor inference from room number
+                roomType: room.roomType,
+                status: activeBooking ? 'occupied' : 'available',
+                guestName: activeBooking ? `${activeBooking.first} ${activeBooking.last}` : undefined,
+                checkIn: activeBooking ? new Date(activeBooking.arriveDate) : undefined,
+                checkOut: activeBooking ? new Date(activeBooking.departDate) : undefined,
+                lastCleaned: new Date() // Dynamic fallback
+            };
+
+            return status;
+        });
+
         this.applyFilter('all');
     }
 

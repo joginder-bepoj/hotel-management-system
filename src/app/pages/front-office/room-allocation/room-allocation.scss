@@ -47,6 +47,84 @@
     &.dirty {
         border-left: 4px solid #9E9E9E;
     }
+
+    .guest-name {
+        color: #d32f2f !important;
+        font-weight: 500;
+    }
+}
+
+.pending-card {
+    border-top: 3px solid #FF9800;
+
+    .pending-icon {
+        vertical-align: middle;
+        margin-right: 5px;
+        animation: pulse 2s infinite;
+    }
+
+    .pending-list {
+        .pending-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #fff9f0;
+            border: 1px solid #ffe8cc;
+            border-radius: 6px;
+            margin-bottom: 8px;
+
+            .pending-info {
+                display: flex;
+                flex-direction: column;
+                
+                strong {
+                    font-size: 13px;
+                }
+                span {
+                    font-size: 11px;
+                    color: #e67e22;
+                }
+            }
+        }
+
+        .more-pending {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin: 0;
+        }
+
+        .hint-text {
+            font-size: 11px;
+            color: #888;
+            border-top: 1px dashed #ddd;
+            padding-top: 8px;
+        }
+    }
+
+    .no-pending {
+        text-align: center;
+        padding: 10px;
+        
+        mat-icon {
+            font-size: 32px;
+            height: 32px;
+            width: 32px;
+            margin-bottom: 5px;
+        }
+        p {
+            margin: 0;
+            font-weight: 500;
+            color: #4CAF50;
+        }
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .legend-item {

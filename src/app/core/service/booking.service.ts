@@ -49,26 +49,7 @@ export class BookingService {
   private loadFromStorage(): Booking[] {
     const data = localStorage.getItem(this.STORAGE_KEY);
     if (!data) {
-      // Default sample data if nothing in storage
-      return [
-        {
-          id: 1,
-          first: 'Pooja',
-          last: 'Patel',
-          email: 'test@email.com',
-          gender: 'Female',
-          mobile: '1234567890',
-          city: 'Surat',
-          arriveDate: new Date('2026-02-18'), // Updated to today for demo
-          departDate: new Date('2026-02-25'),
-          totalPerson: 2,
-          roomType: 'Super Delux',
-          address: '123 Main St',
-          uploadFile: '',
-          note: 'None',
-          payment: 'Unpaid',
-        },
-      ];
+      return [];
     }
     const parsed = JSON.parse(data);
     return parsed.map((b: any) => ({
