@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { HotelService } from '../../../core/services/hotel.service';
 import { MatStepper } from '@angular/material/stepper';
-import * as L from 'leaflet';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
@@ -44,13 +43,7 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private _router = inject(Router);
   private _http = inject(HttpClient);
 
-  @ViewChild('mapElement') mapElement!: ElementRef;
   @ViewChild('stepper') stepper!: MatStepper;
-  private map?: L.Map;
-  private marker?: L.Marker;
-  searchQuery: string = '';
-  searchResults: any[] = [];
-  showSearchResults: boolean = false;
 
   basicDetailsForm: FormGroup = this._formBuilder.group({
     hotelName: ['', Validators.required],
@@ -98,92 +91,12 @@ export class HotelSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.addStaffAccount();
   }
 
-  private mapInitialized = false;
-
   ngAfterViewInit() {
-    // Handle map initialization and resizing when step changes
-    this.stepper.selectionChange.subscribe(event => {
-      if (event.selectedIndex === 1) { // Location step
-        setTimeout(() => {
-          if (!this.mapInitialized) {
-            this.initMap();
-            this.mapInitialized = true;
-          } else if (this.map) {
-            this.map.invalidateSize();
-          }
-        }, 200);
-      }
-    });
+    // Other logic if needed
   }
 
   ngOnDestroy() {
-    if (this.map) {
-      this.map.remove();
-    }
-  }
-
-  private initMap() {
-    // Standard Leaflet Icon fix for Angular/Webpack
-    const iconRetinaUrl = 'assets/marker-icon-2x.png';
-    const iconUrl = 'assets/marker-icon.png';
-    const shadowUrl = 'assets/marker-shadow.png';
-    const iconDefault = L.icon({
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
-      shadowSize: [41, 41]
-    });
-    L.Marker.prototype.options.icon = iconDefault;
-
-    this.map = L.map(this.mapElement.nativeElement).setView([20.5937, 78.9629], 5); // Default to India center
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-
-    this.map.on('click', (e: L.LeafletMouseEvent) => {
-      this.updateMarker(e.latlng.lat, e.latlng.lng);
-    });
-  }
-
-  updateMarker(lat: number, lng: number, address?: string) {
-    if (!this.map) return;
-
-    if (this.marker) {
-      this.marker.setLatLng([lat, lng]);
-    } else {
-      this.marker = L.marker([lat, lng]).addTo(this.map);
-    }
-
-    // this.locationForm.patchValue({
-    //   latitude: lat,
-    //   longitude: lng,
-    //   displayAddress: address || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`
-    // });
-
-    this.map.setView([lat, lng], 15);
-  }
-
-  searchLocation() {
-    if (!this.searchQuery.trim()) return;
-
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}`;
-    this._http.get<any[]>(url).subscribe(results => {
-      this.searchResults = results;
-      this.showSearchResults = results.length > 0;
-    });
-  }
-
-  selectResult(result: any) {
-    const lat = parseFloat(result.lat);
-    const lng = parseFloat(result.lon);
-    this.updateMarker(lat, lng, result.display_name);
-    this.showSearchResults = false;
-    this.searchQuery = result.display_name;
+    // Other logic if needed
   }
 
   get roomTypes() {
