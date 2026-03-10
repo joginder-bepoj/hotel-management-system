@@ -1,4 +1,4 @@
-@use '../../../../styles';
+@use '../../../../variables';
 
 .left-img {
   height: 100vh;
@@ -57,13 +57,13 @@
 }
 
 a {
-  color: styles.$primary-color;
+  color: variables.$primary-color;
   text-decoration: underline;
 }
 
 .social-icon li a:hover {
-  background-color: styles.$primary-color-hover;
-  border-color: styles.$primary-color !important;
+  background-color: variables.$primary-color-hover;
+  border-color: variables.$primary-color !important;
   color: #fff !important;
 }
 
@@ -83,12 +83,12 @@ a {
 .auth-form-btn {
   width: 100%;
   padding: 25px;
-  background: styles.$primary-color !important;
+  background: variables.$primary-color !important;
   color: #fff !important;
 }
 
 .auth-form-btn:hover {
-  background-color: styles.$primary-color-hover;
+  background-color: variables.$primary-color-hover;
 }
 
 .social-login-title {

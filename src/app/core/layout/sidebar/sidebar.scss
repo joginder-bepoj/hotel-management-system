@@ -1,7 +1,7 @@
 @use 'sass:color';
-@use '../../../../styles';
+@use '../../../../variables';
 
-$primary-color: #581e96;
+$primary-color: variables.$primary-color;
 $hover-color: #e3f2fd;
 $text-color: #4a4a4a;
 $sidebar-bg: #ffffff;
