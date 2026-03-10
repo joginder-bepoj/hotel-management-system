@@ -41,37 +41,75 @@ export interface DailyDiary {
     providedIn: 'root'
 })
 export class DailyDiaryService {
-    private diaries: DailyDiary[] = [
-        {
-            id: 1,
-            date: '2026-02-13',
-            shift: 'Morning',
-            totalIncome: 30000,
-            expenses: [
-                { id: 1, category: 'Kitchen', description: 'Vegetables', payment: 'Cash', amount: 2500 },
-                { id: 2, category: 'Repair', description: 'Pipe Fix', payment: 'Online', amount: 2700 }
-            ],
-            issues: [
-                { id: 1, areaRoom: 'Room 201', issue: 'AC Not Cooling', status: 'Open' },
-                { id: 2, areaRoom: 'Lobby', issue: 'Carried from Feb 12', status: 'Resolved', carriedFrom: 'Feb 12' }
-            ],
-            events: [
-                { id: 1, time: '10:30 AM', note: 'VIP guest arrival', status: 'Open' },
-                { id: 2, time: '4:00 PM', note: 'Power outage 30 min', status: 'Resolved' }
-            ],
-            isDraft: false,
-            isCompleted: true,
-            createdAt: new Date('2026-02-13T08:00:00'),
-            updatedAt: new Date('2026-02-13T18:00:00')
+    private readonly STORAGE_KEY = 'hotel_diary_data';
+    private diaries: DailyDiary[] = [];
+
+    constructor() {
+        this.loadFromStorage();
+    }
+
+    private loadFromStorage(): void {
+        const stored = localStorage.getItem(this.STORAGE_KEY);
+        if (stored) {
+            try {
+                this.diaries = JSON.parse(stored);
+                // Convert string dates back to Date objects
+                this.diaries.forEach(d => {
+                    d.createdAt = new Date(d.createdAt);
+                    d.updatedAt = new Date(d.updatedAt);
+                });
+            } catch (e) {
+                console.error('Error parsing diary data from storage', e);
+                this.diaries = [];
+            }
         }
-    ];
 
-    private nextDiaryId = 2;
-    private nextExpenseId = 3;
-    private nextIssueId = 3;
-    private nextEventId = 3;
+        // Initialize with default data if empty
+        if (this.diaries.length === 0) {
+            this.diaries = [
+                {
+                    id: 1,
+                    date: new Date().toISOString().split('T')[0],
+                    shift: 'Morning',
+                    totalIncome: 30000,
+                    expenses: [
+                        { id: 1, category: 'Kitchen', description: 'Vegetables', payment: 'Cash', amount: 2500 }
+                    ],
+                    issues: [
+                        { id: 1, areaRoom: 'Room 201', issue: 'AC Not Cooling', status: 'Open' }
+                    ],
+                    events: [
+                        { id: 1, time: '10:30 AM', note: 'VIP guest arrival', status: 'Open' }
+                    ],
+                    isDraft: true,
+                    isCompleted: false,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }
+            ];
+            this.saveToStorage();
+        }
+    }
 
-    constructor() { }
+    private saveToStorage(): void {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.diaries));
+    }
+
+    private getNextDiaryId(): number {
+        return this.diaries.length > 0 ? Math.max(...this.diaries.map(d => d.id)) + 1 : 1;
+    }
+
+    private getNextExpenseId(diary: DailyDiary): number {
+        return diary.expenses.length > 0 ? Math.max(...diary.expenses.map(e => e.id)) + 1 : 1;
+    }
+
+    private getNextIssueId(diary: DailyDiary): number {
+        return diary.issues.length > 0 ? Math.max(...diary.issues.map(i => i.id)) + 1 : 1;
+    }
+
+    private getNextEventId(diary: DailyDiary): number {
+        return diary.events.length > 0 ? Math.max(...diary.events.map(e => e.id)) + 1 : 1;
+    }
 
     // Diary Methods
     getDiaryByDateAndShift(date: string, shift: string): DailyDiary | undefined {
@@ -84,7 +122,7 @@ export class DailyDiaryService {
 
     createDiary(date: string, shift: 'Morning' | 'Evening' | 'Night', income: number = 0): DailyDiary {
         const newDiary: DailyDiary = {
-            id: this.nextDiaryId++,
+            id: this.getNextDiaryId(),
             date,
             shift,
             totalIncome: income,
@@ -97,6 +135,7 @@ export class DailyDiaryService {
             updatedAt: new Date()
         };
         this.diaries.push(newDiary);
+        this.saveToStorage();
         return newDiary;
     }
 
@@ -104,7 +143,8 @@ export class DailyDiaryService {
         const index = this.diaries.findIndex(d => d.id === diary.id);
         if (index !== -1) {
             diary.updatedAt = new Date();
-            this.diaries[index] = diary;
+            this.diaries[index] = { ...diary };
+            this.saveToStorage();
         }
     }
 
@@ -114,6 +154,7 @@ export class DailyDiaryService {
             diary.isCompleted = true;
             diary.isDraft = false;
             diary.updatedAt = new Date();
+            this.saveToStorage();
         }
     }
 
@@ -123,10 +164,11 @@ export class DailyDiaryService {
         if (diary) {
             const newExpense: DailyExpense = {
                 ...expense,
-                id: this.nextExpenseId++
+                id: this.getNextExpenseId(diary)
             };
             diary.expenses.push(newExpense);
             diary.updatedAt = new Date();
+            this.saveToStorage();
             return newExpense;
         }
         throw new Error('Diary not found');
@@ -139,6 +181,7 @@ export class DailyDiaryService {
             if (index !== -1) {
                 diary.expenses[index] = expense;
                 diary.updatedAt = new Date();
+                this.saveToStorage();
             }
         }
     }
@@ -148,6 +191,7 @@ export class DailyDiaryService {
         if (diary) {
             diary.expenses = diary.expenses.filter(e => e.id !== expenseId);
             diary.updatedAt = new Date();
+            this.saveToStorage();
         }
     }
 
@@ -157,10 +201,11 @@ export class DailyDiaryService {
         if (diary) {
             const newIssue: DailyIssue = {
                 ...issue,
-                id: this.nextIssueId++
+                id: this.getNextIssueId(diary)
             };
             diary.issues.push(newIssue);
             diary.updatedAt = new Date();
+            this.saveToStorage();
             return newIssue;
         }
         throw new Error('Diary not found');
@@ -173,6 +218,7 @@ export class DailyDiaryService {
             if (index !== -1) {
                 diary.issues[index] = issue;
                 diary.updatedAt = new Date();
+                this.saveToStorage();
             }
         }
     }
@@ -182,6 +228,7 @@ export class DailyDiaryService {
         if (diary) {
             diary.issues = diary.issues.filter(i => i.id !== issueId);
             diary.updatedAt = new Date();
+            this.saveToStorage();
         }
     }
 
@@ -191,10 +238,11 @@ export class DailyDiaryService {
         if (diary) {
             const newEvent: DailyEvent = {
                 ...event,
-                id: this.nextEventId++
+                id: this.getNextEventId(diary)
             };
             diary.events.push(newEvent);
             diary.updatedAt = new Date();
+            this.saveToStorage();
             return newEvent;
         }
         throw new Error('Diary not found');
@@ -207,6 +255,7 @@ export class DailyDiaryService {
             if (index !== -1) {
                 diary.events[index] = event;
                 diary.updatedAt = new Date();
+                this.saveToStorage();
             }
         }
     }
@@ -216,6 +265,7 @@ export class DailyDiaryService {
         if (diary) {
             diary.events = diary.events.filter(e => e.id !== eventId);
             diary.updatedAt = new Date();
+            this.saveToStorage();
         }
     }
 
@@ -232,7 +282,7 @@ export class DailyDiaryService {
         const diary = this.diaries.find(d => d.id === diaryId);
         if (diary) {
             const totalExpense = this.calculateTotalExpense(diaryId);
-            return diary.totalIncome - totalExpense;
+            return (diary.totalIncome || 0) - totalExpense;
         }
         return 0;
     }
@@ -242,6 +292,7 @@ export class DailyDiaryService {
         if (diary) {
             diary.totalIncome = income;
             diary.updatedAt = new Date();
+            this.saveToStorage();
         }
     }
 }

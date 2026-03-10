@@ -47,9 +47,27 @@
                 <mat-card class="summary-card income-card">
                     <mat-icon>account_balance_wallet</mat-icon>
                     <div class="card-content">
-                        <h3>₹{{totalIncome | number:'1.2-2'}}</h3>
-                        <p>Total Income</p>
-                        <!-- <span class="subtitle">Auto from bookings</span> -->
+                        <ng-container *ngIf="!isEditingIncome">
+                            <div class="income-value-row">
+                                <h3>₹{{totalIncome | number:'1.2-2'}}</h3>
+                                <button mat-icon-button (click)="editIncome()" *ngIf="!isReadOnly()" class="edit-income-btn">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </div>
+                            <p>Total Income</p>
+                        </ng-container>
+                        <div class="edit-income-form" *ngIf="isEditingIncome">
+                            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                                <input matInput type="number" [(ngModel)]="editedIncome" (keyup.enter)="saveIncome()">
+                                <button mat-icon-button matSuffix (click)="saveIncome()" color="primary">
+                                    <mat-icon>check</mat-icon>
+                                </button>
+                                <button mat-icon-button matSuffix (click)="isEditingIncome = false" color="warn">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </mat-form-field>
+                            <p>Edit Income</p>
+                        </div>
                     </div>
                 </mat-card>
             </div>

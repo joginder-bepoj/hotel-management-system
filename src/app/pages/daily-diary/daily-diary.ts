@@ -53,6 +53,8 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
     showExpenseForm: boolean = false;
     showIssueForm: boolean = false;
     showEventForm: boolean = false;
+    isEditingIncome: boolean = false;
+    editedIncome: number = 0;
     editingExpense?: DailyExpense;
     editingIssue?: DailyIssue;
     editingEvent?: DailyEvent;
@@ -127,6 +129,27 @@ export class DailyDiaryComponent implements OnInit, OnDestroy {
             this.totalIncome = this.currentDiary.totalIncome;
             this.totalExpense = this.diaryService.calculateTotalExpense(this.currentDiary.id);
             this.netResult = this.diaryService.calculateNetResult(this.currentDiary.id);
+        }
+    }
+
+    editIncome() {
+        if (this.isReadOnly()) return;
+        this.editedIncome = this.totalIncome;
+        this.isEditingIncome = true;
+    }
+
+    saveIncome() {
+        if (this.currentDiary && this.editedIncome >= 0) {
+            this.diaryService.updateIncome(this.currentDiary.id, this.editedIncome);
+            this.isEditingIncome = false;
+            this.loadDiary();
+            Swal.fire({
+                title: 'Saved!',
+                text: 'Income updated successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
     }
 
