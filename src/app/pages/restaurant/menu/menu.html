@@ -19,7 +19,7 @@
                       (click)="filterCategory(cat)">
                 {{cat}}
               </button>
-              <button mat-raised-button color="primary" class="ms-auto">
+              <button mat-raised-button color="primary" class="ms-auto" (click)="addItem()">
                 <mat-icon>add</mat-icon> Add Item
               </button>
             </div>
@@ -42,8 +42,8 @@
             <h4>{{item.name}}</h4>
             <p class="category">{{item.category}}</p>
             <div class="actions">
-              <mat-slide-toggle [checked]="item.isActive" color="primary">Available</mat-slide-toggle>
-              <button mat-icon-button color="accent">
+              <mat-slide-toggle [checked]="item.isActive" (change)="toggleItemStatus(item, $event)" color="primary">Available</mat-slide-toggle>
+              <button mat-icon-button color="accent" (click)="editItem(item)">
                 <mat-icon>edit</mat-icon>
               </button>
             </div>

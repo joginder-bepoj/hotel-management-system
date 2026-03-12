@@ -6,6 +6,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { RestaurantService, MenuItem } from '../../../core/services/restaurant.service';
 import { Subscription } from 'rxjs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MenuItemDialogComponent } from './menu-item-dialog/menu-item-dialog';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-menu',
@@ -17,7 +20,8 @@ import { Subscription } from 'rxjs';
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    MatDialogModule
   ]
 })
 export class MenuComponent implements OnInit, OnDestroy {
@@ -27,7 +31,10 @@ export class MenuComponent implements OnInit, OnDestroy {
   selectedCategory: string = 'All';
   private subscriptions = new Subscription();
 
-  constructor(private restaurantService: RestaurantService) { }
+  constructor(
+    private restaurantService: RestaurantService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit() {
     this.subscriptions.add(
@@ -52,8 +59,47 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   toggleItemStatus(item: MenuItem, event: any) {
-    // Optimistic UI update or we can just let the service handle it
     const updatedItem = { ...item, isActive: event.checked };
     this.restaurantService.updateMenuItem(updatedItem);
+  }
+
+  addItem() {
+    const dialogRef = this.dialog.open(MenuItemDialogComponent, {
+      width: '400px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.restaurantService.addMenuItem(result);
+        Swal.fire({
+          title: 'Success!',
+          text: 'Menu item added successfully.',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    });
+  }
+
+  editItem(item: MenuItem) {
+    const dialogRef = this.dialog.open(MenuItemDialogComponent, {
+      width: '400px',
+      data: { item }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.restaurantService.updateMenuItem({ ...item, ...result });
+        Swal.fire({
+          title: 'Updated!',
+          text: 'Menu item updated successfully.',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    });
   }
 }

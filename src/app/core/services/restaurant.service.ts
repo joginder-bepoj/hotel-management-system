@@ -48,6 +48,9 @@ export interface Order {
 export class RestaurantService {
   private readonly STORAGE_KEY = 'restaurant_details';
   private readonly USER_KEY = 'user';
+  private readonly MENU_ITEMS_KEY = 'restaurant_menu_items';
+  private readonly TABLES_KEY = 'restaurant_tables';
+  private readonly ORDERS_KEY = 'restaurant_orders';
 
   // INITIAL MOCK DATA
   private initialMenuItems: MenuItem[] = [
@@ -121,7 +124,49 @@ export class RestaurantService {
   private nextOrderId = 3;
   private nextOrderNumber = 1003;
 
-  constructor() { }
+  constructor() {
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage() {
+    const storedMenuItems = localStorage.getItem(this.MENU_ITEMS_KEY);
+    if (storedMenuItems) {
+       this._menuItems.next(JSON.parse(storedMenuItems));
+    }
+
+    const storedTables = localStorage.getItem(this.TABLES_KEY);
+    if (storedTables) {
+      this._tables.next(JSON.parse(storedTables));
+    }
+
+    const storedOrders = localStorage.getItem(this.ORDERS_KEY);
+    if (storedOrders) {
+      const orders = JSON.parse(storedOrders);
+      orders.forEach((o: any) => o.createdAt = new Date(o.createdAt));
+      this._orders.next(orders);
+      
+      if (orders.length > 0) {
+        this.nextOrderId = Math.max(...orders.map((o: any) => o.id)) + 1;
+        const lastOrderNum = Math.max(...orders.map((o: any) => {
+             const parts = o.orderNumber.split('-');
+             return parts.length > 1 ? parseInt(parts[1]) : 1000;
+        }));
+        this.nextOrderNumber = lastOrderNum + 1;
+      }
+    }
+  }
+
+  private saveMenuItems() {
+    localStorage.setItem(this.MENU_ITEMS_KEY, JSON.stringify(this.menuItems));
+  }
+
+  private saveTables() {
+    localStorage.setItem(this.TABLES_KEY, JSON.stringify(this.tables));
+  }
+
+  private saveOrders() {
+    localStorage.setItem(this.ORDERS_KEY, JSON.stringify(this.orders));
+  }
 
   // Setup Methods
   saveRestaurantDetails(details: any): Observable<boolean> {
@@ -185,6 +230,7 @@ export class RestaurantService {
       id: Math.max(...this.menuItems.map(i => i.id), 0) + 1
     };
     this._menuItems.next([...this.menuItems, newItem]);
+    this.saveMenuItems();
     return newItem;
   }
 
@@ -194,6 +240,7 @@ export class RestaurantService {
     if (index !== -1) {
       items[index] = item;
       this._menuItems.next(items);
+      this.saveMenuItems();
     }
   }
 
@@ -203,6 +250,7 @@ export class RestaurantService {
     if (item) {
       item.isActive = false;
       this._menuItems.next(items);
+      this.saveMenuItems();
     }
   }
 
@@ -227,6 +275,7 @@ export class RestaurantService {
     if (tableIndex !== -1) {
       tables[tableIndex] = { ...tables[tableIndex], status, activeOrderId };
       this._tables.next(tables);
+      this.saveTables();
     }
   }
 
@@ -269,6 +318,7 @@ export class RestaurantService {
 
     // Update Orders
     this._orders.next([...this.orders, newOrder]);
+    this.saveOrders();
 
     // Update Tables if Dine-in
     if (newOrder.type === 'Dine-in' && newOrder.tableNumber) {
@@ -281,6 +331,7 @@ export class RestaurantService {
           activeOrderId: newOrder.id
         };
         this._tables.next(tables);
+        this.saveTables();
       }
     }
 
@@ -293,6 +344,7 @@ export class RestaurantService {
     if (orderIndex !== -1) {
       orders[orderIndex] = { ...orders[orderIndex], status };
       this._orders.next(orders);
+      this.saveOrders();
     }
   }
 
@@ -304,6 +356,7 @@ export class RestaurantService {
       const order = { ...orders[orderIndex], isPaid: true, paymentMode, postedToRoom };
       orders[orderIndex] = order;
       this._orders.next(orders);
+      this.saveOrders();
 
       if (order.type === 'Dine-in' && order.tableNumber) {
         const tables = [...this.tables];
@@ -311,6 +364,7 @@ export class RestaurantService {
         if (tableIndex !== -1) {
           tables[tableIndex] = { ...tables[tableIndex], status: 'Available', activeOrderId: undefined };
           this._tables.next(tables);
+          this.saveTables();
         }
       }
     }
